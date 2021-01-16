@@ -66,24 +66,6 @@ export default class TamerlaneChess {
     this._parseFen(opponentFen)
   }
 
-  _computeOpponentFen(fen) {
-    const lastSlahIndex = fen.lastIndexOf('/')
-    let opponentFen = ''
-    for (let i = 0; i < fen.length; i++) {
-      if (i === lastSlahIndex) {
-        break
-      }
-
-      opponentFen = `${fen[i]}${opponentFen}`
-    }
-    let remainStringIndex = lastSlahIndex
-    for (; remainStringIndex < fen.length; remainStringIndex++) {
-      opponentFen = `${opponentFen}${fen[remainStringIndex]}`
-    }
-
-    return opponentFen
-  }
-
   moves(square) {
     return this.board[square[0]][square[1]].validMoves()
   }
@@ -118,8 +100,23 @@ export default class TamerlaneChess {
     }
     // return changed
     //return game status
+    const move = {}
+    const moveInOpponentBoard = this._computeMoveInOpponentBoard(
+      move.from,
+      move.to
+    )
+    //saved Move always according to white player
+    const savedMove
+    if (this.playerColor === COLOR.white) {
+      savedMove = move
+    } else {
+      savedMove = moveInOpponentBoard
+    }
     return {
       status: '',
+      move,
+      moveInOpponentBoard,
+      savedMove,
     }
   }
 
@@ -148,6 +145,32 @@ export default class TamerlaneChess {
   }
 
   //Helper functions
+  _computeMoveInOpponentBoard(from, to) {
+    from.row = this.rowCount - from.row - 1
+    from.col = this.colCount - from.col - 1
+    to.row = this.rowCount - to.row - 1
+    to.col = this.colCount - to.colCount - 1
+    return { from, to }
+  }
+
+  _computeOpponentFen(fen) {
+    const lastSlahIndex = fen.lastIndexOf('/')
+    let opponentFen = ''
+    for (let i = 0; i < fen.length; i++) {
+      if (i === lastSlahIndex) {
+        break
+      }
+
+      opponentFen = `${fen[i]}${opponentFen}`
+    }
+    let remainStringIndex = lastSlahIndex
+    for (; remainStringIndex < fen.length; remainStringIndex++) {
+      opponentFen = `${opponentFen}${fen[remainStringIndex]}`
+    }
+
+    return opponentFen
+  }
+
   _updateMoves() {
     for (const row = 0; i < this.rowCount; i++) {
       for (const col = 1; j < this.colCount - 1; j++) {
