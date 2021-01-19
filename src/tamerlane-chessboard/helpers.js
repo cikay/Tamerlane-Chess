@@ -93,14 +93,14 @@ export function fenToObj(fen) {
   //cut off any move castling, etc info from end
   //we are only interested in position information
   fen = fen.replace(/\*.+$/, '')
-  console.log(fen)
+  
   const rows = fen.split('/')
   const position = {}
   let currentRow = 10
   for (let row of rows) {
     row = row.split('')
     let colIdx = 0
-    console.log(row)
+    
     for (const pieceChar of row) {
       //empty squares
       if (pieceChar.search(/[1-9]/) !== -1) {
@@ -110,18 +110,14 @@ export function fenToObj(fen) {
         //piece
         let square = `${COLUMNS[colIdx]}${currentRow}`
         position[square] = fenToPieceCode(pieceChar)
-        console.log(
-          `square:${square}, piece:${fenToPieceCode(
-            pieceChar
-          )} row:${currentRow}`
-        )
+
         colIdx += 1
       }
     }
 
     currentRow -= 1
   }
-  console.log(position)
+  
   return position
 }
 

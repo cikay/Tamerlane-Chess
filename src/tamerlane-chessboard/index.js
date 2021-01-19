@@ -8,7 +8,7 @@ export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
 const getPositionObject = (position) => {
   if (position === 'start') {
     return fenToObj(
-      'f1d1i1i1d1f/kamzgsvzmak/pxcbyqehtnr/92/92/92/92/PXCBYQEHTNR/KAMZGSVZMAK/F1D1I1I1D1F*2 w'
+      'f1d1i1i1d1f/kamzvsgzmak/pxcbyqehtnr/92/92/92/92/PXCBYQEHTNR/KAMZGSVZMAK/F1D1I1I1D1F*2 w'
     )
   }
   if (validFen(position)) return fenToObj(position)
