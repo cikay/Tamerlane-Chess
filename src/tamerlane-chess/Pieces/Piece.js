@@ -1,4 +1,5 @@
 export default class Piece {
+  
   constructor(row, col, color){
 
     if(this.constructor === Piece){
@@ -11,13 +12,11 @@ export default class Piece {
     this.moveList = []
     this.king = false
     this.pawn = false
-    
-
+  
   }
 
   isSelected(){
     return this.selected
-
   }
 
   updateValidMoves(board){
@@ -34,9 +33,6 @@ export default class Piece {
   changePosition(row, col){
     this.row = row
     this.column = col
-
   }
-
-
 }
 

@@ -1,0 +1,41 @@
+#GameBoard {
+  width: 65vw;
+  height: 80vh;
+  margin: 8vh auto 0 auto;
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+}
+
+.file1 {
+  grid-column-start: 2;
+}
+
+.row2.col0 {
+  grid-column: 1/2;
+  grid-row: 2/3;
+}
+.row9.file12 {
+  grid-column: 13/14;
+  grid-row: 9/10;
+}
+
+.dark {
+  background-color: rgba(119, 118, 73, 0.99);
+}
+
+.light {
+  background-color: #d1cd89;
+}
+
+.Piece {
+  position: absolute;
+}
+
+.Selected {
+  background-color: rgb(49, 40, 124);
+}
+.AttackedSquare {
+  background: radial-gradient(circle, #fffc00 36%, transparent 40%);
+  border-radius: '50%';
+}

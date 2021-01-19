@@ -1,21 +1,21 @@
 import Piece from '../Piece'
 
 export default class Catapult extends Piece {
-  constructor(row, col, color) {
-    this.super(row, col, color)
-    this.directions = [
-      { rowDir: -1, colDir: 1 },
-      { rowDir: 1, colDir: 1 },
-      { rowDir: 1, colDir: -1 },
-      { rowDir: -1, colDir: -1 },
-    ]
-  }
+  #directions = [
+    { rowDir: -1, colDir: 1 },
+    { rowDir: 1, colDir: 1 },
+    { rowDir: 1, colDir: -1 },
+    { rowDir: -1, colDir: -1 },
+  ]
+  // constructor(row, col, color) {
+  //   super(row, col, color)
+  // }
   validMoves(board) {
     const moves = []
     let currentRow = this.row
     let currentCol = this.col
     let move
-    for (const direction of this.directions) {
+    for (const direction of this.#directions) {
       let { rowDir, colDir } = direction
       currentRow += rowDir
       currentCol += colDir
@@ -28,7 +28,7 @@ export default class Catapult extends Piece {
       while (
         currentRow < 10 &&
         currentRow > -1 &&
-        currentCol < 11 &&
+        currentCol < 12 &&
         currentCol > -1
       ) {
         currentCol += colDir
