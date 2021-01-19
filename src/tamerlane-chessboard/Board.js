@@ -29,9 +29,9 @@ const Board = () => {
         return [...Array(11)].map((_, c) => {
           const row = 10 - r
           const square = `${COLUMNS[c]}${row}`
-          console.log(`square:${square}`)
+
           return (
-            <Square key={square} square={square} row={row} col={c+1}></Square>
+            <Square key={square} square={square} row={row} col={c + 1}></Square>
           )
         })
       })}

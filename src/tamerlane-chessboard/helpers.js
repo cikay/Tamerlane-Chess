@@ -1,12 +1,12 @@
 export const COLUMNS = 'abcdefghijk'.split('')
 
 export function fenToPieceCode(piece) {
-  //white piece
+  //black piece
   if (piece.toLowerCase() === piece) {
-    return `w${piece.toUpperCase()}`
+    return `b${piece.toUpperCase()}`
   }
-
-  return `b${piece.toUpperCase()}`
+  //white piece
+  return `w${piece.toUpperCase()}`
 }
 
 export function objToFen(obj) {
@@ -73,12 +73,10 @@ export function validFen(fen) {
   'f1d1i1i1d1f/kamzgsvzmak1/pxcbyqehtnr/92/92/92/92
   /PXCBYQEHTNR/KAMZGSVZMAK1/F1D1I1I1D1F*2 w'
   */
- 
+
   for (const chunk of chunks) {
-    
     //'f1d1i1i1d1f/kamzgsvzmak/pxcbyqehtnr/92/92/92/92/PXCBYQEHTNR/KAMZGSVZMAK/F1D1I1I1D1F*2 w'
 
-    
     if (
       chunk.length !== 11 ||
       chunk.search(/[^fdikamzgsvzmakpxcbyqehtnrPXCBYQEHTNRFDIKAMZGSV1]/) !== -1
@@ -95,14 +93,14 @@ export function fenToObj(fen) {
   //cut off any move castling, etc info from end
   //we are only interested in position information
   fen = fen.replace(/\*.+$/, '')
-
+  console.log(fen)
   const rows = fen.split('/')
   const position = {}
   let currentRow = 10
   for (let row of rows) {
     row = row.split('')
     let colIdx = 0
-
+    console.log(row)
     for (const pieceChar of row) {
       //empty squares
       if (pieceChar.search(/[1-9]/) !== -1) {
@@ -112,12 +110,18 @@ export function fenToObj(fen) {
         //piece
         let square = `${COLUMNS[colIdx]}${currentRow}`
         position[square] = fenToPieceCode(pieceChar)
+        console.log(
+          `square:${square}, piece:${fenToPieceCode(
+            pieceChar
+          )} row:${currentRow}`
+        )
         colIdx += 1
       }
     }
 
     currentRow -= 1
   }
+  console.log(position)
   return position
 }
 

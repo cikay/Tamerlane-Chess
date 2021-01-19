@@ -20,14 +20,9 @@ const Square = ({ square, squareColor, row, col }) => {
   } = useTamerlaneChessContext()
   const hasPiece = (currentPosition, square) => {
     const keys = Object.keys(currentPosition)
-    console.log('current position')
-    console.log(`square:${square}`)
-    console.log(currentPosition && keys && keys.includes(square))
     return currentPosition && keys && keys.includes(square)
   }
   const getPieceName = (square) => {
-    console.log(`getPieceName function called`)
-    console.log(`piece name:${currentPosition[square]}`)
     return currentPosition[square]
   }
 
