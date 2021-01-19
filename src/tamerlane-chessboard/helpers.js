@@ -73,15 +73,21 @@ export function validFen(fen) {
   'f1d1i1i1d1f/kamzgsvzmak1/pxcbyqehtnr/92/92/92/92
   /PXCBYQEHTNR/KAMZGSVZMAK1/F1D1I1I1D1F*2 w'
   */
-
+  const pieceChars = 'fdikamzgsvzmakpxcbyqehtnrPXCBYQEHTNRFDIKAMZGSV1'.split('')
   for (const chunk of chunks) {
     //'f1d1i1i1d1f/kamzgsvzmak/pxcbyqehtnr/92/92/92/92/PXCBYQEHTNR/KAMZGSVZMAK/F1D1I1I1D1F*2 w'
 
-    if (
-      chunk.length !== 11 ||
-      chunk.search(/[^fdikamzgsvzmakpxcbyqehtnrPXCBYQEHTNRFDIKAMZGSV1]/) !== -1
-    ) {
-      throw Error('Fen char(s) does not match')
+    if (chunk.length !== 11) {
+      throw Error('Fen each section must have 11 char')
+    }
+    for (const charPiece of chunk) {
+      if (
+        charPiece.search(
+          /[^fdikamzgsvzmakpxcbyqehtnrPXCBYQEHTNRFDIKAMZGSV1]/
+        ) !== -1
+      ) {
+        throw Error(`Each fen char must be one of them ${pieceChars}`)
+      }
     }
   }
 
@@ -93,14 +99,14 @@ export function fenToObj(fen) {
   //cut off any move castling, etc info from end
   //we are only interested in position information
   fen = fen.replace(/\*.+$/, '')
-  
+
   const rows = fen.split('/')
   const position = {}
   let currentRow = 10
   for (let row of rows) {
     row = row.split('')
     let colIdx = 0
-    
+
     for (const pieceChar of row) {
       //empty squares
       if (pieceChar.search(/[1-9]/) !== -1) {
@@ -117,7 +123,7 @@ export function fenToObj(fen) {
 
     currentRow -= 1
   }
-  
+
   return position
 }
 
