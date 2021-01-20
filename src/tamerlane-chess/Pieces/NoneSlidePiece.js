@@ -19,9 +19,8 @@ export default class NoneSlidePiece extends Piece {
         currentCol < 11 &&
         currentCol >= 0
       ) {
-        console.log(`current row:${curentRow}, currentCol:${currentCol}`)
+       
         const piece = board[curentRow][currentCol]
-        console.log(piece)
         move = { row: curentRow, col: currentCol }
         if (piece === 0 || piece.color !== this.color) {
           moves.push(move)

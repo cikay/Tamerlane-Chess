@@ -10,7 +10,7 @@ export default class Catapult extends Piece {
   // constructor(row, col, color) {
   //   super(row, col, color)
   // }
-  
+
   validMoves(board) {
     const moves = []
     let currentRow = this.row
@@ -20,20 +20,20 @@ export default class Catapult extends Piece {
       let { rowDir, colDir } = direction
       currentRow += rowDir
       currentCol += colDir
+      console.log(`current row:${currentRow}, currentCol:${currentCol}`)
       let piece = board[currentRow][currentCol]
 
       if (piece !== 0) {
         continue
       }
-
+      currentCol += colDir
+      currentRow += rowDir
       while (
         currentRow < 10 &&
         currentRow > -1 &&
         currentCol < 12 &&
         currentCol > -1
       ) {
-        currentCol += colDir
-        currentRow += rowDir
         piece = board[currentRow][currentCol]
         move = {
           row: currentRow,
@@ -47,7 +47,10 @@ export default class Catapult extends Piece {
         } else {
           break
         }
+        currentCol += colDir
+        currentRow += rowDir
       }
     }
+    return moves
   }
 }
