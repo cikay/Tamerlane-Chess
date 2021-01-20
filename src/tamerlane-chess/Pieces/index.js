@@ -7,6 +7,7 @@ import Vizier from './Vizier'
 import WarEngine from './WarEngine'
 import Giraffe from './Giraffe'
 import Rook from './Rook'
+import King from './King'
 import {
   PawnOfPawn,
   CamelPawn,
@@ -18,8 +19,10 @@ import {
   WarEnginePawn,
   RookPawn,
   GiraffePawn,
+  KingPawn
 } from './Pawn'
 export {
+  King,
   Camel,
   Catapult,
   Elephant,
@@ -38,5 +41,6 @@ export {
   KnightPawn,
   VizierPawn,
   WarEnginePawn,
-  RookPawn
+  RookPawn,
+  KingPawn,
 }

@@ -1,7 +1,7 @@
 import NoneSlidePiece from './NoneSlidePiece'
 
 export default class Camel extends NoneSlidePiece {
-  #directions = [
+  _directions = [
     { rowDir: -3, colDir: 1 },
     { rowDir: -1, colDir: 3 },
     { rowDir: 1, colDir: 3 },
@@ -11,7 +11,9 @@ export default class Camel extends NoneSlidePiece {
     { rowDir: -1, colDir: -3 },
     { rowDir: -2, colDir: -1 },
   ]
-
+  get directions() {
+    return this._directions
+  }
   // constructor(rowDir, col, color) {
   //   super(rowDir, col, color)
   // }

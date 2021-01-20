@@ -1,6 +1,6 @@
-import SlidePiece from './SlidePiece'
+import Piece from './Piece'
 
-export default class Giraffe extends SlidePiece {
+export default class Giraffe extends Piece {
   // constructor(row, col, color) {
   //   super(row, col, color)
   // }

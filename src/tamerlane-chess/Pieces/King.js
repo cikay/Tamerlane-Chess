@@ -1,7 +1,9 @@
 import NoneSlidePiece from './NoneSlidePiece'
 
-class King extends NoneSlidePiece {
-  constructor() {}
+export default class King extends NoneSlidePiece {
+  constructor() {
+    super()
+  }
   validMoves(board, playerColor) {
     //ozel durumlar kontrol edilecek
     if (true) {

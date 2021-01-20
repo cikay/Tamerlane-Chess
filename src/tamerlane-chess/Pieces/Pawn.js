@@ -1,11 +1,13 @@
 import Piece from './Piece'
 import { COLOR } from '../types'
 class Pawn extends Piece {
+  
   constructor(row, col, color) {
+    super(row, col, color)
     if (this.constructor === Pawn) {
       throw Error('Pawn can not be instated')
     }
-    super(row, col, color)
+    
     this.pawn = true
   }
 
@@ -16,7 +18,7 @@ class Pawn extends Piece {
     const moves = []
     let col = this.col
     let attackedPiece
-
+    let row
     if (playerColor === this.color) {
       //UP
       row = this.row - 1

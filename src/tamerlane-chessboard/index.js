@@ -1,7 +1,7 @@
 import { useEffect, useContext, createContext, useState, useMemo } from 'react'
 import { validFen, fenToObj, validPositionObject } from './helpers'
 import Board from './Board'
-// import TamerlaneChess from '../tamerlane-chess'
+import TamerlaneChess from '../tamerlane-chess'
 const TamerlaneChessContext = createContext()
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
 
@@ -72,9 +72,9 @@ const defaultState = {
 }
 
 export default function TamerlaneChessBoard() {
-  // let game
+  let game
   useEffect(() => {
-    // game = new TamerlaneChess()
+    game = new TamerlaneChess()
   }, [])
   const [state, setState] = useState(defaultState)
   const removeHighlightSquare = () => {
@@ -109,24 +109,27 @@ export default function TamerlaneChessBoard() {
   }
   const handleClick = (square) => {
     console.log('clicked square')
-    // const piece = game.getPiece(square.row, square.col)
-    // const turn = game.getTurn()
-    //highlight possible moves
-    // if (piece.color === turn) {
-    // const moves = game.getMoves(square.row, square.col)
-    //   if (moves.length === 0) return
-    //   const squaresToHighlight = []
-    //   for (const move of moves) {
-    //     squaresToHighlight.push(move)
-    //   }
-    //   highlightSquare(square, squaresToHighlight)
-    //}
-    //make move
-    // else {
-    //   removeHighlightSquare()
-    // const move = game.makeMove(state.fromSquare, square)
-    //   if (move === null) return
-    // }
+    console.log("square", square)
+    const piece = game.getPiece(square.row, square.col)
+    const turn = game.getTurn()
+    // highlight possible moves
+    if (piece.color === turn) {
+      const moves = game.getMoves(square.row, square.col)
+      console.log('posible move')
+      console.log(moves)
+      if (moves.length === 0) return
+      const squaresToHighlight = []
+      for (const move of moves) {
+        squaresToHighlight.push(move)
+      }
+      highlightSquare(square, squaresToHighlight)
+    }
+    // make move
+    else {
+      removeHighlightSquare()
+      const move = game.makeMove(state.fromSquare, square)
+      if (move === null) return
+    }
   }
   const setPosition = ({ sourceSquare, targetSquare, piece }) => {}
 

@@ -1,4 +1,4 @@
-import Piece from '../Piece'
+import Piece from './Piece'
 
 export default class Catapult extends Piece {
   #directions = [
@@ -10,6 +10,7 @@ export default class Catapult extends Piece {
   // constructor(row, col, color) {
   //   super(row, col, color)
   // }
+  
   validMoves(board) {
     const moves = []
     let currentRow = this.row
@@ -19,7 +20,7 @@ export default class Catapult extends Piece {
       let { rowDir, colDir } = direction
       currentRow += rowDir
       currentCol += colDir
-      piece = board[currentRow][currentCol]
+      let piece = board[currentRow][currentCol]
 
       if (piece !== 0) {
         continue
