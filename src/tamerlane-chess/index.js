@@ -23,15 +23,12 @@ import {
   KingPawn,
 } from './Pieces'
 import { FEN_TYPE, COLOR } from './types'
-
+const COLUMNS = 'abcdefghijk'.split('')
 export default class TamerlaneChess {
   #rowCount = 10
-  #colCount = 13
-  #board = Array.from(Array(10), () => new Array(13))
-  #opponentBoard = Array.from(
-    Array(10),
-    () => new Array(13)
-  )
+  #colCount = 11
+  #board = Array.from(Array(10), () => new Array(11))
+  #opponentBoard = Array.from(Array(10), () => new Array(11))
   #player = 'player'
   #opponetPlayer = 'opponent'
   #turn = 'w'
@@ -58,22 +55,22 @@ export default class TamerlaneChess {
         : this.#whiteColor
 
     for (let row = 0; row < 10; row++) {
-      for (let col = 1; col < 12; col++) {
+      for (let col = 0; col < 11; col++) {
         this.#board[row][col] = 0
         this.#opponentBoard[row][col] = 0
       }
     }
-    //citadels square
-    this.#board[1][0] = 0
-    this.#board[8][12] = 0
-    this.#opponentBoard[1][0] = 0
-    this.#opponentBoard[8][12] = 0
+
+    console.log(this.#board)
     //Beyaz taşlar ekranda aşağıda ise
+    /*
+    'f1d1i1i1d1f/kamzvsgzmak/pxcbyqehtnr/92/92/92/92/PXCBYQEHTNR/KAMZGSVZMAK/F1D1I1I1D1F*2 w'
+    */
     const defaultWhitePiecesAtBottomFen =
-      'f1d1i1i1d1f/kamzgsvzmak1/pxcbyqehtnr/92/92/92/92/PXCBYQEHTNR/KAMZGSVZMAK1/F1D1I1I1D1F/ w'
+      'f1d1i1i1d1f/kamzvsgzmak/pxcbyqehtnr/92/92/92/92/PXCBEQYHTNR/KAMZGSVZMAK/F1D1I1I1D1F/ w'
     //Siyah taşlar ekranda aşağıda ise
     const defaultBlackPiecesAtBottomFen =
-      'F1D1I1I1D1F/KAMZGSVZMAK1/PXCBYQEHTNR/92/92/92/92/pxcbyqehtnr/kamzgsvzmak1/f1d1i1i1d1f/ w'
+      'F1D1I1I1D1F/KAMZVSGZMAK/PXCBYQEHTNR/92/92/92/92/pxcbyqehtnr/kamzgsvzmak/f1d1i1i1d1f/ w'
 
     if (fen === null) {
       fen =
@@ -86,15 +83,25 @@ export default class TamerlaneChess {
     this.parseFen(opponentFen, FEN_TYPE.opponent)
   }
 
-  getPiece(row, col) {
-    console.log(`row:${row}, col:${col}`)
-    console.log(this.#board)
-    return this.#board[row][col]
-  }
+  // getPiece(square) {
+  //   const { row, col } = this.getSquarePosition(square)
+  //   return this.#board[row][col]
+  // }
 
-  getMoves(row, col) {
-    return this.#board[row][col].validMoves()
-  }
+  // getSquarePosition(square) {
+  //   const col = COLUMNS.indexOf(square[0])
+  //   //row start 0 so minus 1
+  //   const row = square[1] - 1
+  //   console.log(this.#board)
+  //   console.log(row, col)
+  //   return { col, row }
+  // }
+
+  // getMoves(square) {
+  //   const { row, col } = this.getSquarePosition(square)
+
+  //   return this.#board[row][col].validMoves()
+  // }
 
   getTurn() {
     return this.#turn
@@ -154,7 +161,7 @@ export default class TamerlaneChess {
     let changed = false
     let prev = [-1, -1]
     for (let i = 0; i < this.#rowCount; i++) {
-      for (let j = 1; j < this.#colCount - 1; j++) {
+      for (let j = 0; j < this.#colCount; j++) {
         if (
           typeof this.#board[i][j] === 'object' &&
           this.#board[i][j].selected
@@ -206,7 +213,7 @@ export default class TamerlaneChess {
 
   updateMoves() {
     for (let row = 0; row < this.#rowCount; row++) {
-      for (let col = 1; col < this.#colCount - 1; col++) {
+      for (let col = 0; col < this.#colCount; col++) {
         const piece = this.#board[row][col]
         if (piece !== 0) {
           piece.updateValidMoves(this.#board)
@@ -226,7 +233,7 @@ export default class TamerlaneChess {
     const dangerMoves = this.getDangerMoves(color)
     const kingPositions = []
     for (let i = 0; i < this.#rowCount; i++) {
-      for (let j = 1; j < this.#colCount; j++) {
+      for (let j = 0; j < this.#colCount; j++) {
         const piece = this.#board[i][j]
         if (typeof piece === 'object' && piece.king && piece.color === color) {
           kingPositions.push([i, j])
@@ -242,7 +249,7 @@ export default class TamerlaneChess {
 
   resetSelected() {
     for (let i = 0; i < this.#rowCount; i++) {
-      for (let j = 1; j < this.#colCount - 1; j++) {
+      for (let j = 0; j < this.#colCount; j++) {
         const piece = this.#board[i][j]
         if (piece === 'object') {
           piece.selected = false
@@ -254,23 +261,18 @@ export default class TamerlaneChess {
   checkMate(color) {}
 
   parseFen(fen, fenType) {
-    console.log('fen parsing ')
     let BOARD
-    console.log(fenType)
     if (fenType === FEN_TYPE.player) BOARD = this.#board
     else if (fenType === FEN_TYPE.opponent) BOARD = this.#opponentBoard
     else throw Error('fen type not matching')
-
     let fenCounter = 0
     let row = 0
-    let col = this.#colCount - 1
-    console.log(`row cont:${this.#rowCount}`)
+    let col = 0
+    
     while (row < this.#rowCount && fenCounter < fen.length) {
-      let emptySquareCount = 1
-      console.log('fen parsing')
+      let emptySquareCount = 0
       switch (fen[fenCounter]) {
         case 'p':
-          console.log('pawn of pawn')
           BOARD[row][col] = new PawnOfPawn(row, col, this.#blackColor)
           break
         case 'b':
@@ -410,19 +412,23 @@ export default class TamerlaneChess {
         case '/':
         case ' ':
           row += 1
-          col = 1
+          col = 0
           fenCounter++
           continue
         default:
           console.log('Fen ERROR')
           return
       }
-
-      for (let i = 0; i < emptySquareCount; i++) {
-        col += 1
-        BOARD[row][col] = 0
+      if (emptySquareCount === 0) col += 1
+      else {
+        for (let i = 0; i < emptySquareCount; i++) {
+          col += 1
+          BOARD[row][col] = 0
+        }
       }
+
       fenCounter++
     }
+    
   }
 }

@@ -25,7 +25,7 @@ export default class NoneSlidePiece extends Piece {
         }
       }
     }
-
+    console.log(moves)
     return moves
   }
 }

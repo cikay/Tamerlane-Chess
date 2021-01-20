@@ -11,7 +11,7 @@ const defaultSquareStyle = (squareColor) => {
   // }
 }
 
-const Square = ({ square, squareColor, row, col }) => {
+const Square = (props) => {
   const {
     darkSquareStyle,
     lightSquareStyle,
@@ -27,16 +27,16 @@ const Square = ({ square, squareColor, row, col }) => {
   }
 
   const squareStyle =
-    squareColor === 'black' ? darkSquareStyle : lightSquareStyle
+    props.squareColor === 'black' ? darkSquareStyle : lightSquareStyle
   return (
     <div
       style={defaultSquareStyle()}
-      id={square}
-      onClick={(square) => handleClick(square)}
-      className={`file${col} rank${row}`}
+      id={props.square}
+      onClick={(square) => handleClick(props.square)}
+      className={`file${props.col} rank${props.row}`}
     >
-      {hasPiece(currentPosition, square) && (
-        <Piece pieceName={getPieceName(square)}></Piece>
+      {hasPiece(currentPosition, props.square) && (
+        <Piece pieceName={getPieceName(props.square)}></Piece>
       )}
     </div>
   )

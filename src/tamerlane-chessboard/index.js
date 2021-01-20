@@ -110,11 +110,11 @@ export default function TamerlaneChessBoard() {
   const handleClick = (square) => {
     console.log('clicked square')
     console.log("square", square)
-    const piece = game.getPiece(square.row, square.col)
+    const piece = game.getPiece(square)
     const turn = game.getTurn()
     // highlight possible moves
     if (piece.color === turn) {
-      const moves = game.getMoves(square.row, square.col)
+      const moves = game.getMoves(square)
       console.log('posible move')
       console.log(moves)
       if (moves.length === 0) return
