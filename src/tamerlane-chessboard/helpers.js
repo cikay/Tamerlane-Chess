@@ -123,7 +123,8 @@ export function fenToObj(fen) {
 
     currentRow -= 1
   }
-
+  console.log("position")
+  console.log(position)
   return position
 }
 

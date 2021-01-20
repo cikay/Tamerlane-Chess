@@ -111,6 +111,8 @@ export default function TamerlaneChessBoard() {
     console.log('clicked square')
     console.log("square", square)
     const piece = game.getPiece(square)
+    console.log(`piece`)
+    console.log(piece)
     const turn = game.getTurn()
     // highlight possible moves
     if (piece.color === turn) {

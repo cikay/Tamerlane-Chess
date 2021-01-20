@@ -61,7 +61,7 @@ export default class TamerlaneChess {
       }
     }
 
-    console.log(this.#board)
+   
     //Beyaz taşlar ekranda aşağıda ise
     /*
     'f1d1i1i1d1f/kamzvsgzmak/pxcbyqehtnr/92/92/92/92/PXCBYQEHTNR/KAMZGSVZMAK/F1D1I1I1D1F*2 w'
@@ -81,14 +81,15 @@ export default class TamerlaneChess {
     const opponentFen = this.computeOpponentFen(fen)
     this.parseFen(fen, FEN_TYPE.player)
     this.parseFen(opponentFen, FEN_TYPE.opponent)
+    this.printBoard()
   }
 
   getPiece(square) {
-    const { row, col } = this.getSquarePosition(square)
+    const { row, col } = this.squareToPosition(square)
     return this.#board[row][col]
   }
 
-  getSquarePosition(square) {
+  squareToPosition(square) {
     const col = COLUMNS.indexOf(square[0])
     //row start 0 so minus 1
     const row = square[1] - 1
@@ -97,12 +98,12 @@ export default class TamerlaneChess {
   }
 
   getMoves(square) {
-    const { row, col } = this.getSquarePosition(square)
+    const { row, col } = this.squareToPosition(square)
     const moveList = this.#board[row][col].validMoves(this.#board)
-    const squares = moveList.map((pos) => {
+    const squareList = moveList.map((pos) => {
       return this.positionToSquare(pos.row, pos.col)
     })
-    return squares
+    return squareList
   }
 
   positionToSquare(row,col){
@@ -117,6 +118,7 @@ export default class TamerlaneChess {
   }
 
   makeMove(from, to) {
+    console.log(`from:${from}, to:$${to}`)
     const color = this.#board[from.row][from.to]
     const checkedBefore = this.isChecked(color)
     let changed = true
@@ -267,6 +269,12 @@ export default class TamerlaneChess {
     }
   }
 
+  printBoard(){
+    for(let i=this.#board.length-1; i>=0 ; i--){
+      console.log(this.#board[i])
+    }
+  }
+
   checkMate(color) {}
 
   parseFen(fen, fenType) {
@@ -336,6 +344,7 @@ export default class TamerlaneChess {
           BOARD[row][col] = new Giraffe(row, col, this.#blackColor)
           break
         case 'g':
+          
           BOARD[row][col] = new General(row, col, this.#blackColor)
           break
         case 's':
@@ -399,6 +408,7 @@ export default class TamerlaneChess {
           BOARD[row][col] = new Giraffe(row, col, this.#whiteColor)
           break
         case 'G':
+          console.log(`General row:${row}, col:${col}`)
           BOARD[row][col] = new General(row, col, this.#whiteColor)
           break
         case 'S':
