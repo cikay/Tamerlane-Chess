@@ -6,6 +6,7 @@ export default class NoneSlidePiece extends Piece {
   // }
 
   validMoves(board) {
+    console.log(board)
     const moves = []
     let move
     for (const direction of this.directions) {
@@ -14,11 +15,13 @@ export default class NoneSlidePiece extends Piece {
       let currentCol = this.col + colDir
       if (
         curentRow < 10 &&
-        curentRow > -1 &&
-        currentCol < 12 &&
-        currentCol > -1
+        curentRow >= 0 &&
+        currentCol < 11 &&
+        currentCol >= 0
       ) {
+        console.log(`current row:${curentRow}, currentCol:${currentCol}`)
         const piece = board[curentRow][currentCol]
+        console.log(piece)
         move = { row: curentRow, col: currentCol }
         if (piece === 0 || piece.color !== this.color) {
           moves.push(move)

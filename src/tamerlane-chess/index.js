@@ -83,25 +83,34 @@ export default class TamerlaneChess {
     this.parseFen(opponentFen, FEN_TYPE.opponent)
   }
 
-  // getPiece(square) {
-  //   const { row, col } = this.getSquarePosition(square)
-  //   return this.#board[row][col]
-  // }
+  getPiece(square) {
+    const { row, col } = this.getSquarePosition(square)
+    return this.#board[row][col]
+  }
 
-  // getSquarePosition(square) {
-  //   const col = COLUMNS.indexOf(square[0])
-  //   //row start 0 so minus 1
-  //   const row = square[1] - 1
-  //   console.log(this.#board)
-  //   console.log(row, col)
-  //   return { col, row }
-  // }
+  getSquarePosition(square) {
+    const col = COLUMNS.indexOf(square[0])
+    //row start 0 so minus 1
+    const row = square[1] - 1
+    console.log(`square row${row}, col${col}`)
+    return { col, row }
+  }
 
-  // getMoves(square) {
-  //   const { row, col } = this.getSquarePosition(square)
+  getMoves(square) {
+    const { row, col } = this.getSquarePosition(square)
+    const moveList = this.#board[row][col].validMoves(this.#board)
+    const squares = moveList.map((pos) => {
+      return this.positionToSquare(pos.row, pos.col)
+    })
+    return squares
+  }
 
-  //   return this.#board[row][col].validMoves()
-  // }
+  positionToSquare(row,col){
+    const rank = row+1
+    const file = COLUMNS[col]
+    const square = `${file}${rank}`
+    return square
+  }
 
   getTurn() {
     return this.#turn
