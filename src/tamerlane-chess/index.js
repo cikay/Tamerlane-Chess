@@ -89,15 +89,6 @@ export default class TamerlaneChess {
     return this.#board[row][col]
   }
 
-  squareToPosition(square) {
-    console.log(`square:${square}`)
-    const col = COLUMNS.indexOf(square[0])
-    //square length can be 2 or 3 
-    const row = Number(square.replace(/^[a-k]/, '')) - 1 
-    console.log(`square row: ${row}, col: ${col}`)
-    return { col, row }
-  } 
-
   getMoves(square) {
     const { row, col } = this.squareToPosition(square)
     const piece = this.#board[row][col]
@@ -106,13 +97,6 @@ export default class TamerlaneChess {
       return this.positionToSquare(pos.row, pos.col)
     })
     return squareList
-  }
-
-  positionToSquare(row, col) {
-    const rank = row + 1
-    const file = COLUMNS[col]
-    const square = `${file}${rank}`
-    return square
   }
 
   getTurn() {
@@ -198,6 +182,21 @@ export default class TamerlaneChess {
   }
 
   //Helper functions
+  squareToPosition(square) {
+    console.log(`square:${square}`)
+    const col = COLUMNS.indexOf(square[0])
+    //square length can be 2 or 3
+    const row = Number(square.replace(/^[a-k]/, '')) - 1
+    console.log(`square row: ${row}, col: ${col}`)
+    return { col, row }
+  }
+  positionToSquare(row, col) {
+    const rank = row + 1
+    const file = COLUMNS[col]
+    const square = `${file}${rank}`
+    return square
+  }
+
   computeMoveInOpponentBoard(from, to) {
     from.row = this.#rowCount - from.row - 1
     from.col = this.#colCount - from.col - 1

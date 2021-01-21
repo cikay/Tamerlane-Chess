@@ -47,7 +47,6 @@ class Pawn extends Piece {
         }
       }
     }
-    //no need when online
     else {
       //DOWN
       row = this.row + 1
