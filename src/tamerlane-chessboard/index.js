@@ -8,12 +8,10 @@ import {
 } from 'react'
 
 import Board from './Board'
-import TamerlaneChess from '../tamerlane-chess'
-
 import tamerlaneChessReducer, {
   initialState,
 } from '../reducers/tamerlaneChessReducers'
-import { START_GAME } from '../reducers/tamerlaneChessActionTypes'
+import { START_GAME, SET_HIGHLIGHTING } from '../reducers/tamerlaneChessActionTypes'
 
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
 const TamerlaneChessContext = createContext()
@@ -21,8 +19,9 @@ export default function TamerlaneChessBoard() {
   const [state, dispatch] = useReducer(tamerlaneChessReducer, initialState)
   console.log('Provider called')
   useEffect(() => {
-    dispatch({type: START_GAME})
+    dispatch({ type: START_GAME })
   }, [])
+
   // const removeHighlightSquare = () => {
   //   const { pieceSquare, history } = state
   //   setState((prevState) => ({
@@ -31,29 +30,26 @@ export default function TamerlaneChessBoard() {
   //     squareStyles: squareStyling({ pieceSquare, history }),
   //   }))
   // }
-  // const highlightSquare = (sourceSquare, squaresToHighlight) => {
-  //   const highlightStyles = [...squaresToHighlight].reduce((a, c) => {
-  //     return {
-  //       ...a,
-  //       ...{
-  //         [c]: {
-  //           background: 'radial-gradient(circle, #fffc00 36%, transparent 40%)',
-  //           borderRadius: '50%',
-  //         },
-  //       },
-  //       ...squareStyling({
-  //         history: state.history,
-  //         pieceSquare: state.pieceSquare,
-  //       }),
-  //     }
-  //   }, {})
-  //   console.log('highlighting')
-  //   setState((prevState) => ({
-  //     ...prevState,
-  //     fromSquare: sourceSquare,
-  //     squareStyles: { ...state.squareStyles, ...highlightStyles },
-  //   }))
-  // }
+
+  const highlightSquare = (sourceSquare, squaresToHighlight) => {
+    const highlightStyles = [...squaresToHighlight].reduce((a, c) => {
+      return {
+        ...a,
+        ...{
+          [c]: {
+            background: 'radial-gradient(circle, #fffc00 36%, transparent 40%)',
+            borderRadius: '50%',
+          },
+        },
+        ...squareStyling({
+          history: state.history,
+          pieceSquare: state.pieceSquare,
+        }),
+      }
+    }, {})
+   
+    dispatch({ type: SET_HIGHLIGHTING, payload: highlightStyles })
+  }
 
   const handleClick = (square) => {
     const { tamerlaneChess } = state
@@ -72,7 +68,7 @@ export default function TamerlaneChessBoard() {
       for (const move of moves) {
         squaresToHighlight.push(move)
       }
-      // highlightSquare(square, squaresToHighlight)
+      highlightSquare(square, squaresToHighlight)
     }
     // make move
     else {

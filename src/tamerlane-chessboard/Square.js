@@ -2,21 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Piece from './Piece'
 import { useTamerlaneChessContext } from './index'
-// const defaultSquareStyle = (squareColor) => {
-//   return {
-//     // ...size(width),
-//     // ...center,
-//     ...(squareColor === 'black' ? darkSquareStyle : lightSquareStyle),
-//     // ...(isOver && dropSquareColor),
-//   }
-// }
 
-const Square = (props) => {
+const Square = ({ square, squareColor, row, col }) => {
   const {
     darkSquareStyle,
     lightSquareStyle,
     currentPosition,
     handleClick,
+    squareStyles,
   } = useTamerlaneChessContext()
   const hasPiece = (currentPosition, square) => {
     const keys = Object.keys(currentPosition)
@@ -26,18 +19,28 @@ const Square = (props) => {
     return currentPosition[square]
   }
 
-  const squareStyle =
-    props.squareColor === 'black' ? darkSquareStyle : lightSquareStyle
+  const squareStyle = () => {
+    return {
+      ...(squareColor === 'black' ? darkSquareStyle : lightSquareStyle),
+      ...squareStyles[square],
+    }
+  }
+
+  // const squareStyle =
+  //   props.squareColor === 'black' ? darkSquareStyle : lightSquareStyle
   return (
     <div
-      style={squareStyle}
-      id={props.square}
-      onClick={(square) => handleClick(props.square)}
-      className={`file${props.col} rank${props.row}`}
+      style={squareStyle()}
+      id={square}
+      onClick={() => handleClick(square)}
+      className={`file${col} rank${row}`}
     >
-      {hasPiece(currentPosition, props.square) && (
-        <Piece pieceName={getPieceName(props.square)}></Piece>
-      )}
+      
+      <div style={squareStyles[square]}>
+        {hasPiece(currentPosition, square) && (
+          <Piece pieceName={getPieceName(square)}></Piece>
+        )}
+      </div>
     </div>
   )
 }
