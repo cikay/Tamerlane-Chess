@@ -103,6 +103,10 @@ export default class TamerlaneChess {
     return this.#turn
   }
 
+  gameOver(){
+    return false
+  }
+
   makeMove(from, to) {
     console.log(`from:${from}, to:$${to}`)
     const color = this.#board[from.row][from.to]

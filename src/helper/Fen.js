@@ -9,6 +9,16 @@ export function fenToPieceCode(piece) {
   return `w${piece.toUpperCase()}`
 }
 
+export const getPositionObject = (position) => {
+  if (position === 'start') {
+    return fenToObj(
+      'f1d1i1i1d1f/kamzvsgzmak/pxcbyqehtnr/92/92/92/92/PXCBYQEHTNR/KAMZGSVZMAK/F1D1I1I1D1F*2 w'
+    )
+  }
+  if (validFen(position)) return fenToObj(position)
+  if (validPositionObject(position)) return position
+  return {}
+}
 export function objToFen(obj) {
   if (!validPositionObject(obj)) return false
 

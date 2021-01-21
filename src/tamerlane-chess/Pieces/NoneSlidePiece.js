@@ -1,7 +1,6 @@
 import Piece from './Piece'
 
 export default class NoneSlidePiece extends Piece {
-  
   validMoves(board) {
     console.log(board)
     const moves = []
@@ -16,7 +15,6 @@ export default class NoneSlidePiece extends Piece {
         currentCol < 11 &&
         currentCol >= 0
       ) {
-       
         const piece = board[curentRow][currentCol]
         move = { row: curentRow, col: currentCol }
         if (piece === 0 || piece.color !== this.color) {
@@ -24,7 +22,7 @@ export default class NoneSlidePiece extends Piece {
         }
       }
     }
-    console.log(moves)
+
     return moves
   }
 }
