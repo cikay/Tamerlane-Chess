@@ -90,10 +90,10 @@ export default class TamerlaneChess {
   }
 
   squareToPosition(square) {
+    console.log(`square:${square}`)
     const col = COLUMNS.indexOf(square[0])
     //square length can be 2 or 3 
-    //row start 0 so minus 1
-    const row = square.replace(/^[a-k]/, '')
+    const row = Number(square.replace(/^[a-k]/, '')) - 1 
     console.log(`square row: ${row}, col: ${col}`)
     return { col, row }
   } 
@@ -101,8 +101,6 @@ export default class TamerlaneChess {
   getMoves(square) {
     const { row, col } = this.squareToPosition(square)
     const piece = this.#board[row][col]
-    console.log("piece")
-    console.log(piece)
     const moveList = piece.validMoves(this.#board)
     const squareList = moveList.map((pos) => {
       return this.positionToSquare(pos.row, pos.col)

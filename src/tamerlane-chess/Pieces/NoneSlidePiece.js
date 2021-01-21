@@ -1,10 +1,7 @@
 import Piece from './Piece'
 
 export default class NoneSlidePiece extends Piece {
-  // constructor(row, col, color) {
-  //   super(row, col, color)
-  // }
-
+  
   validMoves(board) {
     console.log(board)
     const moves = []
