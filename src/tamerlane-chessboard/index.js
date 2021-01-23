@@ -11,7 +11,10 @@ import Board from './Board'
 import tamerlaneChessReducer, {
   initialState,
 } from '../reducers/tamerlaneChessReducers'
-import { START_GAME, SET_HIGHLIGHTING } from '../reducers/tamerlaneChessActionTypes'
+import {
+  START_GAME,
+  SET_HIGHLIGHTING,
+} from '../reducers/tamerlaneChessActionTypes'
 
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
 const TamerlaneChessContext = createContext()
@@ -21,7 +24,7 @@ export default function TamerlaneChessBoard() {
   useEffect(() => {
     dispatch({ type: START_GAME })
   }, [])
-
+  console.log(state.squareStyles)
   // const removeHighlightSquare = () => {
   //   const { pieceSquare, history } = state
   //   setState((prevState) => ({
@@ -30,9 +33,8 @@ export default function TamerlaneChessBoard() {
   //     squareStyles: squareStyling({ pieceSquare, history }),
   //   }))
   // }
-
-  const highlightSquare = (sourceSquare, squaresToHighlight) => {
-    const highlightStyles = [...squaresToHighlight].reduce((a, c) => {
+  const highlightSquare = (squaresToHighlight) => {
+    const highlightStyles = squaresToHighlight.reduce((a, c) => {
       return {
         ...a,
         ...{
@@ -47,7 +49,7 @@ export default function TamerlaneChessBoard() {
         }),
       }
     }, {})
-   
+
     dispatch({ type: SET_HIGHLIGHTING, payload: highlightStyles })
   }
 
@@ -68,7 +70,7 @@ export default function TamerlaneChessBoard() {
       for (const move of moves) {
         squaresToHighlight.push(move)
       }
-      highlightSquare(square, squaresToHighlight)
+      highlightSquare(squaresToHighlight)
     }
     // make move
     else {
@@ -77,11 +79,12 @@ export default function TamerlaneChessBoard() {
       if (move === null) return
     }
   }
+
   const setPosition = ({ sourceSquare, targetSquare, piece }) => {}
 
   const value = {
     ...state,
-    handleClick,
+    handleClick
   }
   return (
     <TamerlaneChessContext.Provider value={value}>

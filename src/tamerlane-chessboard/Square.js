@@ -11,6 +11,7 @@ const Square = ({ square, squareColor, row, col }) => {
     handleClick,
     squareStyles,
   } = useTamerlaneChessContext()
+
   const hasPiece = (currentPosition, square) => {
     const keys = Object.keys(currentPosition)
     return currentPosition && keys && keys.includes(square)
@@ -22,21 +23,18 @@ const Square = ({ square, squareColor, row, col }) => {
   const squareStyle = () => {
     return {
       ...(squareColor === 'black' ? darkSquareStyle : lightSquareStyle),
-      ...squareStyles[square],
+      // ...squareStyles[square],
     }
   }
 
-  // const squareStyle =
-  //   props.squareColor === 'black' ? darkSquareStyle : lightSquareStyle
   return (
     <div
       style={squareStyle()}
       id={square}
       onClick={() => handleClick(square)}
       className={`file${col} rank${row}`}
-    >
-      
-      <div style={squareStyles[square]}>
+    > 
+      <div style={{ ...squareStyles[square], ...size() }}>
         {hasPiece(currentPosition, square) && (
           <Piece pieceName={getPieceName(square)}></Piece>
         )}
@@ -44,6 +42,11 @@ const Square = ({ square, squareColor, row, col }) => {
     </div>
   )
 }
+
+const size = () => ({
+  height: 50,
+  width: 50,
+})
 
 // Square.PropTypes = {
 //   width: PropTypes.func,
@@ -55,7 +58,4 @@ const Square = ({ square, squareColor, row, col }) => {
 //   roughSquare: PropTypes.func,
 // }
 
-const size = () => {
-  return
-}
 export default Square

@@ -61,7 +61,6 @@ export default function tamerlaneChessReducer(state = initialState, action) {
         ...state,
         squareStyles: payload
       }
-      
     default:
       return state
   }
