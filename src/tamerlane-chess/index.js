@@ -103,28 +103,37 @@ export default class TamerlaneChess {
     return this.#turn
   }
 
-  gameOver(){
+  gameOver() {
     return false
   }
 
   makeMove(fromSquare, toSquare) {
     console.log(`from:${fromSquare}, to:${toSquare}`)
-    const fromPos = this.squareToPosition(fromSquare)
-    const toPos = this.squareToPosition(toSquare)
 
-    const color = this.#board[fromPos.row][fromPos.col]
-    const checkedBefore = this.isChecked(color)
+    const fromPos = this.squareToPosition(fromSquare)
+    const piece = this.#board[fromPos.row][fromPos.col]
+    //if there is no piece in fromSquare or turn is not moving piece
+    if (!piece || piece.color !== this.#turn) return null
+    const color = piece.color
+    const toPos = this.squareToPosition(toSquare)
+    const moves = piece.validMoves(this.#board)
+    let isMoveValid = false
+    //check if move is possible
+    for (const { row, col } of moves) {
+      if (toPos.row === row && toPos.col === col) {
+        isMoveValid = true
+        break
+      }
+    }
+    if (!isMoveValid) return null
+    const checkedBefore = this.isChecked(piece)
     let changed = true
     let copyBoard = [...this.#board]
-    // if(copyBoard[from.row][from.col].pawn){
-
-    // }
-    const movingPiece = copyBoard[fromPos.row][fromPos.col]
-    movingPiece.changePosition(toPos.row, toPos.col)
+    piece.changePosition(toPos.row, toPos.col)
     copyBoard[toPos.row][toPos.col] = copyBoard[fromPos.row][fromPos.col]
     copyBoard[fromPos.row][fromPos.col] = 0
     this.#board = copyBoard
-
+    //before is check or before is check and after move there is still check
     if (this.isChecked(color) || (checkedBefore && this.isChecked(color))) {
       changed = false
       copyBoard = [...this.#board]
@@ -132,20 +141,14 @@ export default class TamerlaneChess {
       copyBoard[fromPos.row][fromPos.col] = copyBoard[toPos.row][toPos.col]
       copyBoard[toPos.row][toPos.col] = 0
       this.#board = copyBoard
-    } else {
-      this.resetSelected()
+      return null
     }
+    //move is possible
     this.updateMoves()
-    // if (changed) {
-    //   this.#last = [from, to]
-    // }
-    // return changed
-    //return game status
-    const move = {}
-    const moveInOpponentBoard = this.computeMoveInOpponentBoard(
-      move.from,
-      move.to
-    )
+    this.#turn = this.#turn === 'w' ? 'b' : 'w'
+    const move = { from: fromSquare, to: toSquare }
+    const moveInOpponentBoard = this.computeMoveInOpponentBoard(fromPos, toPos)
+    console.log('opponent move', moveInOpponentBoard)
     //saved Move always according to white player
     let savedMove
     if (this.#playerColor === COLOR.white) {
@@ -235,7 +238,13 @@ export default class TamerlaneChess {
       for (let col = 0; col < this.#colCount; col++) {
         const piece = this.#board[row][col]
         if (piece !== 0) {
-          piece.updateValidMoves(this.#board)
+          if (piece.pawn) {
+            console.log('pawn')
+            piece.updateValidMoves(this.#board, 'w')
+          } else {
+            console.log('not pawn')
+            piece.updateValidMoves(this.#board)
+          }
         }
       }
     }
@@ -248,21 +257,21 @@ export default class TamerlaneChess {
 
   isChecked(color) {
     //şahın evindeki taşlar kontrol edilecek
-    this.updateMoves()
-    const dangerMoves = this.getDangerMoves(color)
-    const kingPositions = []
-    for (let i = 0; i < this.#rowCount; i++) {
-      for (let j = 0; j < this.#colCount; j++) {
-        const piece = this.#board[i][j]
-        if (typeof piece === 'object' && piece.king && piece.color === color) {
-          kingPositions.push([i, j])
-        }
-      }
-    }
-
-    if (kingPositions.length > 1 && dangerMoves.includes(kingPositions[0])) {
-      return true
-    }
+    // this.updateMoves()
+    // const dangerMoves = this.getDangerMoves(color)
+    // const kingPositions = []
+    // for (let i = 0; i < this.#rowCount; i++) {
+    //   for (let j = 0; j < this.#colCount; j++) {
+    //     const piece = this.#board[i][j]
+    //     if (typeof piece === 'object' && piece.king && piece.color === color) {
+    //       kingPositions.push([i, j])
+    //     }
+    //   }
+    // }
+    // //not gonna working
+    // if (kingPositions.length === 1 && dangerMoves.includes(kingPositions[0])) {
+    //   return true
+    // }
     return false
   }
 

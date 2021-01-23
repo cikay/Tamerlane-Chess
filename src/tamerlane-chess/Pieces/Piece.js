@@ -8,7 +8,6 @@ export default class Piece {
     this.row = row
     this.col = col
     this.color = color 
-    this.selected = false
     this.moveList = []
     this.king = false
     this.pawn = false
@@ -33,6 +32,10 @@ export default class Piece {
   changePosition(row, col){
     this.row = row
     this.column = col
+  }
+
+  IsInBoard(row, col){
+    return row < 10 && row >= 0 && col < 11 && col >= 0
   }
 }
 

@@ -1,17 +1,22 @@
 import Piece from './Piece'
 import { COLOR } from '../types'
 class Pawn extends Piece {
-  
   constructor(row, col, color) {
     super(row, col, color)
     if (this.constructor === Pawn) {
       throw Error('Pawn can not be instated')
     }
-    
+
     this.pawn = true
   }
 
+  updateValidMoves(board, playerColor) {
+    this.moveList = this.validMoves(board, playerColor)
+  }
+
   validMoves(board, playerColor) {
+    console.log('player color', playerColor)
+    console.log(this)
     if (playerColor !== COLOR.white && playerColor !== COLOR.black) {
       throw Error('No matching player color with black or white')
     }
@@ -22,7 +27,7 @@ class Pawn extends Piece {
     if (playerColor === this.color) {
       //UP
       row = this.row - 1
-      if (col < 12 && col > -1 && row < 10 && row > -1) {
+      if (this.IsInBoard(row, col)) {
         attackedPiece = board[row][col]
         if (attackedPiece === 0) {
           moves.push({ row, col })
@@ -31,7 +36,7 @@ class Pawn extends Piece {
 
       //RIGHT UP
       col = this.col + 1
-      if (col < 12 && col > -1 && row < 10 && row > -1) {
+      if (this.IsInBoard(row, col)) {
         attackedPiece = board[row][col]
         if (attackedPiece.color !== this.color) {
           moves.push({ row, col })
@@ -40,18 +45,17 @@ class Pawn extends Piece {
 
       //LEFT UP
       col = this.col - 1
-      if (col < 12 && col > -1 && row < 10 && row > -1) {
+      if (this.IsInBoard(row, col)) {
         attackedPiece = board[row][col]
         if (attackedPiece.color !== this.color) {
           moves.push({ row, col })
         }
       }
-    }
-    else {
+    } else {
       //DOWN
       row = this.row + 1
       col = this.col
-      if (col < 12 && col > -1 && row < 10 && row > -1) {
+      if (this.IsInBoard(row, col)) {
         attackedPiece = board[row][col]
         if (attackedPiece == 0) {
           moves.push({ row, col })
@@ -60,15 +64,15 @@ class Pawn extends Piece {
 
       //RIGHT DOWN
       col = this.col + 1
-      if (col < 12 && col > -1 && row < 10 && row > -1) {
+      if (this.IsInBoard(row, col)) {
         attackedPiece = board[row][col]
         if (attackedPiece.color !== this.color) {
           moves.push({ row, col })
         }
       }
       //LEFT DOWN
-      if (col < 12 && col > -1 && row < 10 && row > -1) {
-        col = this.col - 1
+      col = this.col - 1
+      if (this.IsInBoard(row, col)) {
         attackedPiece = board[row][col]
         if (attackedPiece.color !== this.color) {
           moves.push({ row, col })
@@ -79,9 +83,6 @@ class Pawn extends Piece {
 }
 
 export class PawnOfPawn extends Pawn {
-  constructor(row, col, color) {
-    super(row, col, color)
-  }
   validMoves(board, playerColor) {
     //ozel durumlar kontrol edilecek
     if (true) {
@@ -91,10 +92,10 @@ export class PawnOfPawn extends Pawn {
 }
 
 export class KingPawn extends Pawn {
-  validMoves(board) {
+  validMoves(board, playerColor) {
     //eğer
     if (true) {
-      super.validMoves(board)
+      super.validMoves(board, playerColor)
     }
   }
 }

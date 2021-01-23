@@ -20,7 +20,7 @@ export default class Catapult extends Piece {
       let { rowDir, colDir } = direction
       currentRow += rowDir
       currentCol += colDir
-      console.log(`current row:${currentRow}, currentCol:${currentCol}`)
+
       let piece = board[currentRow][currentCol]
 
       if (piece !== 0) {

@@ -59,12 +59,14 @@ export default function TamerlaneChessBoard() {
 
   const handleClick = (square) => {
     const { tamerlaneChess } = state
+    console.log("from square", state.fromSquare)
     console.log('clicked square', square)
     const piece = tamerlaneChess.getPiece(square)
     console.log(`clicked piece`)
     console.log(piece)
     const turn = tamerlaneChess.getTurn()
     // highlight possible moves
+    console.log()
     if (piece.color === turn) {
       const moves = tamerlaneChess.getMoves(square)
       console.log('posible move')
@@ -86,6 +88,7 @@ export default function TamerlaneChessBoard() {
       console.log('trying to make move')
       const move = tamerlaneChess.makeMove(state.fromSquare, square)
       if (move === null) return
+     
     }
   }
 
