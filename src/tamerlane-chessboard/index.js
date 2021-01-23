@@ -14,6 +14,7 @@ import tamerlaneChessReducer, {
 import {
   START_GAME,
   SET_HIGHLIGHTING,
+  SELECT_PIECE,
 } from '../reducers/tamerlaneChessActionTypes'
 
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
@@ -39,7 +40,8 @@ export default function TamerlaneChessBoard() {
         ...a,
         ...{
           [c]: {
-            background: 'radial-gradient(circle, #fffc00 36%, transparent 40%)',
+            background:
+              'radial-gradient(circle, rgb(125, 226, 1) 36%, transparent 40%)',
             borderRadius: '50%',
           },
         },
@@ -49,8 +51,10 @@ export default function TamerlaneChessBoard() {
         }),
       }
     }, {})
-
-    dispatch({ type: SET_HIGHLIGHTING, payload: highlightStyles })
+    const payload = {
+      highlightStyles,
+    }
+    dispatch({ type: SET_HIGHLIGHTING, payload })
   }
 
   const handleClick = (square) => {
@@ -70,11 +74,16 @@ export default function TamerlaneChessBoard() {
       for (const move of moves) {
         squaresToHighlight.push(move)
       }
+      const payload = {
+        fromSquare: square,
+      }
+      dispatch({ type: SELECT_PIECE, payload })
       highlightSquare(squaresToHighlight)
     }
     // make move
     else {
       // removeHighlightSquare()
+      console.log('trying to make move')
       const move = tamerlaneChess.makeMove(state.fromSquare, square)
       if (move === null) return
     }
@@ -84,7 +93,7 @@ export default function TamerlaneChessBoard() {
 
   const value = {
     ...state,
-    handleClick
+    handleClick,
   }
   return (
     <TamerlaneChessContext.Provider value={value}>

@@ -23,7 +23,6 @@ const Square = ({ square, squareColor, row, col }) => {
   const squareStyle = () => {
     return {
       ...(squareColor === 'black' ? darkSquareStyle : lightSquareStyle),
-      // ...squareStyles[square],
     }
   }
 

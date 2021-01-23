@@ -5,6 +5,7 @@ export default class NoneSlidePiece extends Piece {
     console.log(board)
     const moves = []
     let move
+    console.log(this.directions)
     for (const direction of this.directions) {
       const { rowDir, colDir } = direction
       let curentRow = this.row + rowDir

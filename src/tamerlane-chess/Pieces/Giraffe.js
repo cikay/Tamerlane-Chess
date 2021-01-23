@@ -1,11 +1,23 @@
 import Piece from './Piece'
 
 export default class Giraffe extends Piece {
-  // constructor(row, col, color) {
-  //   super(row, col, color)
-  // }
+  static #directions = [
+    { rowDir: -1, colDir: 1 },
+    { rowDir: 1, colDir: 1 },
+    { rowDir: 1, colDir: -1 },
+    { rowDir: -1, colDir: -1 },
+  ]
 
-  // validMoves() {
-  //   super.validMoves()
-  // }
+  validMoves(board) {
+    console.log("giraffe valid moves function")
+    let currentCol = this.col
+    let currentRow = this.row
+    for (const {rowDir, colDir}  of Giraffe.#directions) {
+      currentCol += rowDir
+      currentRow += colDir
+      let piece = board[currentCol][currentRow]
+    }
+
+    return []
+  }
 }

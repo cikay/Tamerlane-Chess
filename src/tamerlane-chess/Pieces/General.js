@@ -1,7 +1,7 @@
 import NoneSlidePiece from './NoneSlidePiece'
 
 export default class General extends NoneSlidePiece {
-  _directions = [
+  static _directions = [
     { rowDir: -1, colDir: 1 },
     { rowDir: 1, colDir: 1 },
     { rowDir: 1, colDir: -1 },
@@ -11,6 +11,6 @@ export default class General extends NoneSlidePiece {
   //   super(row, col, color)
   // }
   get directions() {
-    return this._directions
+    return General._directions
   }
 }

@@ -1,7 +1,7 @@
 import NoneSlidePiece from './NoneSlidePiece'
 
 export default class King extends NoneSlidePiece {
-  _directions = [
+  static _directions = [
     { rowDir: 0, colDir: 1 },
     { rowDir: -1, colDir: 1 },
     { rowDir: -1, colDir: 0 },
@@ -12,7 +12,7 @@ export default class King extends NoneSlidePiece {
     { rowDir: 1, colDir: 1 },
   ]
   get directions() {
-    return this._directions
+    return King._directions
   }
   validMoves(board, playerColor) {
     //ozel durumlar kontrol edilecek

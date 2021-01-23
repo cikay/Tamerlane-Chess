@@ -3,6 +3,7 @@ import {
   CLEAR_HIGHLIGHTING,
   SET_HIGHLIGHTING,
   MOVE,
+  SELECT_PIECE,
 } from './tamerlaneChessActionTypes'
 import TamerlaneChess from '../tamerlane-chess'
 import {
@@ -36,7 +37,7 @@ export const initialState = {
 }
 
 export default function tamerlaneChessReducer(state = initialState, action) {
-  const {type, payload} = action
+  const { type, payload } = action
   switch (type) {
     case START_GAME:
       const tamerlaneChess = new TamerlaneChess()
@@ -45,7 +46,7 @@ export default function tamerlaneChessReducer(state = initialState, action) {
         tamerlaneChess,
       }
     case MOVE:
-      const lastMoveStatus = state.tamerlaneChess.makeMove(payload)
+      const lastMoveStatus = state.tamerlaneChess.makeMove(payload.toSquare)
       return {
         ...state,
         lastMoveStatus,
@@ -54,12 +55,16 @@ export default function tamerlaneChessReducer(state = initialState, action) {
     case CLEAR_HIGHLIGHTING:
       return {
         ...state,
-        
       }
     case SET_HIGHLIGHTING:
-      return{
+      return {
         ...state,
-        squareStyles: payload
+        squareStyles: payload.highlightStyles,
+      }
+    case SELECT_PIECE:
+      return {
+        ...state,
+        fromSquare: payload.fromSquare,
       }
     default:
       return state

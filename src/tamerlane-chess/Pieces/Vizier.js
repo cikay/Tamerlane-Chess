@@ -1,7 +1,7 @@
 import NoneSlidePiece from './NoneSlidePiece'
 
 export default class Vizier extends NoneSlidePiece {
-  _directions = [
+  static _directions = [
     { rowDir: -1, colDir: 0 },
     { rowDir: 0, colDir: 1 },
     { rowDir: 1, colDir: 0 },
@@ -11,6 +11,6 @@ export default class Vizier extends NoneSlidePiece {
     super(row, col, color)
   }
   get directions() {
-    return this._directions
+    return Vizier._directions
   }
 }

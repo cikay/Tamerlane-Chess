@@ -107,35 +107,38 @@ export default class TamerlaneChess {
     return false
   }
 
-  makeMove(from, to) {
-    console.log(`from:${from}, to:$${to}`)
-    const color = this.#board[from.row][from.to]
+  makeMove(fromSquare, toSquare) {
+    console.log(`from:${fromSquare}, to:${toSquare}`)
+    const fromPos = this.squareToPosition(fromSquare)
+    const toPos = this.squareToPosition(toSquare)
+
+    const color = this.#board[fromPos.row][fromPos.col]
     const checkedBefore = this.isChecked(color)
     let changed = true
     let copyBoard = [...this.#board]
     // if(copyBoard[from.row][from.col].pawn){
 
     // }
-    const movingPiece = copyBoard[from.row][from.col]
-    movingPiece.changePosition(to.row, to.col)
-    copyBoard[to.row][to.col] = copyBoard[from.row][from.col]
-    copyBoard[from.row][from.col] = 0
+    const movingPiece = copyBoard[fromPos.row][fromPos.col]
+    movingPiece.changePosition(toPos.row, toPos.col)
+    copyBoard[toPos.row][toPos.col] = copyBoard[fromPos.row][fromPos.col]
+    copyBoard[fromPos.row][fromPos.col] = 0
     this.#board = copyBoard
 
     if (this.isChecked(color) || (checkedBefore && this.isChecked(color))) {
       changed = false
       copyBoard = [...this.#board]
-      copyBoard[to.row][to.col].changePosition(from.row, from.col)
-      copyBoard[from.row][from.col] = copyBoard[to.row][to.col]
-      copyBoard[to.row][to.col] = 0
+      copyBoard[toPos.row][toPos.col].changePosition(fromPos.row, fromPos.col)
+      copyBoard[fromPos.row][fromPos.col] = copyBoard[toPos.row][toPos.col]
+      copyBoard[toPos.row][toPos.col] = 0
       this.#board = copyBoard
     } else {
       this.resetSelected()
     }
     this.updateMoves()
-    if (changed) {
-      this.#last = [from, to]
-    }
+    // if (changed) {
+    //   this.#last = [from, to]
+    // }
     // return changed
     //return game status
     const move = {}

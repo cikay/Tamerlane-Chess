@@ -2,7 +2,7 @@ import NoneSlidePiece from './NoneSlidePiece'
 
 
 export default class Elephant extends NoneSlidePiece {
-  _directions = [
+  static _directions = [
     { rowDir: -2, colDir: 2 },
     { rowDir: 2, colDir: 2 },
     { rowDir: 2, colDir: -2 },
@@ -12,6 +12,6 @@ export default class Elephant extends NoneSlidePiece {
   //   super(row, col, color)
   // }
   get directions() {
-    return this._directions
+    return Elephant._directions
   }
 }

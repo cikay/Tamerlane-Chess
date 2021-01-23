@@ -1,7 +1,7 @@
 import Piece from './Piece'
 
 export default class Catapult extends Piece {
-  #directions = [
+  static #directions = [
     { rowDir: -1, colDir: 1 },
     { rowDir: 1, colDir: 1 },
     { rowDir: 1, colDir: -1 },
@@ -16,7 +16,7 @@ export default class Catapult extends Piece {
     let currentRow = this.row
     let currentCol = this.col
     let move
-    for (const direction of this.#directions) {
+    for (const direction of Catapult.#directions) {
       let { rowDir, colDir } = direction
       currentRow += rowDir
       currentCol += colDir
