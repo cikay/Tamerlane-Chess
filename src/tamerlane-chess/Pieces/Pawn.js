@@ -16,7 +16,7 @@ class Pawn extends Piece {
 
   isSquareEmpty(row, col, board) {
     const attackedPiece = board[row][col]
-    console.log('attacked piece', attackedPiece)
+    
     if (attackedPiece === 0) {
       return true
     }
@@ -32,8 +32,7 @@ class Pawn extends Piece {
   }
 
   validMoves(board, playerColor) {
-    console.log('player color', playerColor)
-    console.log('piece color', this.color)
+   
     if (playerColor !== COLOR.white && playerColor !== COLOR.black) {
       throw Error('No matching player color with black or white')
     }
@@ -50,7 +49,7 @@ class Pawn extends Piece {
         this.IsPositionInBoard(row, col) &&
         this.isSquareEmpty(row, col, board)
       ) {
-        console.log('move calculated')
+        
         moves.push({ row, col })
       }
 
@@ -99,7 +98,7 @@ class Pawn extends Piece {
         moves.push({ row, col })
       }
     }
-    console.log('moves', moves)
+    
     return moves
   }
 }
@@ -108,7 +107,7 @@ export class PawnOfPawn extends Pawn {
   validMoves(board, playerColor) {
     //ozel durumlar kontrol edilecek
     if (true) {
-      super.validMoves(board, playerColor)
+      return super.validMoves(board, playerColor)
     }
   }
 }
@@ -117,7 +116,7 @@ export class KingPawn extends Pawn {
   validMoves(board, playerColor) {
     //eğer
     if (true) {
-      super.validMoves(board, playerColor)
+      return super.validMoves(board, playerColor)
     }
   }
 }

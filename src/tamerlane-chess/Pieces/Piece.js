@@ -28,7 +28,7 @@ export default class Piece {
 
   changePosition(row, col) {
     this.row = row
-    this.column = col
+    this.col = col
   }
 }
 

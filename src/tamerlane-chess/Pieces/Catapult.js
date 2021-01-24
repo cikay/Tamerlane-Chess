@@ -35,7 +35,7 @@ export default class Catapult extends Piece {
           col: currentCol,
         }
         if (piece === 0) {
-          move.push(move)
+          moves.push(move)
         } else if (piece.color !== this.color) {
           moves.push(move)
           break

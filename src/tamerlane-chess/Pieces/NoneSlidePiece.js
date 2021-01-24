@@ -7,6 +7,7 @@ export default class NoneSlidePiece extends Piece {
 
     for (const direction of this.directions) {
       const { rowDir, colDir } = direction
+     
       let curentRow = this.row + rowDir
       let currentCol = this.col + colDir
       if (this.IsPositionInBoard(curentRow, currentCol)) {

@@ -94,7 +94,15 @@ export default class TamerlaneChess {
   getMoves(square) {
     const { row, col } = this.squareToPosition(square)
     const piece = this.#board[row][col]
-    const moveList = piece.validMoves(this.#board, "w")
+    console.log('piece', piece)
+    let moveList
+    if (piece.pawn) {
+      moveList = piece.validMoves(this.#board, 'w')
+    } else {
+      moveList = piece.validMoves(this.#board)
+    }
+
+    console.log(moveList)
     const squareList = moveList.map((pos) => {
       return this.positionToSquare(pos.row, pos.col)
     })
@@ -127,8 +135,14 @@ export default class TamerlaneChess {
     //if there is no piece in fromSquare or turn is not moving piece
     if (!piece || piece.color !== this.#turn) return null
     const color = piece.color
+    let moves
+    if (piece.pawn) {
+      moves = piece.validMoves(this.#board, 'w')
+    } else {
+      moves = piece.validMoves(this.#board)
+    }
+    console.log('moves', moves)
 
-    const moves = piece.validMoves(this.#board, "w")
     let isMoveValid = false
     //check if move is possible
     for (const { row, col } of moves) {
@@ -155,6 +169,7 @@ export default class TamerlaneChess {
       this.#board = copyBoard
       return null
     }
+    console.log("toPos", toPos)
     //move is possible
     this.updateMoves()
     this.#turn = this.#turn === 'w' ? 'b' : 'w'
@@ -168,6 +183,7 @@ export default class TamerlaneChess {
     } else {
       savedMove = moveInOpponentBoard
     }
+    console.log("piece", piece)
     return {
       status: '',
       move,

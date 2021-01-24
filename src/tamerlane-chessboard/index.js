@@ -19,7 +19,7 @@ export default function TamerlaneChessBoard() {
   useEffect(() => {
     dispatch({ type: START_GAME })
   }, [])
-  console.log(state.squareStyles)
+
   const removeHighlightSquare = () => {
     const { pieceSquare, history } = state
     // setState((prevState) => ({
@@ -69,7 +69,7 @@ export default function TamerlaneChessBoard() {
       if (moves.length === 0) return
       const squaresToHighlight = []
 
-      moves.map((move) => {
+      moves.forEach((move) => {
         squaresToHighlight.push(move)
       })
       const payload = {
