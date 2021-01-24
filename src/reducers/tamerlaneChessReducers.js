@@ -59,6 +59,7 @@ export default function tamerlaneChessReducer(state = initialState, action) {
 
       return {
         ...state,
+        fromSquare: '',
         currentPosition: newCurrentPosition,
       }
     case CLEAR_HIGHLIGHTING:

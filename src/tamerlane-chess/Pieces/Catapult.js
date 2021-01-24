@@ -28,12 +28,7 @@ export default class Catapult extends Piece {
       }
       currentCol += colDir
       currentRow += rowDir
-      while (
-        currentRow < 10 &&
-        currentRow > -1 &&
-        currentCol < 12 &&
-        currentCol > -1
-      ) {
+      while (this.IsPositionInBoard(currentRow, currentCol)) {
         piece = board[currentRow][currentCol]
         move = {
           row: currentRow,

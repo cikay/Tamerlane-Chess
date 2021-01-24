@@ -94,7 +94,7 @@ export default class TamerlaneChess {
   getMoves(square) {
     const { row, col } = this.squareToPosition(square)
     const piece = this.#board[row][col]
-    const moveList = piece.validMoves(this.#board)
+    const moveList = piece.validMoves(this.#board, "w")
     const squareList = moveList.map((pos) => {
       return this.positionToSquare(pos.row, pos.col)
     })
@@ -116,8 +116,8 @@ export default class TamerlaneChess {
     const toPos = this.squareToPosition(toSquare)
     if (
       !(
-        this.IsInBoard(fromPos.row, fromPos.col) &&
-        this.IsInBoard(toPos.row, toPos.col)
+        this.IsPositionInBoard(fromPos.row, fromPos.col) &&
+        this.IsPositionInBoard(toPos.row, toPos.col)
       )
     ) {
       return null
@@ -128,7 +128,7 @@ export default class TamerlaneChess {
     if (!piece || piece.color !== this.#turn) return null
     const color = piece.color
 
-    const moves = piece.validMoves(this.#board)
+    const moves = piece.validMoves(this.#board, "w")
     let isMoveValid = false
     //check if move is possible
     for (const { row, col } of moves) {
