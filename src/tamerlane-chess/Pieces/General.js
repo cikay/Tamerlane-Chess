@@ -10,7 +10,5 @@ export default class General extends NoneSlidePiece {
   // constructor(row, col, color) {
   //   super(row, col, color)
   // }
-  get directions() {
-    return General._directions
-  }
+  
 }

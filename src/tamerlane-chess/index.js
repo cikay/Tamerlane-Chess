@@ -94,6 +94,7 @@ export default class TamerlaneChess {
   getMoves(square) {
     const { row, col } = this.squareToPosition(square)
     const piece = this.#board[row][col]
+    this.printBoard()
     console.log('piece', piece)
     let moveList
     if (piece.pawn) {
@@ -183,7 +184,7 @@ export default class TamerlaneChess {
     } else {
       savedMove = moveInOpponentBoard
     }
-    console.log("piece", piece)
+   
     return {
       status: '',
       move,

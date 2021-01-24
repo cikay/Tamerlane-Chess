@@ -30,6 +30,8 @@ export default class Catapult extends Piece {
       currentRow += rowDir
       while (this.IsPositionInBoard(currentRow, currentCol)) {
         piece = board[currentRow][currentCol]
+        console.log("calculating catapult move list")
+        console.log(`colDir:${colDir}, rowDir:${rowDir}`)
         move = {
           row: currentRow,
           col: currentCol,

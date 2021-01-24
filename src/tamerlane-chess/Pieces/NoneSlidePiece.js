@@ -5,9 +5,9 @@ export default class NoneSlidePiece extends Piece {
     const moves = []
     let move
 
-    for (const direction of this.directions) {
+    for (const direction of this.constructor._directions) {
       const { rowDir, colDir } = direction
-     
+
       let curentRow = this.row + rowDir
       let currentCol = this.col + colDir
       if (this.IsPositionInBoard(curentRow, currentCol)) {
@@ -18,7 +18,7 @@ export default class NoneSlidePiece extends Piece {
         }
       }
     }
-
+   
     return moves
   }
 }

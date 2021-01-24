@@ -11,7 +11,4 @@ export default class WarEngine extends NoneSlidePiece {
     { rowDir: -1, colDir: -2 },
     { rowDir: -2, colDir: -1 },
   ]
-  get directions() {
-    return WarEngine._directions
-  }
 }
