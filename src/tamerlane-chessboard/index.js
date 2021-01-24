@@ -62,7 +62,7 @@ export default function TamerlaneChessBoard() {
 
     if (piece.color !== turn && !state.fromSquare) return
     // highlight possible moves
-    if (!state.fromSquare) {
+    if (piece.color === turn) {
       const moves = tamerlaneChess.getMoves(square)
       console.log('posible move')
       console.log(moves)
