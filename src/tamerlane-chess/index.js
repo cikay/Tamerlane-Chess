@@ -238,13 +238,8 @@ export default class TamerlaneChess {
       for (let col = 0; col < this.#colCount; col++) {
         const piece = this.#board[row][col]
         if (piece !== 0) {
-          if (piece.pawn) {
-            console.log('pawn')
-            piece.updateValidMoves(this.#board, 'w')
-          } else {
-            console.log('not pawn')
-            piece.updateValidMoves(this.#board)
-          }
+          if (piece.pawn) piece.updateValidMoves(this.#board, 'w')
+          else piece.updateValidMoves(this.#board)
         }
       }
     }

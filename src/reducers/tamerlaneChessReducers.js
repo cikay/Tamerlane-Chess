@@ -46,11 +46,22 @@ export default function tamerlaneChessReducer(state = initialState, action) {
         tamerlaneChess,
       }
     case MOVE:
-      const lastMoveStatus = state.tamerlaneChess.makeMove(payload.toSquare)
+      const { currentPosition } = state
+      const newCurrentPosition = {}
+      let key
+      for (key in currentPosition) {
+        if (currentPosition.hasOwnProperty(key) && key !== payload.from) {
+          newCurrentPosition[key] = currentPosition[key]
+        }
+      }
+      console.log(currentPosition[payload.from])
+      newCurrentPosition[payload.to] = currentPosition[payload.from]
+
+      console.log('current position', currentPosition)
       return {
         ...state,
-        lastMoveStatus,
-        isGameOver: state.tamerlaneChess.gameOver(),
+        currentPosition: newCurrentPosition,
+        
       }
     case CLEAR_HIGHLIGHTING:
       return {

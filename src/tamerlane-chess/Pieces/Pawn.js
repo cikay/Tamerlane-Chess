@@ -15,8 +15,7 @@ class Pawn extends Piece {
   }
 
   validMoves(board, playerColor) {
-    console.log('player color', playerColor)
-    console.log(this)
+   
     if (playerColor !== COLOR.white && playerColor !== COLOR.black) {
       throw Error('No matching player color with black or white')
     }

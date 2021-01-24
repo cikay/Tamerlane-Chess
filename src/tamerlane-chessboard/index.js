@@ -15,6 +15,7 @@ import {
   START_GAME,
   SET_HIGHLIGHTING,
   SELECT_PIECE,
+  MOVE,
 } from '../reducers/tamerlaneChessActionTypes'
 
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
@@ -59,7 +60,7 @@ export default function TamerlaneChessBoard() {
 
   const handleClick = (square) => {
     const { tamerlaneChess } = state
-    console.log("from square", state.fromSquare)
+    console.log('from square', state.fromSquare)
     console.log('clicked square', square)
     const piece = tamerlaneChess.getPiece(square)
     console.log(`clicked piece`)
@@ -88,7 +89,8 @@ export default function TamerlaneChessBoard() {
       console.log('trying to make move')
       const move = tamerlaneChess.makeMove(state.fromSquare, square)
       if (move === null) return
-     
+      const payload = { from: state.fromSquare, to: square}
+      dispatch({ type: MOVE, payload })
     }
   }
 
