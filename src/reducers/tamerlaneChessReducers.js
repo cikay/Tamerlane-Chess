@@ -54,14 +54,12 @@ export default function tamerlaneChessReducer(state = initialState, action) {
           newCurrentPosition[key] = currentPosition[key]
         }
       }
-      console.log(currentPosition[payload.from])
+
       newCurrentPosition[payload.to] = currentPosition[payload.from]
 
-      console.log('current position', currentPosition)
       return {
         ...state,
         currentPosition: newCurrentPosition,
-        
       }
     case CLEAR_HIGHLIGHTING:
       return {

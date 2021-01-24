@@ -23,7 +23,9 @@ import {
   KingPawn,
 } from './Pieces'
 import { FEN_TYPE, COLOR } from './types'
+import { positionChecker } from './helper'
 const COLUMNS = 'abcdefghijk'.split('')
+
 export default class TamerlaneChess {
   #rowCount = 10
   #colCount = 11
@@ -111,11 +113,21 @@ export default class TamerlaneChess {
     console.log(`from:${fromSquare}, to:${toSquare}`)
 
     const fromPos = this.squareToPosition(fromSquare)
+    const toPos = this.squareToPosition(toSquare)
+    if (
+      !(
+        this.IsInBoard(fromPos.row, fromPos.col) &&
+        this.IsInBoard(toPos.row, toPos.col)
+      )
+    ) {
+      return null
+    }
+
     const piece = this.#board[fromPos.row][fromPos.col]
     //if there is no piece in fromSquare or turn is not moving piece
     if (!piece || piece.color !== this.#turn) return null
     const color = piece.color
-    const toPos = this.squareToPosition(toSquare)
+
     const moves = piece.validMoves(this.#board)
     let isMoveValid = false
     //check if move is possible
@@ -190,6 +202,8 @@ export default class TamerlaneChess {
       // if(prev)
     }
   }
+
+  getFen() {}
 
   //Helper functions
   squareToPosition(square) {
@@ -460,3 +474,4 @@ export default class TamerlaneChess {
     }
   }
 }
+Object.assign(TamerlaneChess.prototype, positionChecker())

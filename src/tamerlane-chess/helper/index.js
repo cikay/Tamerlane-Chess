@@ -7,3 +7,9 @@ export function includeInTwoDimensArray(twoDimensionArray, searchigArray) {
   }
   return false
 }
+
+export const positionChecker = () => ({
+  IsInBoard(row, col) {
+    return row < 10 && row >= 0 && col < 11 && col >= 0
+  }
+})

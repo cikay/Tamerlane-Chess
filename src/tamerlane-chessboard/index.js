@@ -1,11 +1,4 @@
-import {
-  useEffect,
-  useContext,
-  createContext,
-  useState,
-  useMemo,
-  useReducer,
-} from 'react'
+import { useEffect, useContext, createContext, useReducer } from 'react'
 
 import Board from './Board'
 import tamerlaneChessReducer, {
@@ -27,14 +20,14 @@ export default function TamerlaneChessBoard() {
     dispatch({ type: START_GAME })
   }, [])
   console.log(state.squareStyles)
-  // const removeHighlightSquare = () => {
-  //   const { pieceSquare, history } = state
-  //   setState((prevState) => ({
-  //     ...prevState,
-  //     fromSquare: '',
-  //     squareStyles: squareStyling({ pieceSquare, history }),
-  //   }))
-  // }
+  const removeHighlightSquare = () => {
+    const { pieceSquare, history } = state
+    // setState((prevState) => ({
+    //   ...prevState,
+    //   fromSquare: '',
+    //   squareStyles: squareStyling({ pieceSquare, history }),
+    // }))
+  }
   const highlightSquare = (squaresToHighlight) => {
     const highlightStyles = squaresToHighlight.reduce((a, c) => {
       return {
@@ -66,17 +59,19 @@ export default function TamerlaneChessBoard() {
     console.log(`clicked piece`)
     console.log(piece)
     const turn = tamerlaneChess.getTurn()
+
+    if (piece.color !== turn && !state.fromSquare) return
     // highlight possible moves
-    console.log()
-    if (piece.color === turn) {
+    if (!state.fromSquare) {
       const moves = tamerlaneChess.getMoves(square)
       console.log('posible move')
       console.log(moves)
       if (moves.length === 0) return
       const squaresToHighlight = []
-      for (const move of moves) {
+
+      moves.map((move) => {
         squaresToHighlight.push(move)
-      }
+      })
       const payload = {
         fromSquare: square,
       }
@@ -85,11 +80,11 @@ export default function TamerlaneChessBoard() {
     }
     // make move
     else {
-      // removeHighlightSquare()
+      removeHighlightSquare()
       console.log('trying to make move')
       const move = tamerlaneChess.makeMove(state.fromSquare, square)
       if (move === null) return
-      const payload = { from: state.fromSquare, to: square}
+      const payload = { from: state.fromSquare, to: square }
       dispatch({ type: MOVE, payload })
     }
   }
