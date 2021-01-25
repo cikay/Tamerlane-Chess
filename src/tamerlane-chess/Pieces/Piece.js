@@ -26,6 +26,24 @@ export default class Piece {
     // }
   }
 
+  isOpponentPiece(piece) {
+    if (piece !== 0 && piece.color !== this.color) {
+      return true
+    }
+    return false
+  }
+  isOwnPiece(piece) {
+    if (piece !== 0 && piece.color === this.color) return true
+    return false
+  }
+  isSquareEmpty(row, col, board) {
+    const attackedPiece = board[row][col]
+    if (attackedPiece === 0) {
+      return true
+    }
+    return false
+  }
+
   changePosition(row, col) {
     this.row = row
     this.col = col

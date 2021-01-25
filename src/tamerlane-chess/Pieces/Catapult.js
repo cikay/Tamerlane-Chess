@@ -16,18 +16,15 @@ export default class Catapult extends Piece {
     let currentRow
     let currentCol
     let move
-    for (const direction of Catapult.#directions) {
-      currentRow = this.row
-      currentCol = this.col
-      let { rowDir, colDir } = direction
-      currentRow += rowDir
-      currentCol += colDir
+    for (const { rowDir, colDir } of Catapult.#directions) {
+      currentRow = this.row + rowDir
+      currentCol = this.col + colDir
       console.log('capraz kare')
       console.log(`colDir:${colDir}, rowDir:${rowDir}`)
       console.log(`currentRow:${currentRow} ,currentCol: ${currentCol}`)
-      let piece = board[currentRow][currentCol]
+      let attackedPiece = board[currentRow][currentCol]
 
-      if (piece !== 0) {
+      if (!this.isSquareEmpty(currentRow, currentCol, board)) {
         continue
       }
       console.log('before increment')
@@ -36,7 +33,7 @@ export default class Catapult extends Piece {
       currentCol += colDir
       currentRow += rowDir
       while (this.IsPositionInBoard(currentRow, currentCol)) {
-        piece = board[currentRow][currentCol]
+        attackedPiece = board[currentRow][currentCol]
         console.log('after ıncrement')
         console.log('calculating catapult move list')
         console.log(`colDir:${colDir}, rowDir:${rowDir}`)
@@ -45,19 +42,16 @@ export default class Catapult extends Piece {
           row: currentRow,
           col: currentCol,
         }
-        if (piece === 0) {
-          moves.push(move)
-        } else if (piece.color !== this.color) {
+        if (this.isOpponentPiece(attackedPiece)) {
           moves.push(move)
           break
-        } else {
+        } else if (this.isOwnPiece(attackedPiece)) {
           break
         }
+        moves.push(move)
         currentCol += colDir
         currentRow += rowDir
       }
-
-     
     }
     return moves
   }

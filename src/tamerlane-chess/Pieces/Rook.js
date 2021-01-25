@@ -1,11 +1,37 @@
 import Piece from './Piece'
 
 export default class Rook extends Piece {
-  // constructor(row, col, color) {
+  static #directions = [
+    { rowDir: 1, colDir: 0 },
+    { rowDir: 0, colDir: 1 },
+    { rowDir: -1, colDir: 0 },
+    { rowDir: 0, colDir: -1 },
+  ]
 
-  // }
+  validMoves(board) {
+    const moves = []
+    let currentRow
+    let currentCol
+    let move
+    for (const { rowDir, colDir } of Rook.#directions) {
+      currentCol = this.col + colDir
+      currentRow = this.row + rowDir
+      let attackedPiece = board[currentRow][currentCol]
+      while (this.IsPositionInBoard(currentRow, currentCol)) {
+        attackedPiece = board[currentRow][currentCol]
+        move = { row: currentRow, col: currentCol }
+        if (this.isOpponentPiece(attackedPiece)) {
+          moves.push(move)
+          break
+        } else if (this.isOwnPiece(attackedPiece)) {
+          break
+        }
+        moves.push(move)
+        currentCol += colDir
+        currentRow += rowDir
+      }
+    }
 
-  validMoves(){
-    
+    return moves
   }
 }

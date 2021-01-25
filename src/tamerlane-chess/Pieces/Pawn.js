@@ -14,14 +14,7 @@ class Pawn extends Piece {
     this.moveList = this.validMoves(board, playerColor)
   }
 
-  isSquareEmpty(row, col, board) {
-    const attackedPiece = board[row][col]
-    
-    if (attackedPiece === 0) {
-      return true
-    }
-    return false
-  }
+  
 
   isPieceOpponent(row, col, board) {
     const attackedPiece = board[row][col]
