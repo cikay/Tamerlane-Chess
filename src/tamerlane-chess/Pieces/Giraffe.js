@@ -9,13 +9,12 @@ export default class Giraffe extends Piece {
   ]
 
   validMoves(board) {
-    
-    const moves = [] 
-    let currentCol = this.col
-    let currentRow = this.row
-    for (const {rowDir, colDir}  of Giraffe.#directions) {
-      currentCol += rowDir
-      currentRow += colDir
+    const moves = []
+    let currentCol
+    let currentRow
+    for (const { rowDir, colDir } of Giraffe.#directions) {
+      currentCol = this.col + rowDir
+      currentRow = this.row + colDir
       let piece = board[currentCol][currentRow]
     }
 

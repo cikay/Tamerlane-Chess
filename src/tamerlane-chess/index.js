@@ -28,6 +28,8 @@ const COLUMNS = 'abcdefghijk'.split('')
 
 export default class TamerlaneChess {
   #rowCount = 10
+  static #lastRowIndex = 9
+  static #firstRowIndex = 0
   #colCount = 11
   #board = Array.from(Array(10), () => new Array(11))
   #opponentBoard = Array.from(Array(10), () => new Array(11))
@@ -91,6 +93,22 @@ export default class TamerlaneChess {
     return this.#board[row][col]
   }
 
+  makePromotion(piece, playerColor) {
+    if (!piece.pawn) return false
+    const { row, col, color, promotedToPiece } = piece
+    const conditionRow =
+      playerColor === color
+        ? TamerlaneChess.#lastRowIndex
+        : TamerlaneChess.#firstRowIndex
+
+    if (conditionRow === row) {
+      //opponent board will be set
+      console.log("promoted to ", piece.promotedToPiece)
+      this.#board[row][col] = new promotedToPiece(row, col, color)
+    }
+    this.printBoard()
+  }
+
   getMoves(square) {
     const { row, col } = this.squareToPosition(square)
     const piece = this.#board[row][col]
@@ -142,7 +160,6 @@ export default class TamerlaneChess {
     } else {
       moves = piece.validMoves(this.#board)
     }
-    
 
     let isMoveValid = false
     //check if move is possible
@@ -170,9 +187,11 @@ export default class TamerlaneChess {
       this.#board = copyBoard
       return null
     }
-   
+
     //move is possible
+    this.makePromotion(piece, "w")
     this.updateMoves()
+
     this.#turn = this.#turn === 'w' ? 'b' : 'w'
     const move = { from: fromSquare, to: toSquare }
     const moveInOpponentBoard = this.computeMoveInOpponentBoard(fromPos, toPos)
@@ -184,7 +203,7 @@ export default class TamerlaneChess {
     } else {
       savedMove = moveInOpponentBoard
     }
-   
+
     return {
       status: '',
       move,

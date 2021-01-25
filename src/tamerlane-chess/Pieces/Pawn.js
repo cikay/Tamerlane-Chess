@@ -1,5 +1,14 @@
 import Piece from './Piece'
+import Camel from './Camel'
+import Knight from './Knight'
+import General from './Catapult'
+import Catapult from './Catapult'
+import Vizier from './Vizier'
+import WarEngine from './WarEngine'
+import Rook from './Rook'
 import { COLOR } from '../types'
+import { Elephant } from '.'
+
 class Pawn extends Piece {
   constructor(row, col, color) {
     super(row, col, color)
@@ -14,8 +23,6 @@ class Pawn extends Piece {
     this.moveList = this.validMoves(board, playerColor)
   }
 
-  
-
   isPieceOpponent(row, col, board) {
     const attackedPiece = board[row][col]
     if (attackedPiece !== 0 && attackedPiece.color !== this.color) {
@@ -25,13 +32,10 @@ class Pawn extends Piece {
   }
 
   validMoves(board, playerColor) {
-   
     if (playerColor !== COLOR.white && playerColor !== COLOR.black) {
       throw Error('No matching player color with black or white')
     }
     const moves = []
-
-    let attackedPiece
     let row
     let col
     if (playerColor === this.color) {
@@ -42,7 +46,6 @@ class Pawn extends Piece {
         this.IsPositionInBoard(row, col) &&
         this.isSquareEmpty(row, col, board)
       ) {
-        
         moves.push({ row, col })
       }
 
@@ -91,7 +94,7 @@ class Pawn extends Piece {
         moves.push({ row, col })
       }
     }
-    
+
     return moves
   }
 }
@@ -114,12 +117,62 @@ export class KingPawn extends Pawn {
   }
 }
 
-export class CamelPawn extends Pawn {}
-export class CatapultPawn extends Pawn {}
-export class ElephantPawn extends Pawn {}
-export class GeneralPawn extends Pawn {}
-export class GiraffePawn extends Pawn {}
-export class KnightPawn extends Pawn {}
-export class RookPawn extends Pawn {}
-export class VizierPawn extends Pawn {}
-export class WarEnginePawn extends Pawn {}
+export class CamelPawn extends Pawn {
+  constructor(row, col, color) {
+    super(row, col, color)
+    this.promotedToPiece = Camel
+  }
+
+  validMoves(board, playerColor) {
+    return super.validMoves(board, playerColor)
+  }
+}
+
+export class CatapultPawn extends Pawn {
+  constructor(row, col, color) {
+    super(row, col, color)
+    this.promotedToPiece = Catapult
+  }
+}
+export class ElephantPawn extends Pawn {
+  constructor(row, col, color) {
+    super(row, col, color)
+    this.promotedToPiece = Elephant
+  }
+}
+export class GeneralPawn extends Pawn {
+  constructor(row, col, color) {
+    super(row, col, color)
+    this.promotedToPiece = General
+  }
+}
+export class GiraffePawn extends Pawn {
+  constructor(row, col, color) {
+    super(row, col, color)
+    this.promotedToPiece = GiraffePawn
+  }
+}
+export class KnightPawn extends Pawn {
+  constructor(row, col, color) {
+    super(row, col, color)
+    this.promotedToPiece = Knight
+  }
+}
+export class RookPawn extends Pawn {
+  constructor(row, col, color) {
+    super(row, col, color)
+    this.promotedToPiece = Rook
+  }
+}
+export class VizierPawn extends Pawn {
+  constructor(row, col, color) {
+    super(row, col, color)
+    this.promotedToPiece = Vizier
+  }
+}
+export class WarEnginePawn extends Pawn {
+  constructor(row, col, color) {
+    super(row, col, color)
+    this.promotedToPiece = WarEngine
+  }
+}
