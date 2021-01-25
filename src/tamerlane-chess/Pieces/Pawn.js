@@ -5,6 +5,7 @@ import General from './Catapult'
 import Catapult from './Catapult'
 import Vizier from './Vizier'
 import WarEngine from './WarEngine'
+import Giraffe from './Giraffe'
 import Rook from './Rook'
 import { COLOR } from '../types'
 import { Elephant } from '.'
@@ -149,7 +150,7 @@ export class GeneralPawn extends Pawn {
 export class GiraffePawn extends Pawn {
   constructor(row, col, color) {
     super(row, col, color)
-    this.promotedToPiece = GiraffePawn
+    this.promotedToPiece = Giraffe
   }
 }
 export class KnightPawn extends Pawn {

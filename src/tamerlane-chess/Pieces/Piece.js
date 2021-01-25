@@ -37,6 +37,7 @@ export default class Piece {
     return false
   }
   isSquareEmpty(row, col, board) {
+    
     const attackedPiece = board[row][col]
     if (attackedPiece === 0) {
       return true

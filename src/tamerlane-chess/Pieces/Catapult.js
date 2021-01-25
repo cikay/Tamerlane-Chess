@@ -22,11 +22,15 @@ export default class Catapult extends Piece {
       console.log('capraz kare')
       console.log(`colDir:${colDir}, rowDir:${rowDir}`)
       console.log(`currentRow:${currentRow} ,currentCol: ${currentCol}`)
-      let attackedPiece = board[currentRow][currentCol]
+      console.log(board)
 
-      if (!this.isSquareEmpty(currentRow, currentCol, board)) {
+      if (
+        !this.IsPositionInBoard(currentRow, currentCol) ||
+        !this.isSquareEmpty(currentRow, currentCol, board)
+      ) {
         continue
       }
+      let attackedPiece
       console.log('before increment')
       console.log(`colDir:${colDir}, rowDir:${rowDir}`)
       console.log(`currentRow:${currentRow} ,currentCol: ${currentCol}`)
