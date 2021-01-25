@@ -142,7 +142,7 @@ export default class TamerlaneChess {
     } else {
       moves = piece.validMoves(this.#board)
     }
-    console.log('moves', moves)
+    
 
     let isMoveValid = false
     //check if move is possible
@@ -170,7 +170,7 @@ export default class TamerlaneChess {
       this.#board = copyBoard
       return null
     }
-    console.log("toPos", toPos)
+   
     //move is possible
     this.updateMoves()
     this.#turn = this.#turn === 'w' ? 'b' : 'w'
