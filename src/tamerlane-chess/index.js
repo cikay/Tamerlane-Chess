@@ -23,7 +23,7 @@ import {
   KingPawn,
 } from './Pieces'
 import { FEN_TYPE, COLOR } from './types'
-import { positionChecker, movesGetter } from './helper'
+import { positionChecker, getMoveList } from './helper'
 const COLUMNS = 'abcdefghijk'.split('')
 
 export default class TamerlaneChess {
@@ -118,7 +118,7 @@ export default class TamerlaneChess {
     const piece = this.#board[row][col]
     this.printBoard()
     console.log('piece', piece)
-    const moveList = this.getMoveList(this.#board, piece, 'w')
+    const moveList = getMoveList(this.#board, piece, 'w')
    
     console.log(moveList)
     const squareList = moveList.map((pos) => {
@@ -153,7 +153,7 @@ export default class TamerlaneChess {
     //if there is no piece in fromSquare or turn is not moving piece
     if (!piece || piece.color !== this.#turn) return null
     const color = piece.color
-    const moves = this.getMoveList(this.#board, piece, "w")
+    const moves = getMoveList(this.#board, piece, "w")
    
 
     let isMoveValid = false
@@ -505,4 +505,4 @@ export default class TamerlaneChess {
     }
   }
 }
-Object.assign(TamerlaneChess.prototype, positionChecker(), movesGetter())
+Object.assign(TamerlaneChess.prototype, positionChecker())

@@ -9,7 +9,7 @@ import Giraffe from './Giraffe'
 import Elephant from './Elephant'
 import Rook from './Rook'
 import { COLOR } from '../types'
-
+import {  getMoveList } from '../helper'
 class Pawn extends Piece {
   static _diagonalColsIncrementValues = [-1, 1]
   constructor(row, col, color) {
@@ -112,7 +112,7 @@ export class PawnOfPawn extends Pawn {
     for (row of board) {
       for (piece of row) {
         if (this.isOpponentPiece(piece)) {
-          const opponentPieceMoves = this.getMoveList(board, piece, playerColor)
+          const opponentPieceMoves = getMoveList(board, piece, playerColor)
           
           if (opponentPieceMoves.length === 0) {
             let rowPos, colPos

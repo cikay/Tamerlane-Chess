@@ -14,14 +14,12 @@ export const positionChecker = () => ({
   },
 })
 
-export const movesGetter = () => ({
-  getMoveList(board, piece, playerColor) {
-    let moveList
-    if (piece.pawn) {
-      moveList = piece.validMoves(board, playerColor)
-    } else {
-      moveList = piece.validMoves(board)
-    }
-    return moveList
-  },
-})
+export function getMoveList(board, piece, playerColor) {
+  let moveList
+  if (piece.pawn) {
+    moveList = piece.validMoves(board, playerColor)
+  } else {
+    moveList = piece.validMoves(board)
+  }
+  return moveList
+}

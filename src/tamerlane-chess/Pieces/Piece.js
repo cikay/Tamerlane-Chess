@@ -1,4 +1,4 @@
-import { positionChecker, movesGetter } from '../helper'
+import { positionChecker } from '../helper'
 export default class Piece {
   constructor(row, col, color) {
     if (this.constructor === Piece) {
@@ -51,4 +51,4 @@ export default class Piece {
   }
 }
 
-Object.assign(Piece.prototype, positionChecker(), movesGetter())
+Object.assign(Piece.prototype, positionChecker())
