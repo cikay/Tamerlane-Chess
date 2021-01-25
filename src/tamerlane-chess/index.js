@@ -23,7 +23,7 @@ import {
   KingPawn,
 } from './Pieces'
 import { FEN_TYPE, COLOR } from './types'
-import { positionChecker } from './helper'
+import { positionChecker, movesGetter } from './helper'
 const COLUMNS = 'abcdefghijk'.split('')
 
 export default class TamerlaneChess {
@@ -103,8 +103,12 @@ export default class TamerlaneChess {
 
     if (conditionRow === row) {
       //opponent board will be set
-      console.log("promoted to ", piece.promotedToPiece)
-      this.#board[row][col] = new promotedToPiece(row, col, color)
+      console.log('promoted to ', piece.promotedToPiece)
+      if (piece.constructor.name === 'PawnOfPawn') {
+        piece.promotedCount += 1
+      } else {
+        this.#board[row][col] = new promotedToPiece(row, col, color)
+      }
     }
     this.printBoard()
   }
@@ -114,13 +118,8 @@ export default class TamerlaneChess {
     const piece = this.#board[row][col]
     this.printBoard()
     console.log('piece', piece)
-    let moveList
-    if (piece.pawn) {
-      moveList = piece.validMoves(this.#board, 'w')
-    } else {
-      moveList = piece.validMoves(this.#board)
-    }
-
+    const moveList = this.getMoveList(this.#board, piece, 'w')
+   
     console.log(moveList)
     const squareList = moveList.map((pos) => {
       return this.positionToSquare(pos.row, pos.col)
@@ -154,12 +153,8 @@ export default class TamerlaneChess {
     //if there is no piece in fromSquare or turn is not moving piece
     if (!piece || piece.color !== this.#turn) return null
     const color = piece.color
-    let moves
-    if (piece.pawn) {
-      moves = piece.validMoves(this.#board, 'w')
-    } else {
-      moves = piece.validMoves(this.#board)
-    }
+    const moves = this.getMoveList(this.#board, piece, "w")
+   
 
     let isMoveValid = false
     //check if move is possible
@@ -189,7 +184,7 @@ export default class TamerlaneChess {
     }
 
     //move is possible
-    this.makePromotion(piece, "w")
+    this.makePromotion(piece, 'w')
     this.updateMoves()
 
     this.#turn = this.#turn === 'w' ? 'b' : 'w'
@@ -510,4 +505,4 @@ export default class TamerlaneChess {
     }
   }
 }
-Object.assign(TamerlaneChess.prototype, positionChecker())
+Object.assign(TamerlaneChess.prototype, positionChecker(), movesGetter())

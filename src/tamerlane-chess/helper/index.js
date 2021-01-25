@@ -13,3 +13,15 @@ export const positionChecker = () => ({
     return row < 10 && row >= 0 && col < 11 && col >= 0
   },
 })
+
+export const movesGetter = () => ({
+  getMoveList(board, piece, playerColor) {
+    let moveList
+    if (piece.pawn) {
+      moveList = piece.validMoves(board, playerColor)
+    } else {
+      moveList = piece.validMoves(board)
+    }
+    return moveList
+  },
+})

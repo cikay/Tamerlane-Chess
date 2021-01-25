@@ -6,11 +6,12 @@ import Catapult from './Catapult'
 import Vizier from './Vizier'
 import WarEngine from './WarEngine'
 import Giraffe from './Giraffe'
+import Elephant from './Elephant'
 import Rook from './Rook'
 import { COLOR } from '../types'
-import { Elephant } from '.'
 
 class Pawn extends Piece {
+  static _diagonalColsIncrementValues = [-1, 1]
   constructor(row, col, color) {
     super(row, col, color)
     if (this.constructor === Pawn) {
@@ -39,55 +40,22 @@ class Pawn extends Piece {
     const moves = []
     let row
     let col
-    if (playerColor === this.color) {
-      //UP
-      col = this.col
-      row = this.row + 1
-      if (
-        this.IsPositionInBoard(row, col) &&
-        this.isSquareEmpty(row, col, board)
-      ) {
-        moves.push({ row, col })
-      }
 
-      //RIGHT UP
-      col = this.col + 1
-      if (
-        this.IsPositionInBoard(row, col) &&
-        this.isPieceOpponent(row, col, board)
-      ) {
-        moves.push({ row, col })
-      }
+    const rowIncrementValue = playerColor === this.color ? 1 : -1
+    row = this.row + rowIncrementValue
 
-      //LEFT UP
-      col = this.col - 1
-      if (
-        this.IsPositionInBoard(row, col) &&
-        this.isPieceOpponent(row, col, board)
-      ) {
-        moves.push({ row, col })
-      }
-    } else {
-      //DOWN
-      row = this.row - 1
-      col = this.col
-      if (
-        this.IsPositionInBoard(row, col) &&
-        this.isSquareEmpty(row, col, board)
-      ) {
-        moves.push({ row, col })
-      }
+    //UP
+    col = this.col
+    if (
+      this.IsPositionInBoard(row, col) &&
+      this.isSquareEmpty(row, col, board)
+    ) {
+      moves.push({ row, col })
+    }
 
-      //RIGHT DOWN
-      col = this.col + 1
-      if (
-        this.IsPositionInBoard(row, col) &&
-        this.isPieceOpponent(row, col, board)
-      ) {
-        moves.push({ row, col })
-      }
-      //LEFT DOWN
-      col = this.col - 1
+    let colIncrementValue
+    for (colIncrementValue of Pawn._diagonalColsIncrementValues) {
+      col = this.col + colIncrementValue
       if (
         this.IsPositionInBoard(row, col) &&
         this.isPieceOpponent(row, col, board)
@@ -101,11 +69,87 @@ class Pawn extends Piece {
 }
 
 export class PawnOfPawn extends Pawn {
+  static #firstPromoted = 1
+  static #secondPromoted = 2
+  static #noPromoted = 0
+  constructor(row, col, color) {
+    super(row, col, color)
+    this.promotedCount = 0
+  }
   validMoves(board, playerColor) {
-    //ozel durumlar kontrol edilecek
-    if (true) {
-      return super.validMoves(board, playerColor)
+    let moves
+    switch (this.getPromotedType(playerColor)) {
+      //regular moves
+      case PawnOfPawn.#noPromoted:
+        moves = super.validMoves(board, playerColor)
+        break
+      case PawnOfPawn.#firstPromoted:
+        moves = [...this.getForkMoves(board), ...this.getImmobileMoves(board, playerColor)]
+      case PawnOfPawn.#secondPromoted:
+        // move to pawn of king position
+        break
     }
+
+    return moves
+  }
+
+  getForkMoves(board) {
+    const moves = []
+    let row
+    let square
+    // for (row of board) {
+    //   for (square of row) {
+    //   }
+    // }
+    return moves
+  }
+
+  getImmobileMoves(board, playerColor) {
+    const moves = []
+    let row
+    let piece
+  
+    for (row of board) {
+      for (piece of row) {
+        if (this.isOpponentPiece(piece)) {
+          const opponentPieceMoves = this.getMoveList(board, piece, playerColor)
+          
+          if (opponentPieceMoves.length === 0) {
+            let rowPos, colPos
+            const rowIncerementValue = playerColor === this.color ? -1 : 1
+            rowPos = piece.row + rowIncerementValue
+            let colIncrementValue
+            for (colIncrementValue of PawnOfPawn._diagonalColsIncrementValues) {
+              colPos = piece.col + colIncrementValue
+              if (this.IsPositionInBoard(rowPos, colPos)) {
+                moves.push({
+                  row: rowPos,
+                  col: colPos,
+                })
+              }
+            }
+          }
+        }
+      }
+    }
+    return moves
+  }
+
+  getPromotedType(playerColor) {
+    if (
+      playerColor === this.color &&
+      this.row === 9 &&
+      this.promotedCount === PawnOfPawn.#firstPromoted
+    ) {
+      return PawnOfPawn.#firstPromoted
+    } else if (
+      playerColor !== this.color &&
+      this.row === 0 &&
+      this.promotedCount === PawnOfPawn.#secondPromoted
+    ) {
+      return PawnOfPawn.#secondPromoted
+    }
+    return PawnOfPawn.#noPromoted
   }
 }
 
