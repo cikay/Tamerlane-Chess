@@ -19,10 +19,6 @@ export default class Catapult extends Piece {
     for (const { rowDir, colDir } of Catapult.#directions) {
       currentRow = this.row + rowDir
       currentCol = this.col + colDir
-      console.log('capraz kare')
-      console.log(`colDir:${colDir}, rowDir:${rowDir}`)
-      console.log(`currentRow:${currentRow} ,currentCol: ${currentCol}`)
-      console.log(board)
 
       if (
         !this.IsPositionInBoard(currentRow, currentCol) ||
@@ -31,17 +27,10 @@ export default class Catapult extends Piece {
         continue
       }
       let attackedPiece
-      console.log('before increment')
-      console.log(`colDir:${colDir}, rowDir:${rowDir}`)
-      console.log(`currentRow:${currentRow} ,currentCol: ${currentCol}`)
       currentCol += colDir
       currentRow += rowDir
       while (this.IsPositionInBoard(currentRow, currentCol)) {
         attackedPiece = board[currentRow][currentCol]
-        console.log('after ıncrement')
-        console.log('calculating catapult move list')
-        console.log(`colDir:${colDir}, rowDir:${rowDir}`)
-        console.log(`currentRow:${currentRow} ,currentCol: ${currentCol}`)
         move = {
           row: currentRow,
           col: currentCol,

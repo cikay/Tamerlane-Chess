@@ -9,7 +9,7 @@ import Giraffe from './Giraffe'
 import Elephant from './Elephant'
 import Rook from './Rook'
 import { COLOR } from '../types'
-import {  getMoveList } from '../helper'
+import { getMoveList } from '../helper'
 class Pawn extends Piece {
   static _diagonalColsIncrementValues = [-1, 1]
   constructor(row, col, color) {
@@ -77,30 +77,45 @@ export class PawnOfPawn extends Pawn {
     this.promotedCount = 0
   }
   validMoves(board, playerColor) {
-    let moves
     switch (this.getPromotedType(playerColor)) {
       //regular moves
       case PawnOfPawn.#noPromoted:
-        moves = super.validMoves(board, playerColor)
-        break
+        return super.validMoves(board, playerColor)
       case PawnOfPawn.#firstPromoted:
-        moves = [...this.getForkMoves(board), ...this.getImmobileMoves(board, playerColor)]
+        console.log(this.getForkMoves(board, playerColor))
+        console.log(this.getImmobileMoves(board, playerColor))
+        const moves = [
+          ...new Set([
+            ...this.getForkMoves(board, playerColor),
+            ...this.getImmobileMoves(board, playerColor),
+          ]),
+        ]
+        console.log(moves)
+        return moves
       case PawnOfPawn.#secondPromoted:
         // move to pawn of king position
-        break
+        return []
     }
-
-    return moves
   }
 
-  getForkMoves(board) {
+  getForkMoves(board, playerColor) {
     const moves = []
-    let row
-    let square
-    // for (row of board) {
-    //   for (square of row) {
-    //   }
-    // }
+    let row, col, piece
+    for (row of board) {
+      for (piece of row) {
+        if (
+          this.isOpponentPiece(piece) &&
+          this.IsPositionInBoard(piece.row, piece.col + 2)
+        ) {
+          const rowIncrement = playerColor === 'w' ? -1 : 1
+          const forkingRow = piece.row + rowIncrement
+          const forkingCol = piece.col + 1
+          if (this.IsPositionInBoard(forkingRow, forkingCol)) {
+            moves.push({ row: forkingRow, col: forkingCol })
+          }
+        }
+      }
+    }
     return moves
   }
 
@@ -108,12 +123,10 @@ export class PawnOfPawn extends Pawn {
     const moves = []
     let row
     let piece
-  
     for (row of board) {
       for (piece of row) {
         if (this.isOpponentPiece(piece)) {
           const opponentPieceMoves = getMoveList(board, piece, playerColor)
-          
           if (opponentPieceMoves.length === 0) {
             let rowPos, colPos
             const rowIncerementValue = playerColor === this.color ? -1 : 1
@@ -132,6 +145,7 @@ export class PawnOfPawn extends Pawn {
         }
       }
     }
+   
     return moves
   }
 

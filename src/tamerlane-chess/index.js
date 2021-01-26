@@ -124,7 +124,7 @@ export default class TamerlaneChess {
     const squareList = moveList.map((pos) => {
       return this.positionToSquare(pos.row, pos.col)
     })
-    return squareList
+    return [...new Set(squareList)]
   }
 
   getTurn() {
