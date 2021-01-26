@@ -27,10 +27,10 @@ import { positionChecker, getMoveList } from './helper'
 const COLUMNS = 'abcdefghijk'.split('')
 
 export default class TamerlaneChess {
-  #rowCount = 10
+  static #rowCount = 10
   static #lastRowIndex = 9
   static #firstRowIndex = 0
-  #colCount = 11
+  static #colCount = 11
   #board = Array.from(Array(10), () => new Array(11))
   #opponentBoard = Array.from(Array(10), () => new Array(11))
   #player = 'player'
@@ -45,14 +45,17 @@ export default class TamerlaneChess {
   #copy = true
   #ready = false
   #whiteKingCount = 1
-  #blackKingCount
+  #blackKingCount = 1
   #blackColor = 'b'
   #whiteColor = 'w'
   #playerColor
   #opponentPlayerColor
+  #whiteKings = []
+  #blackKings = []
 
   constructor(playerColor, fen = null) {
     this.#playerColor = playerColor
+
     this.#opponentPlayerColor =
       this.#playerColor === this.#blackColor
         ? this.#blackColor
@@ -119,12 +122,12 @@ export default class TamerlaneChess {
     this.printBoard()
     console.log('piece', piece)
     const moveList = getMoveList(this.#board, piece, 'w')
-   
+
     console.log(moveList)
     const squareList = moveList.map((pos) => {
       return this.positionToSquare(pos.row, pos.col)
     })
-    return [...new Set(squareList)]
+    return squareList
   }
 
   getTurn() {
@@ -153,8 +156,7 @@ export default class TamerlaneChess {
     //if there is no piece in fromSquare or turn is not moving piece
     if (!piece || piece.color !== this.#turn) return null
     const color = piece.color
-    const moves = getMoveList(this.#board, piece, "w")
-   
+    const moves = getMoveList(this.#board, piece, 'w')
 
     let isMoveValid = false
     //check if move is possible
@@ -210,8 +212,8 @@ export default class TamerlaneChess {
   select(row, col, color) {
     let changed = false
     let prev = [-1, -1]
-    for (let i = 0; i < this.#rowCount; i++) {
-      for (let j = 0; j < this.#colCount; j++) {
+    for (let i = 0; i < TamerlaneChess.#rowCount; i++) {
+      for (let j = 0; j < TamerlaneChess.#colCount; j++) {
         if (
           typeof this.#board[i][j] === 'object' &&
           this.#board[i][j].selected
@@ -253,10 +255,10 @@ export default class TamerlaneChess {
   }
 
   computeMoveInOpponentBoard(from, to) {
-    from.row = this.#rowCount - from.row - 1
-    from.col = this.#colCount - from.col - 1
-    to.row = this.#rowCount - to.row - 1
-    to.col = this.#colCount - to.colCount - 1
+    from.row = TamerlaneChess.#rowCount - from.row - 1
+    from.col = TamerlaneChess.#colCount - from.col - 1
+    to.row = TamerlaneChess.#rowCount - to.row - 1
+    to.col = TamerlaneChess.#colCount - to.colCount - 1
     return { from, to }
   }
 
@@ -279,8 +281,8 @@ export default class TamerlaneChess {
   }
 
   updateMoves() {
-    for (let row = 0; row < this.#rowCount; row++) {
-      for (let col = 0; col < this.#colCount; col++) {
+    for (let row = 0; row < TamerlaneChess.#rowCount; row++) {
+      for (let col = 0; col < TamerlaneChess.#colCount; col++) {
         const piece = this.#board[row][col]
         if (piece !== 0) {
           if (piece.pawn) piece.updateValidMoves(this.#board, 'w')
@@ -300,8 +302,8 @@ export default class TamerlaneChess {
     // this.updateMoves()
     // const dangerMoves = this.getDangerMoves(color)
     // const kingPositions = []
-    // for (let i = 0; i < this.#rowCount; i++) {
-    //   for (let j = 0; j < this.#colCount; j++) {
+    // for (let i = 0; i < TamerlaneChess.#rowCount; i++) {
+    //   for (let j = 0; j < TamerlaneChess.#colCount; j++) {
     //     const piece = this.#board[i][j]
     //     if (typeof piece === 'object' && piece.king && piece.color === color) {
     //       kingPositions.push([i, j])
@@ -316,8 +318,8 @@ export default class TamerlaneChess {
   }
 
   resetSelected() {
-    for (let i = 0; i < this.#rowCount; i++) {
-      for (let j = 0; j < this.#colCount; j++) {
+    for (let i = 0; i < TamerlaneChess.#rowCount; i++) {
+      for (let j = 0; j < TamerlaneChess.#colCount; j++) {
         const piece = this.#board[i][j]
         if (piece === 'object') {
           piece.selected = false
@@ -342,8 +344,8 @@ export default class TamerlaneChess {
     let fenCounter = 0
     let row = 0
     let col = 0
-
-    while (row < this.#rowCount && fenCounter < fen.length) {
+    let king
+    while (row < TamerlaneChess.#rowCount && fenCounter < fen.length) {
       let emptySquareCount = 0
       switch (fen[fenCounter]) {
         case 'p':
@@ -404,7 +406,9 @@ export default class TamerlaneChess {
           BOARD[row][col] = new General(row, col, this.#blackColor)
           break
         case 's':
-          BOARD[row][col] = new King(row, col, this.#blackColor)
+          king = new King(row, col, this.#blackColor)
+          this.#blackKings.push(king)
+          BOARD[row][col] = king
           break
         case 'v':
           BOARD[row][col] = new Vizier(row, col, this.#blackColor)
@@ -467,7 +471,9 @@ export default class TamerlaneChess {
           BOARD[row][col] = new General(row, col, this.#whiteColor)
           break
         case 'S':
-          BOARD[row][col] = new King(row, col, this.#whiteColor)
+          king = new King(row, col, this.#whiteColor)
+          this.#whiteKings.push(king)
+          BOARD[row][col] = king
           break
         case 'V':
           BOARD[row][col] = new Vizier(row, col, this.#whiteColor)

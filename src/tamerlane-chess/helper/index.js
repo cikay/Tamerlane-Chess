@@ -23,3 +23,27 @@ export function getMoveList(board, piece, playerColor) {
   }
   return moveList
 }
+
+export class SuperArray extends Array {
+  static getUniqueItemContextArray(array) {
+    let isUnique = true
+    let i
+    const uniqueObjectContextArray = [array[0]]
+    for (i = 1; i < array.length; i++) {
+      const obj = array[i]
+      isUnique = true
+      for (let j = 0; j < uniqueObjectContextArray.length; j++) {
+        const uniqueObj = uniqueObjectContextArray[j]
+
+        if (JSON.stringify(obj) === JSON.stringify(uniqueObj)) {
+          isUnique = false
+          break
+        }
+      }
+      if (isUnique) {
+        uniqueObjectContextArray.push(obj)
+      }
+    }
+    return uniqueObjectContextArray
+  }
+}

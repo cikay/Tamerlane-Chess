@@ -9,7 +9,7 @@ import Giraffe from './Giraffe'
 import Elephant from './Elephant'
 import Rook from './Rook'
 import { COLOR } from '../types'
-import { getMoveList } from '../helper'
+import { getMoveList, SuperArray } from '../helper'
 class Pawn extends Piece {
   static _diagonalColsIncrementValues = [-1, 1]
   constructor(row, col, color) {
@@ -82,16 +82,10 @@ export class PawnOfPawn extends Pawn {
       case PawnOfPawn.#noPromoted:
         return super.validMoves(board, playerColor)
       case PawnOfPawn.#firstPromoted:
-        console.log(this.getForkMoves(board, playerColor))
-        console.log(this.getImmobileMoves(board, playerColor))
-        const moves = [
-          ...new Set([
-            ...this.getForkMoves(board, playerColor),
-            ...this.getImmobileMoves(board, playerColor),
-          ]),
-        ]
-        console.log(moves)
-        return moves
+        return SuperArray.getUniqueItemContextArray([
+          ...this.getForkMoves(board, playerColor),
+          ...this.getImmobileMoves(board, playerColor),
+        ])
       case PawnOfPawn.#secondPromoted:
         // move to pawn of king position
         return []
@@ -145,7 +139,7 @@ export class PawnOfPawn extends Pawn {
         }
       }
     }
-   
+
     return moves
   }
 
