@@ -40,7 +40,7 @@ export default function tamerlaneChessReducer(state = initialState, action) {
   const { type, payload } = action
   switch (type) {
     case START_GAME:
-      const tamerlaneChess = new TamerlaneChess()
+      const tamerlaneChess = new TamerlaneChess('w')
       return {
         ...state,
         tamerlaneChess,

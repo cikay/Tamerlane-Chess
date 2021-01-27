@@ -34,6 +34,7 @@ class Pawn extends Piece {
   }
 
   validMoves(board, playerColor) {
+    console.log('pawn color', playerColor)
     if (playerColor !== COLOR.white && playerColor !== COLOR.black) {
       throw Error('No matching player color with black or white')
     }
@@ -77,9 +78,11 @@ export class PawnOfPawn extends Pawn {
     this.promotedCount = 0
   }
   validMoves(board, playerColor) {
+    console.log('pawn color', playerColor)
     switch (this.getPromotedType(playerColor)) {
       //regular moves
       case PawnOfPawn.#noPromoted:
+        console.log('no promotion')
         return super.validMoves(board, playerColor)
       case PawnOfPawn.#firstPromoted:
         return SuperArray.getUniqueItemContextArray([

@@ -61,10 +61,10 @@ export default function TamerlaneChessBoard() {
     const turn = tamerlaneChess.getTurn()
 
     if (piece.color !== turn && !state.fromSquare) return
-    
+
     // highlight possible moves
     if (piece.color === turn) {
-      const moves = tamerlaneChess.getMoves(square)
+      const moves = tamerlaneChess.getMoves(square, turn)
       console.log('posible move')
       console.log(moves)
       if (moves.length === 0) return
@@ -83,7 +83,8 @@ export default function TamerlaneChessBoard() {
     else {
       removeHighlightSquare()
       console.log('trying to make move')
-      const move = tamerlaneChess.makeMove(state.fromSquare, square)
+      console.log(turn)
+      const move = tamerlaneChess.makeMove(state.fromSquare, square, turn)
       if (move === null) return
       const payload = { from: state.fromSquare, to: square }
       dispatch({ type: MOVE, payload })
