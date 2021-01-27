@@ -60,14 +60,18 @@ export default function TamerlaneChessBoard() {
     console.log(piece)
     const turn = tamerlaneChess.getTurn()
 
-    if (piece.color !== turn && !state.fromSquare) return
-
     // highlight possible moves
-    if (piece.color === turn) {
+    if (
+      !(
+        state.fromSquare &&
+        tamerlaneChess.isPiecePromotedPawnOfPawn(state.fromSquare)
+      ) &&
+      piece.color === turn
+    ) {
       const moves = tamerlaneChess.getMoves(square, turn)
       console.log('posible move')
       console.log(moves)
-      if (moves.length === 0) return
+      if (!moves) return
       const squaresToHighlight = []
 
       moves.forEach((move) => {

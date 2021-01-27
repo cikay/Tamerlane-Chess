@@ -16,6 +16,7 @@ export const positionChecker = () => ({
 
 export function getMoveList(board, piece, playerColor) {
   let moveList
+  
   if (piece.pawn || piece.king) {
     moveList = piece.validMoves(board, playerColor)
   } else {

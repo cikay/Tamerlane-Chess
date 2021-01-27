@@ -106,7 +106,7 @@ export default class TamerlaneChess {
       this.#playerColor === color
         ? TamerlaneChess.#lastRowIndex
         : TamerlaneChess.#firstRowIndex
-    console.log("condition row", conditionRow)
+    console.log('condition row', conditionRow)
     if (conditionRow === row) {
       //opponent board will be set
       console.log('promoted to ', piece.promotedToPiece)
@@ -121,8 +121,21 @@ export default class TamerlaneChess {
     }
   }
 
+  isPiecePromotedPawnOfPawn(fromSquare) {
+    const piece = this.getPiece(fromSquare)
+    if (
+      piece !== 0 &&
+      piece.constructor.name === 'PawnOfPawn' &&
+      piece.promotedCount > 0
+    ) {
+      return true
+    }
+    return false
+  }
+
   getMoves(square) {
     const { row, col } = this.squareToPosition(square)
+    if (!this.isMovingPlayerInTurn(row, col)) return null
     const piece = this.#board[row][col]
     this.printBoard()
     console.log('piece', piece)
