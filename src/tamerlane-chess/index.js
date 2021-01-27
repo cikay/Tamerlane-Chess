@@ -100,25 +100,34 @@ export default class TamerlaneChess {
   }
 
   makePromotion(piece) {
-    if (!piece.pawn) return false
+    if (!piece.pawn) return
     const { row, col, color, promotedToPiece } = piece
     const conditionRow =
       this.#playerColor === color
         ? TamerlaneChess.#lastRowIndex
         : TamerlaneChess.#firstRowIndex
     console.log('condition row', conditionRow)
-    if (conditionRow === row) {
-      //opponent board will be set
-      console.log('promoted to ', piece.promotedToPiece)
-      console.log('piece.promotedCount ', piece.promotedCount)
-      if (piece.constructor.name === 'PawnOfPawn' && piece.promotedCount < 3) {
-        piece.promotedCount += 1
-      } else {
+    if (
+      conditionRow !== row ||
+      (piece.constructor.name === 'PawnOfPawn' && piece.promotedCount === 3)
+    ) {
+      return
+    }
+
+    //opponent board will be set
+    console.log('promoted to ', piece.promotedToPiece)
+    console.log('piece.promotedCount ', piece.promotedCount)
+    if (piece.constructor.name === 'PawnOfPawn') {
+      piece.promotedCount += 1
+      if (piece.promotedCount === 3) {
         this.#board[row][col] = new promotedToPiece(row, col, color)
       }
-      console.log('piece.promotedCount ', piece.promotedCount)
-      this.printBoard()
+    } else {
+      this.#board[row][col] = new promotedToPiece(row, col, color)
     }
+
+    console.log('piece.promotedCount ', piece.promotedCount)
+    this.printBoard()
   }
 
   isPiecePromotedPawnOfPawn(fromSquare) {

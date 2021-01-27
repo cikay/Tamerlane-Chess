@@ -8,6 +8,7 @@ import WarEngine from './WarEngine'
 import Giraffe from './Giraffe'
 import Elephant from './Elephant'
 import Rook from './Rook'
+import AdventitiousKing from './AdventitiousKing'
 import { COLOR } from '../types'
 import { getMoveList, SuperArray } from '../helper'
 class Pawn extends Piece {
@@ -75,6 +76,7 @@ export class PawnOfPawn extends Pawn {
   constructor(row, col, color) {
     super(row, col, color)
     this.promotedCount = 0
+    this.promotedToPiece = AdventitiousKing
   }
   validMoves(board, playerColor) {
     switch (this.getPromotedType(playerColor)) {
