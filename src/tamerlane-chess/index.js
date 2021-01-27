@@ -99,24 +99,26 @@ export default class TamerlaneChess {
     return this.#board[row][col]
   }
 
-  makePromotion(piece, movingPlayerColor) {
+  makePromotion(piece) {
     if (!piece.pawn) return false
     const { row, col, color, promotedToPiece } = piece
     const conditionRow =
-      movingPlayerColor === color
+      this.#playerColor === color
         ? TamerlaneChess.#lastRowIndex
         : TamerlaneChess.#firstRowIndex
-
+    console.log("condition row", conditionRow)
     if (conditionRow === row) {
       //opponent board will be set
       console.log('promoted to ', piece.promotedToPiece)
-      if (piece.constructor.name === 'PawnOfPawn') {
+      console.log('piece.promotedCount ', piece.promotedCount)
+      if (piece.constructor.name === 'PawnOfPawn' && piece.promotedCount < 3) {
         piece.promotedCount += 1
       } else {
         this.#board[row][col] = new promotedToPiece(row, col, color)
       }
+      console.log('piece.promotedCount ', piece.promotedCount)
+      this.printBoard()
     }
-    this.printBoard()
   }
 
   getMoves(square) {
@@ -141,7 +143,7 @@ export default class TamerlaneChess {
     return false
   }
 
-  hasTryMovingPlayerPiece(row, col, movingPlayerColor) {
+  hasMovingPlayerPiece(row, col, movingPlayerColor) {
     const piece = this.#board[row][col]
     // if (piece && piece.color === movingPlayerColor) {
     //   return true
@@ -149,7 +151,7 @@ export default class TamerlaneChess {
     return true
   }
 
-  isTryMovingPlayerInTurn(row, col) {
+  isMovingPlayerInTurn(row, col) {
     const piece = this.#board[row][col]
     if (piece && piece.color === this.#turn) return true
     return false
@@ -163,12 +165,8 @@ export default class TamerlaneChess {
       !(
         this.IsPositionInBoard(fromPos.row, fromPos.col) &&
         this.IsPositionInBoard(toPos.row, toPos.col) &&
-        this.isTryMovingPlayerInTurn(fromPos.row, fromPos.col) &&
-        this.hasTryMovingPlayerPiece(
-          fromPos.row,
-          fromPos.col,
-          movingPlayerColor
-        )
+        this.isMovingPlayerInTurn(fromPos.row, fromPos.col) &&
+        this.hasMovingPlayerPiece(fromPos.row, fromPos.col, movingPlayerColor)
       )
     ) {
       return null
@@ -208,7 +206,7 @@ export default class TamerlaneChess {
     }
 
     //move is possible
-    this.makePromotion(piece, movingPlayerColor)
+    this.makePromotion(piece)
     this.updateMoves(movingPlayerColor)
 
     this.#turn =

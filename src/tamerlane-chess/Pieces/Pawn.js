@@ -34,7 +34,6 @@ class Pawn extends Piece {
   }
 
   validMoves(board, playerColor) {
-    console.log('pawn color', playerColor)
     if (playerColor !== COLOR.white && playerColor !== COLOR.black) {
       throw Error('No matching player color with black or white')
     }
@@ -78,11 +77,9 @@ export class PawnOfPawn extends Pawn {
     this.promotedCount = 0
   }
   validMoves(board, playerColor) {
-    console.log('pawn color', playerColor)
     switch (this.getPromotedType(playerColor)) {
       //regular moves
       case PawnOfPawn.#noPromoted:
-        console.log('no promotion')
         return super.validMoves(board, playerColor)
       case PawnOfPawn.#firstPromoted:
         return SuperArray.getUniqueItemContextArray([
@@ -90,8 +87,9 @@ export class PawnOfPawn extends Pawn {
           ...this.getImmobileMoves(board, playerColor),
         ])
       case PawnOfPawn.#secondPromoted:
-        // move to pawn of king position
-        return []
+        const kingPawnInıtPos =
+          playerColor === this.color ? { row: 2, col: 5 } : { row: 7, col: 5 }
+        return [kingPawnInıtPos]
     }
   }
 
@@ -104,7 +102,7 @@ export class PawnOfPawn extends Pawn {
           this.isOpponentPiece(piece) &&
           this.IsPositionInBoard(piece.row, piece.col + 2)
         ) {
-          const rowIncrement = playerColor === 'w' ? -1 : 1
+          const rowIncrement = playerColor === this.color ? -1 : 1
           const forkingRow = piece.row + rowIncrement
           const forkingCol = piece.col + 1
           if (this.IsPositionInBoard(forkingRow, forkingCol)) {
@@ -148,16 +146,23 @@ export class PawnOfPawn extends Pawn {
 
   getPromotedType(playerColor) {
     if (
-      playerColor === this.color &&
-      this.row === 9 &&
-      this.promotedCount === PawnOfPawn.#firstPromoted
+      (playerColor === this.color &&
+        this.row === 9 &&
+        this.promotedCount === PawnOfPawn.#firstPromoted) ||
+      (playerColor !== this.color &&
+        this.row === 0 &&
+        this.promotedCount === PawnOfPawn.#firstPromoted)
     ) {
       return PawnOfPawn.#firstPromoted
     } else if (
-      playerColor !== this.color &&
-      this.row === 0 &&
-      this.promotedCount === PawnOfPawn.#secondPromoted
+      (playerColor !== this.color &&
+        this.row === 0 &&
+        this.promotedCount === PawnOfPawn.#secondPromoted) ||
+      (playerColor === this.color &&
+        this.row === 9 &&
+        this.promotedCount === PawnOfPawn.#secondPromoted)
     ) {
+      console.log('second promoted')
       return PawnOfPawn.#secondPromoted
     }
     return PawnOfPawn.#noPromoted
