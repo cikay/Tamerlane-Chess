@@ -13,10 +13,43 @@ export const positionChecker = () => ({
     return row < 10 && row >= 0 && col < 11 && col >= 0
   },
 })
+export const KingDirectionsObj = {
+  directions: [
+    { rowDir: 0, colDir: 1 },
+    { rowDir: -1, colDir: 1 },
+    { rowDir: -1, colDir: 0 },
+    { rowDir: -1, colDir: -1 },
+    { rowDir: 0, colDir: -1 },
+    { rowDir: 1, colDir: -1 },
+    { rowDir: 1, colDir: 0 },
+    { rowDir: 1, colDir: 1 },
+  ],
+}
+
+export const NoneSlidePieceMovesObj = {
+  noneSlidePieceMoves(board) {
+    const moves = []
+    let move
+    for (const { rowDir, colDir } of this.directions) {
+      let curentRow = this.row + rowDir
+      let currentCol = this.col + colDir
+      console.log('none slide piece move getters')
+      console.log(this)
+      if (this.IsPositionInBoard(curentRow, currentCol)) {
+        const piece = board[curentRow][currentCol]
+        move = { row: curentRow, col: currentCol }
+        if (piece === 0 || piece.color !== this.color) {
+          moves.push(move)
+        }
+      }
+    }
+    return moves
+  },
+}
 
 export function getMoveList(board, piece, playerColor) {
   let moveList
-  
+
   if (piece.pawn || piece.king) {
     moveList = piece.validMoves(board, playerColor)
   } else {
