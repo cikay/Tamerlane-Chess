@@ -11,8 +11,9 @@ export default class Camel extends NoneSlidePiece {
     { rowDir: 3, colDir: 1 },
     { rowDir: 3, colDir: -1 },
   ]
+  static fenChar = "d"
   
-  // constructor(rowDir, col, color) {
-  //   super(rowDir, col, color)
-  // }
+  constructor(rowDir, col, color) {
+    super(rowDir, col, color)
+  }
 }

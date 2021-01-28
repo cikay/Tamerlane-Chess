@@ -7,4 +7,5 @@ export default class WarEngine extends NoneSlidePiece {
     { rowDir: -2, colDir: 0 },
     { rowDir: 0, colDir: -2 },
   ]
+  static fenChar = 'i'
 }

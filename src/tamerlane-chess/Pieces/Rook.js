@@ -7,6 +7,7 @@ export default class Rook extends Piece {
     { rowDir: -1, colDir: 0 },
     { rowDir: 0, colDir: -1 },
   ]
+  static fenChar = 'k'
 
   validMoves(board) {
     const moves = []

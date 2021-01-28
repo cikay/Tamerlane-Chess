@@ -6,6 +6,7 @@ export default class AdventitiousKing extends Piece {
   constructor(row, col, color) {
     super(row, col, color)
     this.king = true
+    this.fenChar = 'j'
   }
 
   validMoves(board, playerColor) {

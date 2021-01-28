@@ -84,6 +84,8 @@ export function validFen(fen) {
   'f1d1i1i1d1f/kamzgsvzmak1/pxcbyqehtnr/92/92/92/92
   /PXCBYQEHTNR/KAMZGSVZMAK1/F1D1I1I1D1F*2 w'
   */
+
+  //abcdefghikmnprxyzqv
   const pieceChars = 'fdikamzgsvzmakpxcbyqehtnrPXCBYQEHTNRFDIKAMZGSV1'.split('')
   for (const chunk of chunks) {
     //'f1d1i1i1d1f/kamzgsvzmak/pxcbyqehtnr/92/92/92/92/PXCBYQEHTNR/KAMZGSVZMAK/F1D1I1I1D1F*2 w'

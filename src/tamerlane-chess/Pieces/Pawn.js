@@ -1,7 +1,7 @@
 import Piece from './Piece'
 import Camel from './Camel'
 import Knight from './Knight'
-import General from './Catapult'
+import General from './General'
 import Catapult from './Catapult'
 import Vizier from './Vizier'
 import WarEngine from './WarEngine'
@@ -74,8 +74,9 @@ export class PawnOfPawn extends Pawn {
   static #firstPromoted = 1
   static #secondPromoted = 2
   static #noPromoted = 0
-  constructor(row, col, color, fenChar) {
-    super(row, col, color, fenChar)
+  static fenChar = 'p'
+  constructor(row, col, color) {
+    super(row, col, color)
     this.promotedCount = 0
     this.promotedToPiece = AdventitiousKing
   }
@@ -173,8 +174,9 @@ export class PawnOfPawn extends Pawn {
 }
 
 export class KingPawn extends Pawn {
-  constructor(row, col, color, fenChar) {
-    super(row, col, color, fenChar)
+  static fenChar = 'q'
+  constructor(row, col, color) {
+    super(row, col, color)
     this.promotedToPiece = Prince
   }
   validMoves(board, playerColor) {
@@ -186,9 +188,11 @@ export class KingPawn extends Pawn {
 }
 
 export class CamelPawn extends Pawn {
+  static fenChar = 'c'
   constructor(row, col, color, fenChar) {
     super(row, col, color, fenChar)
     this.promotedToPiece = Camel
+    // this.fenChar = 'c'
   }
 
   validMoves(board, playerColor) {
@@ -197,50 +201,58 @@ export class CamelPawn extends Pawn {
 }
 
 export class CatapultPawn extends Pawn {
-  constructor(row, col, color, fenChar) {
-    super(row, col, color, fenChar)
+  static fenChar = 't'
+  constructor(row, col, color) {
+    super(row, col, color)
     this.promotedToPiece = Catapult
   }
 }
 export class ElephantPawn extends Pawn {
+  static fenChar = 'b'
   constructor(row, col, color, fenChar) {
     super(row, col, color, fenChar)
     this.promotedToPiece = Elephant
   }
 }
 export class GeneralPawn extends Pawn {
-  constructor(row, col, color, fenChar) {
-    super(row, col, color, fenChar)
+  static fenChar = 'e'
+  constructor(row, col, color) {
+    super(row, col, color)
     this.promotedToPiece = General
   }
 }
 export class GiraffePawn extends Pawn {
-  constructor(row, col, color, fenChar) {
-    super(row, col, color, fenChar)
+  static fenChar = 'h'
+  constructor(row, col, color) {
+    super(row, col, color)
     this.promotedToPiece = Giraffe
   }
 }
 export class KnightPawn extends Pawn {
-  constructor(row, col, color, fenChar) {
-    super(row, col, color, fenChar)
+  static fenChar = 'n'
+  constructor(row, col, color) {
+    super(row, col, color)
     this.promotedToPiece = Knight
   }
 }
 export class RookPawn extends Pawn {
-  constructor(row, col, color, fenChar) {
-    super(row, col, color, fenChar)
+  static fenChar = 'r'
+  constructor(row, col, color) {
+    super(row, col, color)
     this.promotedToPiece = Rook
   }
 }
 export class VizierPawn extends Pawn {
-  constructor(row, col, color, fenChar) {
-    super(row, col, color, fenChar)
+  static fenChar = 'y'
+  constructor(row, col, color) {
+    super(row, col, color)
     this.promotedToPiece = Vizier
   }
 }
 export class WarEnginePawn extends Pawn {
-  constructor(row, col, color, fenChar) {
-    super(row, col, color, fenChar)
+  static fenChar = 'x'
+  constructor(row, col, color) {
+    super(row, col, color)
     this.promotedToPiece = WarEngine
   }
 }

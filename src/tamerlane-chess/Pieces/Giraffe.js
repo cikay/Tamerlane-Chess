@@ -7,6 +7,7 @@ export default class Giraffe extends Piece {
     { rowDir: 1, colDir: -1 },
     { rowDir: -1, colDir: -1 },
   ]
+  static fenChar = 'z'
 
   validMoves(board) {
     const moves = []

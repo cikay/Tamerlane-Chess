@@ -11,5 +11,5 @@ export default class Knight extends NoneSlidePiece {
     { rowDir: -1, colDir: -2 },
     { rowDir: -2, colDir: -1 },
   ]
-  
+  static fenChar = 'a'
 }

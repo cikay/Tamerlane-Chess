@@ -7,8 +7,8 @@ export default class Vizier extends NoneSlidePiece {
     { rowDir: 1, colDir: 0 },
     { rowDir: 0, colDir: -1 },
   ]
+  static fenChar = 'v'
   constructor(row, col, color) {
     super(row, col, color)
   }
- 
 }

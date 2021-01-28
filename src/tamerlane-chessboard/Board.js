@@ -6,22 +6,7 @@ import { COLUMNS } from '../helper/Fen'
 import { useTamerlaneChessContext } from './index'
 // import TamerlaneChess from '../tamerlane-chess'
 const Board = () => {
-  const {
-    currentPosition,
-    lightSquareStyle,
-    darkSquareStyle,
-  } = useTamerlaneChessContext()
-  // let game
-  useEffect(() => {
-    // game = new TamerlaneChess()
-  }, [])
-  const setPosition = (sourceSquare, targetSquare, piece) => {}
 
-  const handleDrag = () => {}
-  const handleDrop = (sourceSquare, targetSquare) => {}
-
-  const getSquareCoordinates = () => {}
-  const setSquareCoordinates = () => {}
   let squareColor = 'black'
   return (
     <div id='GameBoard'>

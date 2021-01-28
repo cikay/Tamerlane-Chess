@@ -84,6 +84,6 @@ export class SuperArray extends Array {
 
 export function replaceAt(str, index, replacement) {
   return (
-    str.substr(0, index) + replacement + str.substr(index + replacement.length)
+    str.substring(0, index) + replacement + str.substring(index + 1)
   )
 }

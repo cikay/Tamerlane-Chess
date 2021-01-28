@@ -1,17 +1,32 @@
 import { positionChecker } from '../helper'
+import { COLOR } from '../types'
 export default class Piece {
-  constructor(row, col, color, fenChar) {
+  
+  constructor(row, col, color) {
     if (this.constructor === Piece) {
       throw Error('Piece can not be instated')
     }
+
     this.row = row
     this.col = col
     this.color = color
-    this.fenChar = fenChar
     this.moveList = []
     this.king = false
     this.pawn = false
+    // this.setFenChar()
   }
+
+  // setFenChar() {
+  //   if (this.color === COLOR.white) {
+  //     console.log(this)
+  //     this.constructor.fenChar = this.constructor.fenChar.toUpperCase()
+  //   } else {
+  //     console.log('siyah')
+  //     console.log(this)
+  //     this.constructor.fenChar = this.constructor.fenChar.toLowerCase()
+  //     console.log(`fenChar:${this.constructor.fenChar}`)
+  //   }
+  // }
 
   isSelected() {
     return this.selected
