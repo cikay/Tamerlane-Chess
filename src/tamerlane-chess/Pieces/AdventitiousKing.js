@@ -1,8 +1,8 @@
-import King from './King'
+import Piece from './Piece'
 
 import { KingDirectionsObj, NoneSlidePieceMovesObj } from '../helper'
 
-export default class AdventitiousKing extends King {
+export default class AdventitiousKing extends Piece {
   constructor(row, col, color) {
     super(row, col, color)
     this.king = true

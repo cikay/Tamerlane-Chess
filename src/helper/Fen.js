@@ -72,9 +72,10 @@ export function validFen(fen) {
 
   // expand the empty square numbers to just 1s
   fen = expandFenEmptySquares(fen)
-
+  console.log(fen)
   //Fen must be 10 sections seperated by slashes
   const chunks = fen.split('/')
+  console.log(chunks)
   if (chunks.length !== 10)
     throw Error('Fen must be 10 sections seperated by slashes')
 
@@ -160,7 +161,7 @@ function squeezeFenEmptySquares(fen) {
     .replace(/111/, '3')
     .replace(/11/, '2')
 }
-function expandFenEmptySquares(fen) {
+export function expandFenEmptySquares(fen) {
   return fen
     .replace(/9/g, '111111111')
     .replace(/8/g, '11111111')

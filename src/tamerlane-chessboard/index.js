@@ -90,7 +90,9 @@ export default function TamerlaneChessBoard() {
       console.log(turn)
       const move = tamerlaneChess.makeMove(state.fromSquare, square, turn)
       if (move === null) return
-      const payload = { from: state.fromSquare, to: square }
+      const fen = tamerlaneChess.getCurrentFen()
+      const payload = { fen }
+      
       dispatch({ type: MOVE, payload })
     }
   }

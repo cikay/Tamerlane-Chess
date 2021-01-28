@@ -1,4 +1,5 @@
-import { includeInTwoDimensArray } from './helper'
+import { includeInTwoDimensArray, replaceAt } from './helper'
+import { expandFenEmptySquares } from '../helper/Fen'
 import {
   King,
   Camel,
@@ -55,7 +56,9 @@ export default class TamerlaneChess {
   #blackKings = []
   static #blackCitadel = 'y'
   static #whiteCitadel = 'x'
-
+  #lastTakedPiece = null
+  #fen
+  #opponentFen
   constructor(playerColor, fen = null) {
     this.#playerColor = playerColor
 
@@ -75,21 +78,21 @@ export default class TamerlaneChess {
     /*
     'f1d1i1i1d1f/kamzvsgzmak/pxcbyqehtnr/92/92/92/92/PXCBYQEHTNR/KAMZGSVZMAK/F1D1I1I1D1F*2 w'
     */
-    const defaultWhitePiecesAtBottomFen =
-      'f1d1i1i1d1f/kamzvsgzmak/pxcbyqehtnr/92/92/92/92/PXCBEQYHTNR/KAMZGSVZMAK/F1D1I1I1D1F/ w'
+    let defaultWhitePiecesAtBottomFen =
+      'f1d1i1i1d1f/kamzvsgzmak/pxcbyqehtnr/92/92/92/92/PXCBEQYHTNR/KAMZGSVZMAK/F1D1I1I1D1F* w'
     //Siyah taşlar ekranda aşağıda ise
-    const defaultBlackPiecesAtBottomFen =
-      'F1D1I1I1D1F/KAMZVSGZMAK/PXCBYQEHTNR/92/92/92/92/pxcbyqehtnr/kamzgsvzmak/f1d1i1i1d1f/ w'
+    let defaultBlackPiecesAtBottomFen =
+      'F1D1I1I1D1F/KAMZVSGZMAK/PXCBYQEHTNR/92/92/92/92/pxcbyqehtnr/kamzgsvzmak/f1d1i1i1d1f* w'
 
     if (fen === null) {
-      fen =
+      this.#fen =
         this.#playerColor === TamerlaneChess.#whiteColor
           ? defaultWhitePiecesAtBottomFen
           : defaultBlackPiecesAtBottomFen
     }
     const opponentFen = this.computeOpponentFen(fen)
-    this.parseFen(fen, FEN_TYPE.player)
-    this.parseFen(opponentFen, FEN_TYPE.opponent)
+    this.parseFen(FEN_TYPE.player)
+    this.parseFen(FEN_TYPE.opponent)
     this.printBoard()
   }
 
@@ -179,6 +182,23 @@ export default class TamerlaneChess {
     return false
   }
 
+  undoMove(from, to) {
+    this.changePosition(to, from)
+    if (this.#lastTakedPiece) {
+      this.#board[to.row][to.col] = this.#lastTakedPiece
+      //fen tekrar update edilecek
+    }
+  }
+
+  changePiecePosition(from, to) {
+    this.updateFen(from, to)
+    this.#lastTakedPiece = this.#board[to.row][to.col]
+    const movingPiece = this.#board[from.row][from.col]
+    movingPiece.changePosition(to.row, to.col)
+    this.#board[to.row][to.col] = this.#board[from.row][from.col]
+    this.#board[from.row][from.col] = 0
+  }
+
   makeMove(fromSquare, toSquare, movingPlayerColor) {
     console.log(`from:${fromSquare}, to:${toSquare}`)
     const fromPos = this.squareToPosition(fromSquare)
@@ -210,23 +230,13 @@ export default class TamerlaneChess {
     if (!isMoveValid) return null
     console.log('move valid')
     const checkedBefore = this.isChecked(piece)
-    let changed = true
-    let copyBoard = [...this.#board]
-    piece.changePosition(toPos.row, toPos.col)
-    copyBoard[toPos.row][toPos.col] = copyBoard[fromPos.row][fromPos.col]
-    copyBoard[fromPos.row][fromPos.col] = 0
-    this.#board = copyBoard
+    this.changePiecePosition(fromPos, toPos)
     //before is check or before is check and after move there is still check
     if (this.isChecked(color) || (checkedBefore && this.isChecked(color))) {
-      changed = false
-      copyBoard = [...this.#board]
-      copyBoard[toPos.row][toPos.col].changePosition(fromPos.row, fromPos.col)
-      copyBoard[fromPos.row][fromPos.col] = copyBoard[toPos.row][toPos.col]
-      copyBoard[toPos.row][toPos.col] = 0
-      this.#board = copyBoard
-      return null
+      this.undoMove(fromPos, toPos)
+      return
     }
-
+    this.printBoard()
     //move is possible
     this.makePromotion(piece)
     this.updateMoves(movingPlayerColor)
@@ -281,10 +291,61 @@ export default class TamerlaneChess {
     }
   }
 
-  getFen() {}
+  getCurrentFen() {
+    return this.#fen
+  }
+
+  updateFen(from, to) {
+    let movedPiece = this.#board[from.row][from.col]
+    const square = this.#board[to.row][to.col]
+    console.log(`moved piece char:${movedPiece.fenChar}`)
+    this.#fen = this.#fen.replace(/\*.+$/, '')
+    this.#fen = expandFenEmptySquares(this.#fen)
+    const fenRows = this.#fen.split('/')
+    console.log(fenRows)
+    for (let fenRowIndex in fenRows) {
+      for (let fenCharIndex in fenRows[fenRowIndex]) {
+        if (fenRows[fenRowIndex][fenCharIndex] === movedPiece.fenChar) {
+          console.log(`fenRowIndex:${fenRowIndex}`)
+          if (
+            9 - fenRowIndex === movedPiece.row &&
+            Number(fenCharIndex) === movedPiece.col
+          ) {
+            console.log('updating fen')
+            let movedPieceCharIndexInFen = this.getIndexInFen(movedPiece)
+            console.log('movedPieceCharIndexInFen', movedPieceCharIndexInFen)
+            console.log('before assign 1 to moved piece char')
+            console.log(this.#fen)
+            this.#fen = replaceAt(this.#fen, movedPieceCharIndexInFen, '1')
+            console.log('after assign 1 to moved piece char')
+            console.log(this.#fen)
+            console.log('pass 2')
+            let toSquareCharIndexInFen = this.getIndexInFen(to)
+
+            this.#fen = replaceAt(
+              this.#fen,
+              toSquareCharIndexInFen,
+              movedPiece.fenChar
+            )
+
+            return
+          }
+        }
+      }
+    }
+
+    // const movedPieceFenCharIndex = rows[movedPiece.row][movedPiece.col]
+
+    console.log(this.#fen)
+  }
+
+  getIndexInFen({ row, col }) {
+    return (9 - row) * 12 + col
+  }
 
   //Helper functions
   squareToPosition(square) {
+    console.log(square)
     console.log(`square:${square}`)
     const col = COLUMNS.indexOf(square[0])
     //square length can be 2 or 3
@@ -318,21 +379,19 @@ export default class TamerlaneChess {
   }
 
   computeOpponentFen(fen) {
-    const lastSlahIndex = fen.lastIndexOf('/')
-    let opponentFen = ''
-    for (let i = 0; i < fen.length; i++) {
-      if (i === lastSlahIndex) {
-        break
-      }
-
-      opponentFen = `${fen[i]}${opponentFen}`
-    }
-    let remainStringIndex = lastSlahIndex
-    for (; remainStringIndex < fen.length; remainStringIndex++) {
-      opponentFen = `${opponentFen}${fen[remainStringIndex]}`
-    }
-
-    return opponentFen
+    // const lastSlahIndex = fen.lastIndexOf('/')
+    // let opponentFen = ''
+    // for (let i = 0; i < fen.length; i++) {
+    //   if (i === lastSlahIndex) {
+    //     break
+    //   }
+    //   opponentFen = `${fen[i]}${opponentFen}`
+    // }
+    // let remainStringIndex = lastSlahIndex
+    // for (; remainStringIndex < fen.length; remainStringIndex++) {
+    //   opponentFen = `${opponentFen}${fen[remainStringIndex]}`
+    // }
+    // return opponentFen
   }
 
   updateMoves(movingPlayerColor) {
@@ -391,188 +450,354 @@ export default class TamerlaneChess {
 
   checkMate(color) {}
 
-  parseFen(fen, fenType) {
-    let BOARD
-    if (fenType === FEN_TYPE.player) BOARD = this.#board
-    else if (fenType === FEN_TYPE.opponent) BOARD = this.#opponentBoard
-    else throw Error('fen type not matching')
+  parseFen(fenType) {
+    console.log(fenType)
+    let fen
+    // if (fenType === FEN_TYPE.player) {
+    //   this.#board = this.#board
+    //   fen = this.#fen
+    // } else if (fenType === FEN_TYPE.opponent) {
+    //   this.#board = this.#opponentBoard
+    //   fen = this.#opponentFen
+    // } else throw Error('fen type not matching')
     let fenCounter = 0
     let row = TamerlaneChess.#rowCount - 1
     let col = 0
     let king
-    while (row >= 0 && fenCounter < fen.length) {
+    let piece
+    while (row >= 0 && fenCounter < this.#fen.length) {
       let emptySquareCount = 0
-      switch (fen[fenCounter]) {
+      switch (this.#fen[fenCounter]) {
         case 'p':
-          BOARD[row][col] = new PawnOfPawn(row, col, TamerlaneChess.#blackColor)
-          break
-        case 'b':
-          BOARD[row][col] = new ElephantPawn(
+          this.#board[row][col] = new PawnOfPawn(
             row,
             col,
-            TamerlaneChess.#blackColor
+            TamerlaneChess.#blackColor,
+            'p'
+          )
+          break
+        case 'b':
+          this.#board[row][col] = new ElephantPawn(
+            row,
+            col,
+            TamerlaneChess.#blackColor,
+            'b'
           )
           break
         case 'c':
-          BOARD[row][col] = new CamelPawn(row, col, TamerlaneChess.#blackColor)
-          break
-        case 'x':
-          BOARD[row][col] = new WarEnginePawn(
+          this.#board[row][col] = new CamelPawn(
             row,
             col,
-            TamerlaneChess.#blackColor
+            TamerlaneChess.#blackColor,
+            'c'
+          )
+          break
+        case 'x':
+          this.#board[row][col] = new WarEnginePawn(
+            row,
+            col,
+            TamerlaneChess.#blackColor,
+            'x'
           )
           break
         case 'r':
-          BOARD[row][col] = new RookPawn(row, col, TamerlaneChess.#blackColor)
-          break
-        case 'n':
-          BOARD[row][col] = new KnightPawn(row, col, TamerlaneChess.#blackColor)
-          break
-        case 't':
-          BOARD[row][col] = new CatapultPawn(
+          this.#board[row][col] = new RookPawn(
             row,
             col,
-            TamerlaneChess.#blackColor
+            TamerlaneChess.#blackColor,
+            'r'
+          )
+          break
+        case 'n':
+          this.#board[row][col] = new KnightPawn(
+            row,
+            col,
+            TamerlaneChess.#blackColor,
+            'n'
+          )
+          break
+        case 't':
+          this.#board[row][col] = new CatapultPawn(
+            row,
+            col,
+            TamerlaneChess.#blackColor,
+            't'
           )
           break
         case 'h':
-          BOARD[row][col] = new GiraffePawn(
+          this.#board[row][col] = new GiraffePawn(
             row,
             col,
-            TamerlaneChess.#blackColor
+            TamerlaneChess.#blackColor,
+            'h'
           )
           break
         case 'y':
-          BOARD[row][col] = new VizierPawn(row, col, TamerlaneChess.#blackColor)
-          break
-        case 'q':
-          BOARD[row][col] = new KingPawn(row, col, TamerlaneChess.#blackColor)
-          break
-        case 'e':
-          BOARD[row][col] = new GeneralPawn(
+          this.#board[row][col] = new VizierPawn(
             row,
             col,
-            TamerlaneChess.#blackColor
+            TamerlaneChess.#blackColor,
+            'y'
+          )
+          break
+        case 'q':
+          this.#board[row][col] = new KingPawn(
+            row,
+            col,
+            TamerlaneChess.#blackColor,
+            'q'
+          )
+          break
+        case 'e':
+          this.#board[row][col] = new GeneralPawn(
+            row,
+            col,
+            TamerlaneChess.#blackColor,
+            'e'
           )
           break
         case 'f':
-          console.log(BOARD)
-          BOARD[row][col] = new Elephant(row, col, TamerlaneChess.#blackColor)
-          break
-        case 'd':
-          BOARD[row][col] = new Camel(row, col, TamerlaneChess.#blackColor)
-          break
-        case 'i':
-          BOARD[row][col] = new WarEngine(row, col, TamerlaneChess.#blackColor)
-          break
-        case 'k':
-          BOARD[row][col] = new Rook(row, col, TamerlaneChess.#blackColor)
-          break
-        case 'a':
-          BOARD[row][col] = new Knight(row, col, TamerlaneChess.#blackColor)
-          break
-        case 'm':
-          BOARD[row][col] = new Catapult(row, col, TamerlaneChess.#blackColor)
-          break
-        case 'z':
-          BOARD[row][col] = new Giraffe(row, col, TamerlaneChess.#blackColor)
-          break
-        case 'g':
-          BOARD[row][col] = new General(row, col, TamerlaneChess.#blackColor)
-          break
-        case 's':
-          king = new King(row, col, TamerlaneChess.#blackColor)
-          this.#blackKings.push(king)
-          BOARD[row][col] = king
-          break
-        case 'v':
-          BOARD[row][col] = new Vizier(row, col, TamerlaneChess.#blackColor)
-          break
-        case 'P':
-          BOARD[row][col] = new PawnOfPawn(row, col, TamerlaneChess.#whiteColor)
-          break
-        case 'B':
-          BOARD[row][col] = new ElephantPawn(
+          console.log(this.#board)
+          this.#board[row][col] = new Elephant(
             row,
             col,
-            TamerlaneChess.#whiteColor
+            TamerlaneChess.#blackColor,
+            'f'
+          )
+          break
+        case 'd':
+          this.#board[row][col] = new Camel(
+            row,
+            col,
+            TamerlaneChess.#blackColor,
+            'd'
+          )
+          break
+        case 'i':
+          this.#board[row][col] = new WarEngine(
+            row,
+            col,
+            TamerlaneChess.#blackColor,
+            'i'
+          )
+          break
+        case 'k':
+          this.#board[row][col] = new Rook(
+            row,
+            col,
+            TamerlaneChess.#blackColor,
+            'k'
+          )
+          break
+        case 'a':
+          this.#board[row][col] = new Knight(
+            row,
+            col,
+            TamerlaneChess.#blackColor,
+            'a'
+          )
+          break
+        case 'm':
+          this.#board[row][col] = new Catapult(
+            row,
+            col,
+            TamerlaneChess.#blackColor,
+            'm'
+          )
+          break
+        case 'z':
+          this.#board[row][col] = new Giraffe(
+            row,
+            col,
+            TamerlaneChess.#blackColor,
+            'z'
+          )
+          break
+        case 'g':
+          this.#board[row][col] = new General(
+            row,
+            col,
+            TamerlaneChess.#blackColor,
+            'g'
+          )
+          break
+        case 's':
+          king = new King(row, col, TamerlaneChess.#blackColor, 's')
+          this.#blackKings.push(king)
+          this.#board[row][col] = king
+          break
+        case 'v':
+          this.#board[row][col] = new Vizier(
+            row,
+            col,
+            TamerlaneChess.#blackColor,
+            'v'
+          )
+          break
+        case 'P':
+          this.#board[row][col] = new PawnOfPawn(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'P'
+          )
+          break
+        case 'B':
+          this.#board[row][col] = new ElephantPawn(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'B'
           )
           break
         case 'C':
-          BOARD[row][col] = new CamelPawn(row, col, TamerlaneChess.#whiteColor)
-          break
-        case 'X':
-          BOARD[row][col] = new WarEnginePawn(
+          this.#board[row][col] = new CamelPawn(
             row,
             col,
-            TamerlaneChess.#whiteColor
+            TamerlaneChess.#whiteColor,
+            'C'
+          )
+          break
+        case 'X':
+          this.#board[row][col] = new WarEnginePawn(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'X'
           )
           break
         case 'R':
-          BOARD[row][col] = new RookPawn(row, col, TamerlaneChess.#whiteColor)
-          break
-        case 'N':
-          BOARD[row][col] = new KnightPawn(row, col, TamerlaneChess.#whiteColor)
-          break
-        case 'T':
-          BOARD[row][col] = new CatapultPawn(
+          this.#board[row][col] = new RookPawn(
             row,
             col,
-            TamerlaneChess.#whiteColor
+            TamerlaneChess.#whiteColor,
+            'R'
+          )
+          break
+        case 'N':
+          this.#board[row][col] = new KnightPawn(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'N'
+          )
+          break
+        case 'T':
+          this.#board[row][col] = new CatapultPawn(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'T'
           )
           break
         case 'H':
-          BOARD[row][col] = new GiraffePawn(
+          this.#board[row][col] = new GiraffePawn(
             row,
             col,
-            TamerlaneChess.#whiteColor
+            TamerlaneChess.#whiteColor,
+            'H'
           )
           break
         case 'Y':
-          BOARD[row][col] = new VizierPawn(row, col, TamerlaneChess.#whiteColor)
-          break
-        case 'Q':
-          BOARD[row][col] = new KingPawn(row, col, TamerlaneChess.#whiteColor)
-          break
-        case 'E':
-          BOARD[row][col] = new GeneralPawn(
+          this.#board[row][col] = new VizierPawn(
             row,
             col,
-            TamerlaneChess.#whiteColor
+            TamerlaneChess.#whiteColor,
+            'Y'
+          )
+          break
+        case 'Q':
+          this.#board[row][col] = new KingPawn(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'Q'
+          )
+          break
+        case 'E':
+          this.#board[row][col] = new GeneralPawn(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'E'
           )
           break
         case 'F':
-          BOARD[row][col] = new Elephant(row, col, TamerlaneChess.#whiteColor)
+          this.#board[row][col] = new Elephant(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'F'
+          )
           break
         case 'D':
-          BOARD[row][col] = new Camel(row, col, TamerlaneChess.#whiteColor)
+          this.#board[row][col] = new Camel(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'D'
+          )
           break
         case 'I':
-          BOARD[row][col] = new WarEngine(row, col, TamerlaneChess.#whiteColor)
+          this.#board[row][col] = new WarEngine(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'I'
+          )
           break
         case 'K':
-          BOARD[row][col] = new Rook(row, col, TamerlaneChess.#whiteColor)
+          this.#board[row][col] = new Rook(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'K'
+          )
           break
         case 'A':
-          BOARD[row][col] = new Knight(row, col, TamerlaneChess.#whiteColor)
+          this.#board[row][col] = new Knight(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'A'
+          )
           break
         case 'M':
-          BOARD[row][col] = new Catapult(row, col, TamerlaneChess.#whiteColor)
+          this.#board[row][col] = new Catapult(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'M'
+          )
           break
         case 'Z':
-          BOARD[row][col] = new Giraffe(row, col, TamerlaneChess.#whiteColor)
+          this.#board[row][col] = new Giraffe(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'Z'
+          )
           break
         case 'G':
-          BOARD[row][col] = new General(row, col, TamerlaneChess.#whiteColor)
+          this.#board[row][col] = new General(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'G'
+          )
           break
         case 'S':
-          king = new King(row, col, TamerlaneChess.#whiteColor)
+          king = new King(row, col, TamerlaneChess.#whiteColor, 'S')
           this.#whiteKings.push(king)
-          BOARD[row][col] = king
+          this.#board[row][col] = king
           break
         case 'V':
-          BOARD[row][col] = new Vizier(row, col, TamerlaneChess.#whiteColor)
+          this.#board[row][col] = new Vizier(
+            row,
+            col,
+            TamerlaneChess.#whiteColor,
+            'V'
+          )
           break
         case '1':
         case '2':
@@ -583,7 +808,7 @@ export default class TamerlaneChess {
         case '7':
         case '8':
         case '9':
-          emptySquareCount = Number(fen[fenCounter])
+          emptySquareCount = Number(this.#fen[fenCounter])
           break
         case '/':
         case ' ':
@@ -599,7 +824,7 @@ export default class TamerlaneChess {
       else {
         for (let i = 0; i < emptySquareCount; i++) {
           col += 1
-          BOARD[row][col] = 0
+          this.#board[row][col] = 0
         }
       }
 

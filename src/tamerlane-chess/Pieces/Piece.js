@@ -1,12 +1,13 @@
 import { positionChecker } from '../helper'
 export default class Piece {
-  constructor(row, col, color) {
+  constructor(row, col, color, fenChar) {
     if (this.constructor === Piece) {
       throw Error('Piece can not be instated')
     }
     this.row = row
     this.col = col
     this.color = color
+    this.fenChar = fenChar
     this.moveList = []
     this.king = false
     this.pawn = false
@@ -37,7 +38,6 @@ export default class Piece {
     return false
   }
   isSquareEmpty(row, col, board) {
-    
     const attackedPiece = board[row][col]
     if (attackedPiece === 0) {
       return true
