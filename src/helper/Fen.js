@@ -72,10 +72,10 @@ export function validFen(fen) {
 
   // expand the empty square numbers to just 1s
   fen = expandFenEmptySquares(fen)
-  console.log(fen)
+
   //Fen must be 10 sections seperated by slashes
   const chunks = fen.split('/')
-  console.log(chunks)
+
   if (chunks.length !== 10)
     throw Error('Fen must be 10 sections seperated by slashes')
 
@@ -136,8 +136,7 @@ export function fenToObj(fen) {
 
     currentRow -= 1
   }
-  console.log("position")
-  console.log(position)
+
   return position
 }
 

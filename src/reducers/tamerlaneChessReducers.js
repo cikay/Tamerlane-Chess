@@ -46,23 +46,6 @@ export default function tamerlaneChessReducer(state = initialState, action) {
         tamerlaneChess,
       }
     case MOVE:
-      // const { currentPosition } = state
-      // const newCurrentPosition = {}
-      // let key
-      // for (key in currentPosition) {
-      //   if (currentPosition.hasOwnProperty(key) && key !== payload.from) {
-      //     newCurrentPosition[key] = currentPosition[key]
-      //   }
-      // }
-
-      // newCurrentPosition[payload.to] = currentPosition[payload.from]
-
-      // return {
-      //   ...state,
-      //   fromSquare: '',
-      //   currentPosition: newCurrentPosition,
-      // }
-      console.log('fen', payload.fen)
       return {
         ...state,
         currentPosition: getPositionObject(payload.fen),

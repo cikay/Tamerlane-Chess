@@ -91,20 +91,24 @@ export default class TamerlaneChess {
 
     this.parseFen(FEN_TYPE.player)
     this.parseFen(FEN_TYPE.opponent)
-    this.printBoard()
+    // this.printBoard()
   }
 
-  getPiece(square){
-    const position = this.squareToPosition(square)
-    return this.getPieceViaPosition(position)
-  }
+  getPiece(position) {
+    if (typeof position === 'string') {
+      const { row, col } = this.squareToPosition(position)
+      return this.#board[row][col]
+    } else if (typeof position === 'object') {
+      const { row, col } = position
 
-  
-
-  getPieceViaPosition({ row, col }) {
-    console.log("try to get piece")
-    console.log(`row:${row}, col:${col}`)
-    return this.#board[row][col]
+      if (position.hasOwnProperty('row') && position.hasOwnProperty('col')) {
+        return this.#board[row][col]
+      } else {
+        throw Error('Position object must have row and col properties')
+      }
+    } else {
+      throw Error('Position type must be string or object')
+    }
   }
 
   setPiece({ row, col }, piece) {
@@ -142,7 +146,7 @@ export default class TamerlaneChess {
     }
 
     console.log('piece.promotedCount ', piece.promotedCount)
-    this.printBoard()
+    // this.printBoard()
   }
 
   isPiecePromotedPawnOfPawn(fromSquare) {
@@ -161,8 +165,8 @@ export default class TamerlaneChess {
     const { row, col } = this.squareToPosition(square)
     if (!this.isMovingPlayerInTurn(row, col)) return null
     console.log(`row:${row}, col:${col}`)
-    const piece = this.getPieceViaPosition({ row, col })
-    this.printBoard()
+    const piece = this.getPiece({ row, col })
+    // this.printBoard()
     console.log('piece', piece)
     const moveList = getMoveList(this.#board, piece, this.#playerColor)
 
@@ -183,7 +187,7 @@ export default class TamerlaneChess {
 
   hasMovingPlayerPiece(row, col, movingPlayerColor) {
     console.log(`row:${row}, col:${col}`)
-    const piece = this.getPieceViaPosition({ row, col })
+    const piece = this.getPiece({ row, col })
     // if (piece && piece.color === movingPlayerColor) {
     //   return true
     // }
@@ -192,7 +196,7 @@ export default class TamerlaneChess {
 
   isMovingPlayerInTurn(row, col) {
     console.log(`row:${row}, col:${col}`)
-    const piece = this.getPieceViaPosition({ row, col })
+    const piece = this.getPiece({ row, col })
     if (piece && piece.color === this.#turn) return true
     return false
   }
@@ -251,7 +255,7 @@ export default class TamerlaneChess {
       this.undoMove(fromPos, toPos)
       return
     }
-    this.printBoard()
+    // this.printBoard()
     //move is possible
     this.makePromotion(piece)
     this.updateMoves(movingPlayerColor)
@@ -350,8 +354,7 @@ export default class TamerlaneChess {
   updateMoves(movingPlayerColor) {
     for (let row = 0; row < TamerlaneChess.#rowCount; row++) {
       for (let col = 0; col < TamerlaneChess.#colCount; col++) {
-        console.log(`row:${row}, col:${col}`)
-        const piece = this.getPieceViaPosition({ row, col })
+        const piece = this.getPiece({ row, col })
         if (piece !== 0) {
           if (piece.pawn) piece.updateValidMoves(this.#board, movingPlayerColor)
           else piece.updateValidMoves(this.#board)

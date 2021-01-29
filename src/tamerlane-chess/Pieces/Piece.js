@@ -16,7 +16,6 @@ export default class Piece {
   }
 
   setFenChar() {
-    console.log(this)
     this.fenChar =
       this.color === COLOR.white
         ? this.fenChar.toUpperCase()
