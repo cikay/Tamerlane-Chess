@@ -88,7 +88,7 @@ export default class TamerlaneChess {
           ? defaultWhitePiecesAtBottomFen
           : defaultBlackPiecesAtBottomFen
     }
-
+    this.#fen = expandFenEmptySquares(this.#fen)
     this.parseFen(FEN_TYPE.player)
     this.parseFen(FEN_TYPE.opponent)
     // this.printBoard()
@@ -115,6 +115,21 @@ export default class TamerlaneChess {
     this.#board[row][col] = piece
   }
 
+  isPromoted(piece) {
+    if (!piece.pawn) return false
+    const { row, col, color, promotedToPiece } = piece
+    const conditionRow =
+      this.#playerColor === color
+        ? TamerlaneChess.#lastRowIndex
+        : TamerlaneChess.#firstRowIndex
+    console.log('condition row', conditionRow)
+    console.log('piece row', row)
+    if (conditionRow === row + 1) {
+      return true
+    }
+    return false
+  }
+
   makePromotion(piece) {
     if (!piece.pawn) return
     const { row, col, color, promotedToPiece } = piece
@@ -131,18 +146,18 @@ export default class TamerlaneChess {
     }
 
     //opponent board will be set
-    console.log('promoted to ', piece.promotedToPiece)
     console.log('piece.promotedCount ', piece.promotedCount)
     if (piece.constructor.name === 'PawnOfPawn') {
       piece.promotedCount += 1
       if (piece.promotedCount === 3) {
         const adventitiousKing = new promotedToPiece(row, col, color)
         this.setPiece({ row, col }, adventitiousKing)
-        this.updateFen()
+        this.updateFenToPromotedPiece({ row, col }, adventitiousKing.fenChar)
       }
     } else {
       const piece = new promotedToPiece(row, col, color)
       this.setPiece({ row, col }, piece)
+      this.updateFenToPromotedPiece({ row, col }, piece.fenChar)
     }
 
     console.log('piece.promotedCount ', piece.promotedCount)
@@ -287,13 +302,25 @@ export default class TamerlaneChess {
     return this.#fen
   }
 
+  isSwitched() {
+    return false
+  }
+
+  updateFenToPromotedPiece(promotedPiecePosition, promotedPieceFenChar) {
+    const movedPieceCharIndexInFen = this.getIndexInFen(promotedPiecePosition)
+    this.replacePieceFenCharAt(movedPieceCharIndexInFen, promotedPieceFenChar)
+  }
+
   updateFen(from, to) {
-    let movedPiece = this.#board[from.row][from.col]
-    this.#fen = expandFenEmptySquares(this.#fen)
-    let movedPieceCharIndexInFen = this.getIndexInFen(movedPiece)
-    this.#fen = replaceAt(this.#fen, movedPieceCharIndexInFen, '1')
-    let toSquareCharIndexInFen = this.getIndexInFen(to)
-    this.#fen = replaceAt(this.#fen, toSquareCharIndexInFen, movedPiece.fenChar)
+    const movedPiece = this.getPiece(from)
+    const movedPieceCharIndexInFen = this.getIndexInFen(movedPiece)
+    const toSquareCharIndexInFen = this.getIndexInFen(to)
+    this.replacePieceFenCharAt(movedPieceCharIndexInFen, '1')
+    this.replacePieceFenCharAt(toSquareCharIndexInFen, movedPiece.fenChar)
+  }
+
+  replacePieceFenCharAt(charIndex, pieceFenChar) {
+    this.#fen = replaceAt(this.#fen, charIndex, pieceFenChar)
   }
 
   getIndexInFen({ row, col }) {
