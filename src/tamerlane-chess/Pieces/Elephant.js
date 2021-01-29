@@ -7,5 +7,10 @@ export default class Elephant extends NoneSlidePiece {
     { rowDir: 2, colDir: -2 },
     { rowDir: -2, colDir: -2 },
   ]
-  static fenChar = 'f'
+  
+  constructor(row,col,color){
+    super(row,col,color)
+    this.fenChar = 'f'
+    this.setFenChar()
+  }
 }

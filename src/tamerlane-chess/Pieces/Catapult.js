@@ -7,10 +7,12 @@ export default class Catapult extends Piece {
     { rowDir: -1, colDir: -1 },
     { rowDir: 1, colDir: -1 },
   ]
-  static fenChar = 'm'
-  // constructor(row, col, color) {
-  //   super(row, col, color)
-  // }
+ 
+  constructor(row, col, color) {
+    super(row, col, color)
+    this.fenChar = 'm'
+    this.setFenChar()
+  }
 
   validMoves(board) {
     const moves = []

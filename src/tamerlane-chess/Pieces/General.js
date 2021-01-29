@@ -7,5 +7,10 @@ export default class General extends NoneSlidePiece {
     { rowDir: 1, colDir: -1 },
     { rowDir: -1, colDir: -1 },
   ]
-  static fenChar = 'g'
+
+  constructor(row,col,color){
+    super(row,col,color)
+    this.fenChar = 'g'
+    this.setFenChar()
+  }
 }

@@ -11,5 +11,10 @@ export default class Knight extends NoneSlidePiece {
     { rowDir: -1, colDir: -2 },
     { rowDir: -2, colDir: -1 },
   ]
-  static fenChar = 'a'
+
+  constructor(row, col, color) {
+    super(row, col, color)
+    this.fenChar = 'a'
+    this.setFenChar()
+  }
 }

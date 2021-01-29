@@ -3,10 +3,12 @@ import Piece from './Piece'
 import { KingDirectionsObj, NoneSlidePieceMovesObj } from '../helper'
 
 export default class Prince extends Piece {
-  static fenChar = 'o'
+ 
   constructor(row, col, color) {
     super(row, col, color)
     this.king = true
+    this.fenChar = "o"
+    this.setFenChar()
   }
 
   validMoves(board, playerColor) {

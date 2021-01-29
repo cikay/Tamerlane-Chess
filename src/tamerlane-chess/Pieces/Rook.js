@@ -7,7 +7,12 @@ export default class Rook extends Piece {
     { rowDir: -1, colDir: 0 },
     { rowDir: 0, colDir: -1 },
   ]
-  static fenChar = 'k'
+
+  constructor(row, col, color) {
+    super(row, col, color)
+    this.fenChar = 'k'
+    this.setFenChar()
+  }
 
   validMoves(board) {
     const moves = []

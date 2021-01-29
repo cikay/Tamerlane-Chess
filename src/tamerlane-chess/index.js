@@ -312,8 +312,8 @@ export default class TamerlaneChess {
     console.log(fenRows)
     for (let fenRowIndex in fenRows) {
       for (let fenCharIndex in fenRows[fenRowIndex]) {
-        let movedPieceFenChar = this.formatFenChar(movedPiece)
-        if (fenRows[fenRowIndex][fenCharIndex] === movedPieceFenChar) {
+        
+        if (fenRows[fenRowIndex][fenCharIndex] === movedPiece.fenChar) {
           console.log(`fenRowIndex:${fenRowIndex}`)
           if (
             9 - fenRowIndex === movedPiece.row &&
@@ -333,7 +333,7 @@ export default class TamerlaneChess {
             this.#fen = replaceAt(
               this.#fen,
               toSquareCharIndexInFen,
-              movedPieceFenChar
+              movedPiece.fenChar
             )
             return
           }
