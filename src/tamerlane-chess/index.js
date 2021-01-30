@@ -59,6 +59,9 @@ export default class TamerlaneChess {
   #lastTakedPiece = null
   #fen
   #opponentFen
+  #whitePieces
+  #blackPieces
+
   constructor(playerColor, fen = null) {
     this.#playerColor = playerColor
 
@@ -69,7 +72,7 @@ export default class TamerlaneChess {
 
     for (let row = 0; row < 10; row++) {
       for (let col = 0; col < 11; col++) {
-        this.setPiece({ row, col }, 0)
+        this.setPieceToBoard({ row, col }, 0)
         this.#opponentBoard[row][col] = 0
       }
     }
@@ -90,8 +93,25 @@ export default class TamerlaneChess {
     }
     this.#fen = expandFenEmptySquares(this.#fen)
     this.parseFen(FEN_TYPE.player)
-    this.parseFen(FEN_TYPE.opponent)
+    // this.parseFen(FEN_TYPE.opponent)
+    this.#whitePieces = this.getActivePiece(COLOR.white)
+    this.#blackPieces = this.getActivePiece(COLOR.black)
     // this.printBoard()
+  }
+
+  getActivePiece(color) {
+    const pieceList = []
+    let row, col
+    for (row = 0; row < TamerlaneChess.#rowCount; row++) {
+      for (col = 0; col < TamerlaneChess.#colCount; col++) {
+        const piece = this.getPiece({ row, col })
+        if (piece.color === color) {
+          pieceList.push(piece)
+        }
+      }
+    }
+
+    return pieceList
   }
 
   getPiece(position) {
@@ -111,7 +131,7 @@ export default class TamerlaneChess {
     }
   }
 
-  setPiece({ row, col }, piece) {
+  setPieceToBoard({ row, col }, piece) {
     this.#board[row][col] = piece
   }
 
@@ -151,12 +171,12 @@ export default class TamerlaneChess {
       piece.promotedCount += 1
       if (piece.promotedCount === 3) {
         const adventitiousKing = new promotedToPiece(row, col, color)
-        this.setPiece({ row, col }, adventitiousKing)
+        this.setPieceToBoard({ row, col }, adventitiousKing)
         this.updateFenToPromotedPiece({ row, col }, adventitiousKing.fenChar)
       }
     } else {
       const piece = new promotedToPiece(row, col, color)
-      this.setPiece({ row, col }, piece)
+      this.setPieceToBoard({ row, col }, piece)
       this.updateFenToPromotedPiece({ row, col }, piece.fenChar)
     }
 
@@ -176,20 +196,86 @@ export default class TamerlaneChess {
     return false
   }
 
-  getMoves(square) {
+  getMoves(square, movingPlayerColor) {
     const { row, col } = this.squareToPosition(square)
     if (!this.isMovingPlayerInTurn(row, col)) return null
     console.log(`row:${row}, col:${col}`)
     const piece = this.getPiece({ row, col })
     // this.printBoard()
     console.log('piece', piece)
-    const moveList = getMoveList(this.#board, piece, this.#playerColor)
-
+    let moveList
     console.log(moveList)
-    const squareList = moveList.map((pos) => {
-      return this.positionToSquare(pos.row, pos.col)
+    let squareList
+    if (this.isChecked(piece.color)) {
+      console.log('checked, getting safe moves')
+      moveList = this.getSafeMoves(piece, movingPlayerColor)
+    } else {
+      moveList = getMoveList(this.#board, piece, this.#playerColor)
+    }
+
+    squareList = moveList.map((move) => {
+      return this.positionToSquare(move.row, move.col)
     })
+
     return squareList
+  }
+
+  getPlayerPieces(color) {
+    return color === COLOR.white ? this.#whitePieces : this.#blackPieces
+  }
+
+  getSafeMoves(piece, movingPlayerColor) {
+    let fakeTakedPiece
+    const safeMoves = []
+    const opponentPlayerColor =
+      piece.color === COLOR.white ? COLOR.black : COLOR.white
+    const moves = getMoveList(this.#board, piece, this.#playerColor)
+    for (const move of moves) {
+      const from = { row: piece.row, col: piece.col }
+      fakeTakedPiece = this.getPiece(move)
+      this.changePiecePosition(from, move)
+      console.log('updating opponent player moves')
+      this.updatePlayerMoves(opponentPlayerColor, movingPlayerColor)
+      const king = this.getSingleKing(piece.color)
+      if (
+        !this.isSquareInAttacked({ row: king.row, col: king.col }, piece.color)
+      ) {
+        safeMoves.push(move)
+      }
+      this.changePiecePosition(move, from)
+      this.setPieceToList(fakeTakedPiece)
+    }
+    this.updatePlayerMoves(opponentPlayerColor, movingPlayerColor)
+    return safeMoves
+  }
+
+  setTakedPiece(piece) {
+    if (piece === 0) return
+    this.setPieceToBoard({ row: piece.row, col: piece.col }, piece)
+    this.setPieceToList(piece)
+  }
+
+  getPlayerPieceList(color) {
+    return color === COLOR.white ? this.#whitePieces : this.#blackPieces
+  }
+
+  getSingleKing(color) {
+    return color === COLOR.white ? this.#whiteKings[0] : this.#blackKings[0]
+  }
+
+  isSquareInAttacked(square, color) {
+    const opponentPieces =
+      color === COLOR.white
+        ? this.getPlayerPieces(COLOR.black)
+        : this.getPlayerPieces(COLOR.white)
+    for (const piece of opponentPieces) {
+      for (const move of piece.moveList) {
+        if (move.row === square.row && move.col === square.col) {
+          return true
+        }
+      }
+    }
+    return false
   }
 
   getTurn() {
@@ -217,21 +303,26 @@ export default class TamerlaneChess {
   }
 
   undoMove(from, to) {
-    this.changePosition(to, from)
+    this.changePiecePosition(to, from)
     if (this.#lastTakedPiece) {
       this.#board[to.row][to.col] = this.#lastTakedPiece
-      //fen tekrar update edilecek
     }
   }
 
   changePiecePosition(from, to) {
-    this.updateFen(from, to)
+    // this.updateFen(from, to)
     this.#lastTakedPiece = this.#board[to.row][to.col]
     const movingPiece = this.#board[from.row][from.col]
     movingPiece.changePosition(to.row, to.col)
     this.#board[to.row][to.col] = this.#board[from.row][from.col]
     this.#board[from.row][from.col] = 0
   }
+
+  makeTemporaryMove(from, to) {
+    this.changePiecePosition(from, to)
+  }
+
+  undoTemporaryMove(from, to) {}
 
   makeMove(fromSquare, toSquare, movingPlayerColor) {
     console.log(`from:${fromSquare}, to:${toSquare}`)
@@ -249,6 +340,7 @@ export default class TamerlaneChess {
     }
 
     const piece = this.#board[fromPos.row][fromPos.col]
+
     const color = piece.color
     const moves = getMoveList(this.#board, piece, this.#playerColor)
 
@@ -263,15 +355,20 @@ export default class TamerlaneChess {
     console.log('is move valid')
     if (!isMoveValid) return null
     console.log('move valid')
-    const checkedBefore = this.isChecked(piece)
+
+    const checkedBefore = this.isChecked(piece.color)
+    console.log('checkedBefore', checkedBefore)
     this.changePiecePosition(fromPos, toPos)
     //before is check or before is check and after move there is still check
-    if (this.isChecked(color) || (checkedBefore && this.isChecked(color))) {
+    const checked = this.isChecked(color)
+    console.log('checked', checked)
+    if (checked || (checkedBefore && this.isChecked(color))) {
       this.undoMove(fromPos, toPos)
       return
     }
     // this.printBoard()
     //move is possible
+    this.updateFen(fromPos, toPos, piece.fenChar)
     this.makePromotion(piece)
     this.updateMoves(movingPlayerColor)
 
@@ -311,12 +408,16 @@ export default class TamerlaneChess {
     this.replacePieceFenCharAt(movedPieceCharIndexInFen, promotedPieceFenChar)
   }
 
-  updateFen(from, to) {
-    const movedPiece = this.getPiece(from)
+  updateFen(from, to, movedPieceFenChar) {
+    //position already chaged so from is to, to is from
+    const newTo = from
+    const newFrom = to
+    const movedPiece = this.getPiece(newFrom)
+    console.log('moved piece', movedPiece)
     const movedPieceCharIndexInFen = this.getIndexInFen(movedPiece)
-    const toSquareCharIndexInFen = this.getIndexInFen(to)
-    this.replacePieceFenCharAt(movedPieceCharIndexInFen, '1')
-    this.replacePieceFenCharAt(toSquareCharIndexInFen, movedPiece.fenChar)
+    const toSquareCharIndexInFen = this.getIndexInFen(newTo)
+    this.replacePieceFenCharAt(movedPieceCharIndexInFen, movedPieceFenChar)
+    this.replacePieceFenCharAt(toSquareCharIndexInFen, '1')
   }
 
   replacePieceFenCharAt(charIndex, pieceFenChar) {
@@ -379,40 +480,85 @@ export default class TamerlaneChess {
   }
 
   updateMoves(movingPlayerColor) {
-    for (let row = 0; row < TamerlaneChess.#rowCount; row++) {
-      for (let col = 0; col < TamerlaneChess.#colCount; col++) {
-        const piece = this.getPiece({ row, col })
-        if (piece !== 0) {
-          if (piece.pawn) piece.updateValidMoves(this.#board, movingPlayerColor)
-          else piece.updateValidMoves(this.#board)
-        }
-      }
+    this.updatePlayerMoves(COLOR.white, movingPlayerColor)
+    this.updatePlayerMoves(COLOR.black, movingPlayerColor)
+  }
+
+  updatePlayerMoves(color, movingPlayerColor) {
+    console.log('color', color)
+    console.log('moving playerColor', movingPlayerColor)
+    const pieces = color === COLOR.white ? this.#whitePieces : this.#blackPieces
+    let piece
+    console.log(pieces)
+    for (piece of pieces) {
+      if (piece.pawn) piece.updateValidMoves(this.#board, movingPlayerColor)
+      else piece.updateValidMoves(this.#board)
+    }
+  }
+
+  setPieceToList(piece) {
+    if (piece.color === COLOR.white) {
+      this.#whitePieces.push(piece)
+    } else if (piece.color === COLOR.black) {
+      this.#blackPieces.push(piece)
     }
   }
 
   getOpponentValues() {}
 
   draw(win, color) {}
-  getDangerMoves(color) {}
+  setKing(king) {
+    console.log('king setting', king)
+    if (king.color === COLOR.white) {
+      this.#whiteKings.push(king)
+    } else {
+      this.#blackKings.push(king)
+    }
+  }
+
+  getDangerMoves(color) {
+    const kings = color === COLOR.white ? this.#whiteKings : this.#blackKings
+
+    if (kings.length === 1) {
+      const pieces =
+        color === COLOR.white ? this.#blackPieces : this.#whitePieces
+      let piece, move
+      for (piece of pieces) {
+        for (move of piece.moveList) {
+          if (move.row === kings[0].row && move.col === kings[0].col) {
+          }
+        }
+      }
+    }
+  }
 
   isChecked(color) {
-    // this.updateMoves()
-    // const dangerMoves = this.getDangerMoves(color)
-    // const kingPositions = []
-    // for (let i = 0; i < TamerlaneChess.#rowCount; i++) {
-    //   for (let j = 0; j < TamerlaneChess.#colCount; j++) {
-    //     const piece = this.#board[i][j]
-    //     if (typeof piece === 'object' && piece.king && piece.color === color) {
-    //       kingPositions.push([i, j])
-    //     }
-    //   }
-    // }
-    // //not gonna working
-    // if (kingPositions.length === 1 && dangerMoves.includes(kingPositions[0])) {
-    //   return true
-    // }
+    console.log('updating move in isChecked func')
+    this.updateMoves(color)
+
+    const kings = color === COLOR.white ? this.#whiteKings : this.#blackKings
+    console.log('kings', kings)
+    console.log('white kings', this.#whiteKings)
+    console.log('black kings', this.#blackKings)
+    if (kings.length === 1) {
+      const pieces =
+        color === COLOR.white ? this.#blackPieces : this.#whitePieces
+      console.log('pieces')
+      console.log(pieces)
+      let piece, move
+      const singleKing = kings[0]
+      for (piece of pieces) {
+        for (move of piece.moveList) {
+          if (move.row === singleKing.row && move.col === singleKing.col) {
+            return true
+          }
+        }
+      }
+    }
     return false
   }
+
+  isSingleKingIndangerMoves() {}
 
   printBoard() {
     for (let i = this.#board.length - 1; i >= 0; i--) {
@@ -425,13 +571,7 @@ export default class TamerlaneChess {
   parseFen(fenType) {
     console.log(fenType)
     let fen
-    // if (fenType === FEN_TYPE.player) {
-    //   this.#board = this.#board
-    //   fen = this.#fen
-    // } else if (fenType === FEN_TYPE.opponent) {
-    //   this.#board = this.#opponentBoard
-    //   fen = this.#opponentFen
-    // } else throw Error('fen type not matching')
+
     let fenCounter = 0
     let row = TamerlaneChess.#rowCount - 1
     let col = 0
@@ -474,7 +614,6 @@ export default class TamerlaneChess {
           piece = new GeneralPawn(row, col, TamerlaneChess.#blackColor)
           break
         case 'f':
-          console.log(this.#board)
           piece = new Elephant(row, col, TamerlaneChess.#blackColor)
           break
         case 'd':
@@ -500,7 +639,7 @@ export default class TamerlaneChess {
           break
         case 's':
           king = new King(row, col, TamerlaneChess.#blackColor)
-          this.#blackKings.push(king)
+          this.setKing(king)
           piece = king
           break
         case 'v':
@@ -564,9 +703,8 @@ export default class TamerlaneChess {
           piece = new General(row, col, TamerlaneChess.#whiteColor)
           break
         case 'S':
-          king = new King(row, col, TamerlaneChess.#whiteColor)
-          this.#whiteKings.push(king)
-          piece = king
+          piece = new King(row, col, TamerlaneChess.#whiteColor)
+          this.setKing(piece)
           break
         case 'V':
           piece = new Vizier(row, col, TamerlaneChess.#whiteColor)
@@ -589,17 +727,18 @@ export default class TamerlaneChess {
           fenCounter++
           continue
         default:
-          console.log('Fen ERROR')
+          console.log(this.#fen[fenCounter])
+          console.log('Fen finished')
           return
       }
 
       if (emptySquareCount === 0) {
-        this.setPiece({ row, col }, piece)
+        this.setPieceToBoard({ row, col }, piece)
         col += 1
       } else {
         for (let i = 0; i < emptySquareCount; i++) {
           col += 1
-          this.setPiece({ row, col }, 0)
+          this.setPieceToBoard({ row, col }, 0)
         }
       }
 
