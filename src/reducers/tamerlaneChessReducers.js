@@ -12,6 +12,7 @@ import {
   validPositionObject,
   getPositionObject,
 } from '../helper/Fen'
+import { COLOR } from '../tamerlane-chess/types'
 
 export const initialState = {
   fen: 'start',
@@ -24,7 +25,9 @@ export const initialState = {
   toSquare: '',
   selectedPiece: '',
   history: [],
-  currentPosition: getPositionObject('start'),
+  playerColor:
+    parseInt(Math.random() * 10) % 2 === 0 ? COLOR.white : COLOR.black,
+
   sourceSquare: '',
   targetSquare: '',
   sourcePiece: '',
@@ -36,13 +39,18 @@ export const initialState = {
   firstMove: false,
 }
 
+
+
 export default function tamerlaneChessReducer(state = initialState, action) {
   const { type, payload } = action
   switch (type) {
     case START_GAME:
-      const tamerlaneChess = new TamerlaneChess('w')
+      console.log("muzaffer")
+      const currentPosition = getPositionObject('start', state.playerColor)
+      const tamerlaneChess = new TamerlaneChess(state.playerColor)
       return {
         ...state,
+        currentPosition,
         tamerlaneChess,
       }
     case MOVE:

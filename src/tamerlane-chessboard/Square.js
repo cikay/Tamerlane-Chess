@@ -12,10 +12,9 @@ const Square = ({ square, squareColor, row, col }) => {
     squareStyles,
   } = useTamerlaneChessContext()
 
-  const hasPiece = (currentPosition, square) => {
-    const keys = Object.keys(currentPosition)
-    return currentPosition && keys && keys.includes(square)
-  }
+  const hasPiece = (currentPosition, square) =>
+    currentPosition && Object.keys(currentPosition)?.includes(square)
+
   const getPieceName = (square) => {
     return currentPosition[square]
   }
@@ -32,7 +31,7 @@ const Square = ({ square, squareColor, row, col }) => {
       id={square}
       onClick={() => handleClick(square)}
       className={`file${col} rank${row}`}
-    > 
+    >
       <div style={{ ...squareStyles[square], ...size() }}>
         {hasPiece(currentPosition, square) && (
           <Piece pieceName={getPieceName(square)}></Piece>
