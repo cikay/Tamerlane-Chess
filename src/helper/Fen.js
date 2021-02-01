@@ -98,6 +98,7 @@ export function validFen(fen) {
   */
 
   //abcdefghikmnprxyzqv
+  console.log(fen)
   const pieceChars = 'fdikamzgsvzmakpxcbyqehtnrPXCBYQEHTNRFDIKAMZGSV1'.split('')
   for (const chunk of chunks) {
     //'f1d1i1i1d1f/kamzgsvzmak/pxcbyqehtnr/92/92/92/92/PXCBYQEHTNR/KAMZGSVZMAK/F1D1I1I1D1F*2 w'
@@ -108,7 +109,7 @@ export function validFen(fen) {
     for (const charPiece of chunk) {
       if (
         charPiece.search(
-          /[^fdikamzgsvzmakpxcbyqehtnrPXCBYQEHTNRFDIKAMZGSV1]/
+          /[^fdikamzgsvzmakpxcbyqehtnrPXCBYQEHTNRFDIKAMZGSV1OoJj]/
         ) !== -1
       ) {
         throw Error(`Each fen char must be one of them ${pieceChars}`)

@@ -33,8 +33,6 @@ export const NoneSlidePieceMovesObj = {
     for (const { rowDir, colDir } of this.directions) {
       let curentRow = this.row + rowDir
       let currentCol = this.col + colDir
-      console.log('none slide piece move getters')
-      console.log(this)
       if (this.IsPositionInBoard(curentRow, currentCol)) {
         const piece = board[curentRow][currentCol]
         move = { row: curentRow, col: currentCol }

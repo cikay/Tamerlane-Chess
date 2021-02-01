@@ -174,12 +174,18 @@ export default class TamerlaneChess {
       if (piece.promotedCount === 3) {
         const adventitiousKing = new promotedToPiece(row, col, color)
         this.setPieceToBoard({ row, col }, adventitiousKing)
+        this.setPieceToList(adventitiousKing)
         this.updateFenToPromotedPiece({ row, col }, adventitiousKing.fenChar)
+        this.setKing(adventitiousKing)
       }
     } else {
       const piece = new promotedToPiece(row, col, color)
       this.setPieceToBoard({ row, col }, piece)
+      this.setPieceToList(piece)
       this.updateFenToPromotedPiece({ row, col }, piece.fenChar)
+      if (piece.constructor.name === 'Prince') {
+        this.setKing(piece)
+      }
     }
 
     console.log('piece.promotedCount ', piece.promotedCount)
@@ -220,7 +226,11 @@ export default class TamerlaneChess {
     squareList = moveList.map((move) => {
       return this.positionToSquare(move.row, move.col)
     })
-
+    if (piece.color === COLOR.white) {
+      console.log(this.#whiteKings)
+    } else {
+      console.log(this.#blackKings)
+    }
     return squareList
   }
 
@@ -282,6 +292,21 @@ export default class TamerlaneChess {
     }
   }
 
+  removeKing(piece) {
+    console.log("removing king", piece)
+    if (piece.color === COLOR.white) {
+      console.log('king removed', piece)
+      this.#whiteKings = [...this.#whiteKings].filter(
+        (king) => JSON.stringify(king) !== JSON.stringify(piece)
+      )
+      console.log("white kings", this.#whiteKings)
+    } else {
+      this.#blackKings = [...this.#blackKings].filter(
+        (king) => JSON.stringify(king) !== JSON.stringify(piece)
+      )
+    }
+  }
+
   setTakedPiece(piece) {
     if (piece === 0) return
     this.setPieceToBoard({ row: piece.row, col: piece.col }, piece)
@@ -338,6 +363,9 @@ export default class TamerlaneChess {
   undoMove(from, to, takedPiece) {
     this.changePiecePosition(to, from)
     this.setTakedPiece(takedPiece)
+    if (takedPiece.king) {
+      this.setKing(takedPiece)
+    }
   }
 
   changePiecePosition(from, to) {
@@ -388,6 +416,10 @@ export default class TamerlaneChess {
     const takedPiece = this.getPiece(toPos)
     this.changePiecePosition(fromPos, toPos)
     this.removePieceFromList(takedPiece)
+    if (takedPiece.king) {
+      console.log("try to remove king")
+      this.removeKing(takedPiece)
+    }
     if (this.isChecked(piece.color)) {
       this.undoMove(fromPos, toPos, takedPiece)
       return
@@ -411,6 +443,13 @@ export default class TamerlaneChess {
       savedMove = move
     } else {
       savedMove = moveInOpponentBoard
+    }
+    if (takedPiece.king) {
+      if (takedPiece.color === COLOR.white) {
+        console.log(this.#whiteKings)
+      } else {
+        console.log(this.#blackKings)
+      }
     }
 
     return {

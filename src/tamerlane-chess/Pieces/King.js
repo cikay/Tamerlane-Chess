@@ -11,10 +11,11 @@ export default class King extends NoneSlidePiece {
     { rowDir: 1, colDir: 0 },
     { rowDir: 1, colDir: 1 },
   ]
-  
-  constructor(row,col,color){
-    super(row,col,color)
-    this.fenChar = "s"
+
+  constructor(row, col, color) {
+    super(row, col, color)
+    this.fenChar = 's'
+    this.king = true
     this.setFenChar()
   }
 
