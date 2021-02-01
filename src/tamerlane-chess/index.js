@@ -266,12 +266,14 @@ export default class TamerlaneChess {
   removePieceFromList(piece) {
     if (piece === 0) return
     if (piece.color === COLOR.white) {
+      console.log('taked piece', piece)
       this.#whitePieces = [...this.#whitePieces].filter(
         (pce) => JSON.stringify(pce) !== JSON.stringify(piece)
       )
       console.log('white pieces in this')
       console.log(this.#whitePieces)
     } else {
+      console.log('taked piece', piece)
       this.#blackPieces = [...this.#blackPieces].filter(
         (pce) => JSON.stringify(pce) !== JSON.stringify(piece)
       )
@@ -333,11 +335,9 @@ export default class TamerlaneChess {
     return false
   }
 
-  undoMove(from, to) {
+  undoMove(from, to, takedPiece) {
     this.changePiecePosition(to, from)
-    if (this.#lastTakedPiece) {
-      this.#board[to.row][to.col] = this.#lastTakedPiece
-    }
+    this.setTakedPiece(takedPiece)
   }
 
   changePiecePosition(from, to) {
@@ -385,14 +385,11 @@ export default class TamerlaneChess {
     if (!isMoveValid) return null
     console.log('move valid')
 
-    // const checkedBefore = this.isChecked(piece.color)
-    // console.log('checkedBefore', checkedBefore)
+    const takedPiece = this.getPiece(toPos)
     this.changePiecePosition(fromPos, toPos)
-    //before is check or before is check and after move there is still check
-    // const checked = this.isChecked(piece.color)
-    // console.log('checked', checked)
+    this.removePieceFromList(takedPiece)
     if (this.isChecked(piece.color)) {
-      this.undoMove(fromPos, toPos)
+      this.undoMove(fromPos, toPos, takedPiece)
       return
     }
     // this.printBoard()
@@ -577,6 +574,7 @@ export default class TamerlaneChess {
         color === COLOR.white ? this.#blackPieces : this.#whitePieces
       let piece, move
       const singleKing = kings[0]
+      console.log(pieces)
       for (piece of pieces) {
         for (move of piece.moveList) {
           if (move.row === singleKing.row && move.col === singleKing.col) {
