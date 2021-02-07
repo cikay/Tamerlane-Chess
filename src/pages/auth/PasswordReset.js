@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Card, Button, Form, Container, Alert } from 'react-bootstrap'
-import { useAuthContext } from '../contexts/AuthContext'
-import { Link } from 'react-router-dom'
+import { useAuthContext } from '../../contexts/AuthContext'
+import CenteredContainer from '../../components/CenteredContainer'
+
 const Login = (props) => {
   const [formData, setFormData] = useState({
     email: '',
-    password: '',
   })
 
   const [error, setError] = useState({
@@ -14,7 +14,7 @@ const Login = (props) => {
     message: '',
   })
   const { history } = props
-  const { login } = useAuthContext()
+  const { verify } = useAuthContext()
 
   const handleChange = (e) => {
     const { id, value } = e.target
@@ -34,18 +34,15 @@ const Login = (props) => {
     console.log('formData', formData)
 
     try {
-      const res = await login(formData)
+      const res = await verify(formData)
     } catch (err) {}
   }
 
   return (
-    <Container
-      className='d-flex align-items-center justify-content-center'
-      style={{ minHeight: '70vh' }}
-    >
+    <CenteredContainer>
       <Card className='w-100' style={{ maxWidth: '430px' }}>
         <Card.Body>
-          <h2 className='text-center mb-4'>Giriş yap</h2>
+          <h2 className='text-center mb-4'>Şifre sıfırlama</h2>
           {error.isError && <Alert variant='danger'>{error.message}</Alert>}
           <Form onSubmit={handleSubmit}>
             <Form.Group id='email'>
@@ -57,25 +54,14 @@ const Login = (props) => {
                 required
               />
             </Form.Group>
-            <Form.Group id='password'>
-              <Form.Label>Şifre</Form.Label>
-              <Form.Control
-                type='password'
-                id='password'
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
+
             <Button className='w-100' type='submit'>
-              Giriş yap
+              Şifre sıfırla
             </Button>
           </Form>
         </Card.Body>
-        <div className='w-100 text-center mt-2'>
-          Hesabınız yok mu? <Link to='/signup'>Kaydol</Link>
-        </div>
       </Card>
-    </Container>
+    </CenteredContainer>
   )
 }
 

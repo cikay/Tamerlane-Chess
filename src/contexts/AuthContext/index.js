@@ -105,14 +105,8 @@ export const AuthProvider = (props) => {
   //   }
   // }
 
-  const signup = async ({ email, firstname, lastname, password }) => {
-    const payload = {
-      email,
-      firstname,
-      lastname,
-      password,
-    }
-
+  const signup = async (payload) => {
+    console.log('sign up payload', payload)
     try {
       const res = await axios.post(
         `${REACT_API_URL}/account/register/`,
@@ -166,6 +160,15 @@ export const AuthProvider = (props) => {
     }
   }
 
+  const getUser = async (username) => {
+    try {
+      const res = await axios.get(`${REACT_API_URL}/account/${username}`)
+      return res
+    } catch (error) {
+      throw error
+    }
+  }
+
   const resetPasswordConfirm = async (payload) => {
     try {
       const res = await axios.post(
@@ -205,6 +208,7 @@ export const AuthProvider = (props) => {
         checkAuthenticated,
         resetPassword,
         resetPasswordConfirm,
+        getUser,
       }}
     >
       {props.children}

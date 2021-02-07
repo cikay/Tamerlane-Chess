@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 
-import { useAuthContext } from '../contexts/AuthContext'
+import { useAuthContext } from '../../contexts/AuthContext'
 
 const PasswordResetConfirm = (props) => {
   const { history, match } = props

@@ -11,14 +11,18 @@ from .views import (
     RequestResetPasswordByEmailView,
     PasswordResetConfirmToken,
     SetNewPasswordView,
+    SearchView
 )
 
 
 urlpatterns = [
+    
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginAPIView.as_view(), name='login'),
     path('email-verify/', VerifyEmail.as_view(), name='verify-email'),
     path('password-reset-request/', RequestResetPasswordByEmailView.as_view(), name='reset-password'),
     path('password-reset-confirm/', SetNewPasswordView.as_view(), name='reset-password-complete'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('<username>/', SearchView.as_view(), name='search-user'),
+    
 ]

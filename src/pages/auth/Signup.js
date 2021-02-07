@@ -1,11 +1,13 @@
 import React, { useState, useRef } from 'react'
 import { withRouter, Link } from 'react-router-dom'
 import { Card, Button, Form, Container, Alert } from 'react-bootstrap'
-import { useAuthContext } from '../contexts/AuthContext'
+import { useAuthContext } from '../../contexts/AuthContext'
+import CenteredContainer from '../../components/CenteredContainer'
 
 const Signup = (props) => {
   const [formData, setFormData] = useState({
     email: '',
+    username: '',
     firstname: '',
     lastname: '',
     password: '',
@@ -35,7 +37,7 @@ const Signup = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const { email, password, confirmPassword, firstname, lastname } = formData
+    const { email, password, confirmPassword, firstname, lastname, username } = formData
     console.log('formData', formData)
     if (password !== confirmPassword) {
       setError((prevState) => ({
@@ -47,7 +49,13 @@ const Signup = (props) => {
     }
 
     try {
-      const res = await signup({ email, password, firstname, lastname })
+      const res = await signup({
+        email,
+        password,
+        firstname,
+        lastname,
+        username,
+      })
       setFormData((prevState) => ({
         ...prevState,
         displayForm: false,
@@ -56,10 +64,7 @@ const Signup = (props) => {
   }
 
   return (
-    <Container
-      className='d-flex align-items-center justify-content-center'
-      style={{ minHeight: '70vh' }}
-    >
+    <CenteredContainer>
       {formData.displayForm ? (
         <Card className='w-100' style={{ maxWidth: '430px' }}>
           <Card.Body>
@@ -80,6 +85,15 @@ const Signup = (props) => {
                 <Form.Control
                   type='text'
                   id='lastname'
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+              <Form.Group id='username'>
+                <Form.Label>Kullanıcı Adı</Form.Label>
+                <Form.Control
+                  type='text'
+                  id='username'
                   onChange={handleChange}
                   required
                 />
@@ -120,14 +134,14 @@ const Signup = (props) => {
               </Button>
             </Form>
           </Card.Body>
-          <div className='w-100 text-center mt-2'>
-            <Link to='/login'>Giriş Yap</Link>
-          </div>
         </Card>
       ) : (
         <Alert variant='info'>Mail adresinizi doğrulayınız!</Alert>
       )}
-    </Container>
+      <div className='w-100 text-center mt-2'>
+        <Link to='/login'>Giriş Yap</Link>
+      </div>
+    </CenteredContainer>
   )
 }
 

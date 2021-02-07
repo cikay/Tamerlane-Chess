@@ -33,10 +33,10 @@ export default function authReducer(state = initialState, action) {
       }
     case LOGIN_SUCCESS:
       console.log(payload)
-      localStorage.setItem('access', payload.tokens.access)
-      localStorage.setItem('currentUser', payload.user)
+      localStorage.setItem('currentUser', payload)
       return {
         ...state,
+        isAuthenticated: true,
         user: payload,
       }
     case SIGNUP_SUCCESS:
@@ -53,6 +53,8 @@ export default function authReducer(state = initialState, action) {
     case LOGIN_FAIL:
     case LOGOUT:
       localStorage.clear()
+      console.log('logout')
+      console.log(localStorage)
       return {
         ...state,
         access: null,

@@ -11,6 +11,16 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import User
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "username",
+            "firstname",
+            "lastname",
+            
+        )
+
 class RegisterSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(max_length=70, min_length=6, write_only=True)
@@ -19,6 +29,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'email',
+            "username",
             'firstname',
             'lastname',
             'password'
@@ -26,6 +37,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         email = attrs.get('email', '')
+        username = attrs.get('username', '')
         firstname = attrs.get('firstname', '')
         lastname = attrs.get('lastname', '')
 

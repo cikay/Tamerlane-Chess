@@ -4,7 +4,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 class UserManager(BaseUserManager):
 
-    def create_user(self, email, firstname, lastname, password=None):
+    def create_user(self, email, username, firstname, lastname, password=None):
 
         if firstname is None:
             raise TypeError('Kullanıcı ismi gerekli')
@@ -12,8 +12,10 @@ class UserManager(BaseUserManager):
             raise TypeError('Kullanıcı soy ismi gerekli')
         if email is None:
             raise TypeError('Email gerekli')
-
+        if username is None:
+            raise TypeError("username is required")
         user = self.model(
+            username=username,
             firstname=firstname,
             lastname=lastname,
             email=self.normalize_email(email),
@@ -24,9 +26,10 @@ class UserManager(BaseUserManager):
         user.save()
         return user
 
-    def create_superuser(self, email, firstname, lastname, password=None):
+    def create_superuser(self, email, username, firstname, lastname, password=None):
         user = self.create_user(
             email,
+            username,
             firstname,
             lastname,
             password
@@ -41,6 +44,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
 
     email = models.EmailField(max_length=100, unique=True)
+    username = models.CharField(max_length=20, unique=True)
     firstname = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
     is_verified = models.BooleanField(default=False)
@@ -52,7 +56,7 @@ class User(AbstractBaseUser):
 
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ('firstname', 'lastname',)
+    REQUIRED_FIELDS = ('firstname', 'lastname', "username")
 
     objects = UserManager()
 

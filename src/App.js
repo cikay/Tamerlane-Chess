@@ -1,20 +1,20 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import './App.css'
-import "bootstrap/dist/css/bootstrap.min.css"
-
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 // import Navbar from './components/Navbar'
 // import About from './components/About'
-import Signup from './pages/Signup'
-import Login from './pages/Login'
-import VerifyEmail from './pages/VerifyEmail'
-import PasswordReset from './pages/PasswordReset'
-import ResetPasswordConfirm from './pages/PasswordResetConfirm'
+import {
+  Login,
+  Signup,
+  VerifyEmail,
+  PasswordReset,
+  ResetPasswordConfirm,
+} from './pages/auth'
 import PageNotFound from './components/PageNotFound'
-import PrivateRoute from  "./components/PrivateRoute"
+import PrivateRoute from './components/PrivateRoute'
 import { AuthProvider } from './contexts/AuthContext'
 import TamerlaneChess from './tamerlane-chessboard'
-
 
 function App() {
   return (

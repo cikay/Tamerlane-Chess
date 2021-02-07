@@ -12,8 +12,9 @@ from django.utils.encoding import smart_bytes, smart_str
 from rest_framework import generics, status, views
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework import generics
+from rest_framework import generics, filters
 from rest_framework.authtoken.models import Token
+from rest_framework.filters import SearchFilter, OrderingFilter
 import jwt
 from environs import Env
 from .models import User
@@ -23,10 +24,19 @@ from .serializers import (
     LoginSerializer,
     ResetPasswordByEmailSerializer,
     SetNewPasswordSerializer,
+    UserSerializer
 )
 
 from .utils import get_object_or_none
 from django.contrib.auth import views as auth_views
+from django.views.generic.list import ListView
+
+class SearchView(generics.ListAPIView):
+    serializer_class = UserSerializer
+    def get_queryset(self):
+        return User.objects.filter(username__contains=self.kwargs['username'])
+
+
 
 class RegisterView(generics.GenericAPIView):
 

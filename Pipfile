@@ -9,6 +9,7 @@ djangorestframework = "*"
 django-cors-headers = "*"
 djangorestframework-simplejwt = "*"
 environs = "*"
+django-filter = "*"
 
 [dev-packages]
 
