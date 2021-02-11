@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'django_filters',
 
     #PROJECT APPS
-    'account', 
+    'account',
+    'game', 
     
 ]
 

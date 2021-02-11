@@ -2,6 +2,10 @@ import { COLOR } from '../tamerlane-chess/types'
 
 export const COLUMNS = 'abcdefghijk'.split('')
 
+export function getRandomPlayerColor() {
+  return parseInt(Math.random() * 10) % 2 === 0 ? COLOR.white : COLOR.black
+}
+
 export function fenToPieceCode(piece) {
   //black piece
   if (piece.toLowerCase() === piece) {

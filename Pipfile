@@ -10,6 +10,8 @@ django-cors-headers = "*"
 djangorestframework-simplejwt = "*"
 environs = "*"
 django-filter = "*"
+django-jsonfield = "*"
+jsonfield = "*"
 
 [dev-packages]
 

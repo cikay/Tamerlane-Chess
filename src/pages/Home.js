@@ -1,14 +1,20 @@
 import React, { useState } from 'react'
 
 import TamerlaneChess from '../tamerlane-chessboard'
+import GameSettings from '../components/GameSettings'
 import { Button, InputGroup, FormControl, ListGroup } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
-import { useAuthContext } from '../contexts/AuthContext'
+import { useAuthContext, useTamerlaneChessContext } from '../contexts'
+
+
 const Home = () => {
   const history = useHistory()
-  const [username, setUsername] = useState('')
+  const [selectedUser, setSelectedUser] = useState()
   const [users, setUsers] = useState([])
-  const { logout, getUser } = useAuthContext()
+  const { logout } = useAuthContext()
+  const { getUser, playRequest } = useTamerlaneChessContext()
+
+
   const logoutClick = async () => {
     try {
       await logout()
@@ -20,15 +26,28 @@ const Home = () => {
 
   const searchClick = async (e) => {
     const value = e.target.value
-    setUsername(value)
-    // console.log(e.target.value)
     if (value) {
-      const res = await getUser(value)
-      console.log('search', res.data)
-      setUsers(res.data)
+      if (users.length === 0 || users.length > 0) {
+        const res = await getUser(value)
+        console.log('search', res.data)
+        setUsers(res.data)
+        if (res.data.length === 1) {
+          console.log('length 1')
+          setSelectedUser(users[0])
+        }
+      }
     } else {
       setUsers([])
     }
+  }
+
+  const selectUser = async (e) => {
+    document.getElementById('search-input').value = ''
+    setUsers([])
+    const user = JSON.parse(e.target.getAttribute('user'))
+    console.log("user", user)
+    // setSelectedUser(user)
+    const res = await playRequest(user.id)
   }
 
   return (
@@ -39,19 +58,28 @@ const Home = () => {
           aria-label='Username'
           aria-describedby='basic-addon1'
           onChange={searchClick}
+          id='search-input'
         />
       </InputGroup>
-      {users &&
-        users.map((user) => {
+      <ListGroup as='ul' onClick={selectUser}>
+        {users?.map((user) => {
           console.log(user)
           return (
-            <ListGroup as='ul'>
-              <ListGroup.Item as='li' active>
-                {user.username}
-              </ListGroup.Item>
-            </ListGroup>
+            <ListGroup.Item
+              as='li'
+              active
+              user={JSON.stringify(user)}
+              key={user.id}
+            >
+              {user.username}
+              {'       '}
+              {user.firstname}
+              {'       '}
+              {user.lastname}
+            </ListGroup.Item>
           )
         })}
+      </ListGroup>
       <div className='w-100 text-center mt-2'>
         <Button variant='link' onClick={logoutClick}>
           Çıkış yap

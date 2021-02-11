@@ -18,10 +18,10 @@ import {
   USER_LOADED_SUCCESS,
   USER_LOADED_FAIL,
 } from './authActions'
-
+import { getRandomPlayerColor } from '../../helper/Fen'
 import authReducer, { initialState } from './authReducer'
 
-const REACT_API_URL = 'http://127.0.0.1:8000'
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL
 
 const AuthContext = createContext()
 export const useAuthContext = () => useContext(AuthContext)
@@ -31,7 +31,7 @@ export const AuthProvider = (props) => {
   const login = async (payload) => {
     try {
       // dispatch({  stateType: LOGIN_REQUEST })
-      const res = await axios.post(`${REACT_API_URL}/account/login/`, payload)
+      const res = await axios.post(`${REACT_APP_API_URL}/account/login/`, payload)
       dispatch({
         stateType: LOGIN_SUCCESS,
         payload: res.data,
@@ -64,7 +64,7 @@ export const AuthProvider = (props) => {
 
     try {
       const res = await axios.post(
-        `${REACT_API_URL}/account/jwt/verify/`,
+        `${REACT_APP_API_URL}/account/jwt/verify/`,
         payload
       )
       if (res.data.code !== 'token_not_valid') {
@@ -83,33 +83,12 @@ export const AuthProvider = (props) => {
     }
   }
 
-  const load_posts = () => {}
-  // export const load_user = (dispatch) => {
-
-  //   if(localStorage.getItem('access')){
-  //     const config = {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: `JWT ${localStorage.getItem('access')}`,
-  //         Accept: 'application/json',
-  //       }
-  //     }
-
-  //     try{
-
-  //       // const res = await axios.get(
-  //       //   `${REACT_API_URL}/`
-  //       // )
-
-  //       // disp     }
-  //   }
-  // }
 
   const signup = async (payload) => {
     console.log('sign up payload', payload)
     try {
       const res = await axios.post(
-        `${REACT_API_URL}/account/register/`,
+        `${REACT_APP_API_URL}/account/register/`,
         payload
       )
       dispatch({
@@ -128,7 +107,7 @@ export const AuthProvider = (props) => {
   const verify = async (payload) => {
     try {
       const res = await axios.post(
-        `${REACT_API_URL}/account/email-verify/`,
+        `${REACT_APP_API_URL}/account/email-verify/`,
         payload
       )
       dispatch({
@@ -144,7 +123,7 @@ export const AuthProvider = (props) => {
   const resetPassword = async (payload) => {
     try {
       const res = await axios.post(
-        `${REACT_API_URL}/account/password-reset-request/`,
+        `${REACT_APP_API_URL}/account/password-reset-request/`,
         payload
       )
       dispatch({
@@ -160,19 +139,10 @@ export const AuthProvider = (props) => {
     }
   }
 
-  const getUser = async (username) => {
-    try {
-      const res = await axios.get(`${REACT_API_URL}/account/${username}`)
-      return res
-    } catch (error) {
-      throw error
-    }
-  }
-
   const resetPasswordConfirm = async (payload) => {
     try {
       const res = await axios.post(
-        `${REACT_API_URL}/account/password-reset-confirm/`,
+        `${REACT_APP_API_URL}/account/password-reset-confirm/`,
         payload
       )
       dispatch({
@@ -208,7 +178,6 @@ export const AuthProvider = (props) => {
         checkAuthenticated,
         resetPassword,
         resetPasswordConfirm,
-        getUser,
       }}
     >
       {props.children}

@@ -34,7 +34,7 @@ from django.views.generic.list import ListView
 class SearchView(generics.ListAPIView):
     serializer_class = UserSerializer
     def get_queryset(self):
-        return User.objects.filter(username__contains=self.kwargs['username'])
+        return User.objects.filter(username__startswith=self.kwargs['username'])
 
 
 
@@ -119,7 +119,8 @@ class LoginAPIView(generics.GenericAPIView):
         response_data = {
             'success': True,
             'message': 'Kullanıcı girişi başarılı',
-            'email': serializer.data['email'],
+            'userId': user.id,
+            'username': user.username,
             'tokens': serializer.data['tokens']
         }
         return Response(response_data, status.HTTP_200_OK)

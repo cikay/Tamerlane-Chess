@@ -13,8 +13,12 @@ import {
 } from './pages/auth'
 import PageNotFound from './components/PageNotFound'
 import PrivateRoute from './components/PrivateRoute'
-import { AuthProvider } from './contexts/AuthContext'
-import TamerlaneChess from './tamerlane-chessboard'
+import {
+  AuthProvider,
+  TamerlaneChessProvider,
+  SocketProvider,
+} from './contexts'
+
 
 function App() {
   return (
@@ -37,7 +41,11 @@ function App() {
             <ResetPasswordConfirm />
           </Route>
           <Route exact path='/'>
-            <PrivateRoute></PrivateRoute>
+            <SocketProvider>
+              <TamerlaneChessProvider>
+                <PrivateRoute></PrivateRoute>
+              </TamerlaneChessProvider>
+            </SocketProvider>
           </Route>
           <Route path='*'>
             <PageNotFound />
