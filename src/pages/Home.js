@@ -1,19 +1,28 @@
 import React, { useState } from 'react'
-
-import TamerlaneChess from '../tamerlane-chessboard'
+import Dialog from '../components/Dialog'
 import GameSettings from '../components/GameSettings'
-import { Button, InputGroup, FormControl, ListGroup } from 'react-bootstrap'
+import {
+  Button,
+  InputGroup,
+  FormControl,
+  ListGroup,
+  Alert,
+} from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
 import { useAuthContext, useTamerlaneChessContext } from '../contexts'
-
 
 const Home = () => {
   const history = useHistory()
   const [selectedUser, setSelectedUser] = useState()
   const [users, setUsers] = useState([])
   const { logout } = useAuthContext()
-  const { getUser, playRequest } = useTamerlaneChessContext()
-
+  const {
+    getUser,
+    playRequest,
+    request,
+    response,
+    PLAY_STATE,
+  } = useTamerlaneChessContext()
 
   const logoutClick = async () => {
     try {
@@ -45,13 +54,15 @@ const Home = () => {
     document.getElementById('search-input').value = ''
     setUsers([])
     const user = JSON.parse(e.target.getAttribute('user'))
-    console.log("user", user)
+    console.log('user', user)
     // setSelectedUser(user)
     const res = await playRequest(user.id)
   }
 
   return (
     <>
+      {request && <Dialog requestedPlayer={request} />}
+      {response === PLAY_STATE.Cancelled && <Alert />}
       <InputGroup className='mb-1'>
         <FormControl
           placeholder='Username'

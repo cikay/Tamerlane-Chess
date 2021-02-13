@@ -10,24 +10,23 @@ import {
   SELECT_PIECE,
   MOVE,
 } from '../reducers/tamerlaneChessActionTypes'
+import { useSocket } from '../contexts/SocketContext'
 
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
 const TamerlaneChessContext = createContext()
 export default function TamerlaneChessBoard() {
   const [state, dispatch] = useReducer(tamerlaneChessReducer, initialState)
+  const socket = useSocket()
   console.log('Provider called')
   useEffect(() => {
+    console.log('game starting')
     dispatch({ type: START_GAME })
   }, [])
 
   const removeHighlightSquare = () => {
     const { pieceSquare, history } = state
-    // setState((prevState) => ({
-    //   ...prevState,
-    //   fromSquare: '',
-    //   squareStyles: squareStyling({ pieceSquare, history }),
-    // }))
   }
+
   const highlightSquare = (squaresToHighlight) => {
     const highlightStyles = squaresToHighlight.reduce((a, c) => {
       return {
@@ -92,9 +91,36 @@ export default function TamerlaneChessBoard() {
       if (move === null) return
       const fen = tamerlaneChess.getCurrentFen()
       const payload = { fen }
-      
+
       dispatch({ type: MOVE, payload })
+      console.log('move before send', move)
+      console.log(localStorage)
+      console.log('opponent player', localStorage.getItem('opponentPlayer'))
+      const opponentId = JSON.parse(localStorage.getItem('opponentPlayer')).id
+      socket.emit('send-move', {
+        opponentId,
+        move: move.moveInOpponentBoard,
+      })
     }
+  }
+
+  useEffect(() => {
+    if (socket == null) return
+
+    socket.on('receive-move', makeOpponentMove)
+
+    return () => socket.off('receive-move')
+  }, [socket, makeOpponentMove])
+
+  function makeOpponentMove({ move }) {
+    console.log('state in useEffect', state)
+    console.log('move', move)
+    const { tamerlaneChess } = state
+    const madeMove = tamerlaneChess.makeMove(move.from, move.to)
+    const fen = tamerlaneChess.getCurrentFen()
+    const payload = { fen }
+
+    dispatch({ type: MOVE, payload })
   }
 
   const setPosition = ({ sourceSquare, targetSquare, piece }) => {}

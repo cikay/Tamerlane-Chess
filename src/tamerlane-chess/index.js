@@ -293,13 +293,13 @@ export default class TamerlaneChess {
   }
 
   removeKing(piece) {
-    console.log("removing king", piece)
+    console.log('removing king', piece)
     if (piece.color === COLOR.white) {
       console.log('king removed', piece)
       this.#whiteKings = [...this.#whiteKings].filter(
         (king) => JSON.stringify(king) !== JSON.stringify(piece)
       )
-      console.log("white kings", this.#whiteKings)
+      console.log('white kings', this.#whiteKings)
     } else {
       this.#blackKings = [...this.#blackKings].filter(
         (king) => JSON.stringify(king) !== JSON.stringify(piece)
@@ -417,7 +417,7 @@ export default class TamerlaneChess {
     this.changePiecePosition(fromPos, toPos)
     this.removePieceFromList(takedPiece)
     if (takedPiece.king) {
-      console.log("try to remove king")
+      console.log('try to remove king')
       this.removeKing(takedPiece)
     }
     if (this.isChecked(piece.color)) {
@@ -521,11 +521,18 @@ export default class TamerlaneChess {
   }
 
   computeMoveInOpponentBoard(from, to) {
+    console.log('computeMoveInOpponentBoard')
+    console.log('from')
+    console.log(from)
+    console.log('to')
+    console.log(to)
     from.row = TamerlaneChess.#rowCount - from.row - 1
     from.col = TamerlaneChess.#colCount - from.col - 1
     to.row = TamerlaneChess.#rowCount - to.row - 1
-    to.col = TamerlaneChess.#colCount - to.colCount - 1
-    return { from, to }
+    to.col = TamerlaneChess.#colCount - to.col - 1
+    const toSquare = this.positionToSquare(to.row, to.col)
+    const fromSquare = this.positionToSquare(from.row, from.col)
+    return { from: fromSquare, to: toSquare }
   }
 
   computeOpponentFen(fen) {

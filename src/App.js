@@ -11,16 +11,19 @@ import {
   PasswordReset,
   ResetPasswordConfirm,
 } from './pages/auth'
+import Home from './pages/Home'
 import PageNotFound from './components/PageNotFound'
 import PrivateRoute from './components/PrivateRoute'
+import TamerlaneChessBoard from './tamerlane-chessboard'
 import {
   AuthProvider,
   TamerlaneChessProvider,
   SocketProvider,
 } from './contexts'
-
+import useLocalStorage from './hooks/useLocalStorage'
 
 function App() {
+  const [id, setId] = useLocalStorage('id')
   return (
     <AuthProvider>
       <Router>
@@ -29,7 +32,7 @@ function App() {
             <Signup />
           </Route>
           <Route path='/login'>
-            <Login />
+            <Login onSubmitId={setId} />
           </Route>
           <Route path='/email-verify'>
             <VerifyEmail />
@@ -40,13 +43,16 @@ function App() {
           <Route path='/password-reset-complete/:uidb64/:token'>
             <ResetPasswordConfirm />
           </Route>
-          <Route exact path='/'>
-            <SocketProvider>
-              <TamerlaneChessProvider>
-                <PrivateRoute></PrivateRoute>
-              </TamerlaneChessProvider>
-            </SocketProvider>
-          </Route>
+          <SocketProvider id={id}>
+            <TamerlaneChessProvider>
+              <Route exact path='/'>
+                <PrivateRoute Component={Home}></PrivateRoute>
+              </Route>
+              <Route path='/play/online'>
+                <TamerlaneChessBoard />
+              </Route>
+            </TamerlaneChessProvider>
+          </SocketProvider>
           <Route path='*'>
             <PageNotFound />
           </Route>

@@ -26,6 +26,5 @@ yarn-error.log*
 .env
 
 #socket server 
-
 socket-server/node_modules
 

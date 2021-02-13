@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-const PREFIX = 'tamerlane-chess'
+const PREFIX = 'tamerlane-chess-'
 
 export default function useLocalStorage(key, initialValue) {
   const prefixKey = PREFIX + key

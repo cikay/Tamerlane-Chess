@@ -4,7 +4,7 @@ import { Card, Button, Form, Container, Alert } from 'react-bootstrap'
 import { useAuthContext } from '../../contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
 import CenteredContainer from '../../components/CenteredContainer'
-const Login = () => {
+const Login = ({onSubmitId}) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -36,6 +36,8 @@ const Login = () => {
 
     try {
       const res = await login(formData)
+      console.log(res.userId)
+      onSubmitId(res.userId)
       console.log('redirected to home')
       history.push('/')
     } catch (err) {}

@@ -39,15 +39,16 @@ export const initialState = {
   firstMove: false,
 }
 
-
-
 export default function tamerlaneChessReducer(state = initialState, action) {
   const { type, payload } = action
   switch (type) {
     case START_GAME:
-      console.log("muzaffer")
-      const currentPosition = getPositionObject('start', state.playerColor)
-      const tamerlaneChess = new TamerlaneChess(state.playerColor)
+      console.log('START_GAME')
+      console.log(localStorage)
+      const currentUserColor = localStorage.getItem('currentUserColor')
+      console.log('current user color', currentUserColor)
+      const currentPosition = getPositionObject('start', currentUserColor)
+      const tamerlaneChess = new TamerlaneChess(currentUserColor)
       return {
         ...state,
         currentPosition,

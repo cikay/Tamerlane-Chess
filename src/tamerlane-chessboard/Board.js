@@ -3,7 +3,6 @@ import './board.css'
 import Square from './Square'
 import Piece from './Piece'
 import { COLUMNS } from '../helper/Fen'
-import { useTamerlaneChessContext } from './index'
 // import TamerlaneChess from '../tamerlane-chess'
 const Board = () => {
 
