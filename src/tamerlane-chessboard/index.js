@@ -10,17 +10,23 @@ import {
   SELECT_PIECE,
   MOVE,
 } from '../reducers/tamerlaneChessActionTypes'
-import { useSocket } from '../contexts/SocketContext'
+import { useSocket, useSetGameContext } from '../contexts'
 
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
 const TamerlaneChessContext = createContext()
 export default function TamerlaneChessBoard() {
   const [state, dispatch] = useReducer(tamerlaneChessReducer, initialState)
   const socket = useSocket()
+  const { currentPlayer, opponentPlayer } = useSetGameContext()
+  console.log('currentPlayer', currentPlayer)
+  console.log('opponentPlayer', opponentPlayer)
   console.log('Provider called')
   useEffect(() => {
     console.log('game starting')
-    dispatch({ type: START_GAME })
+    const payload = {
+      currentPlayerColor: currentPlayer.side,
+    }
+    dispatch({ type: START_GAME, payload })
   }, [])
 
   const removeHighlightSquare = () => {
@@ -53,12 +59,17 @@ export default function TamerlaneChessBoard() {
   const handleClick = (square) => {
     const { tamerlaneChess } = state
     console.log('from square', state.fromSquare)
+    // console.log(
+    //   'isPiecePromotedPawnOfPawn',
+    //   tamerlaneChess.isPiecePromotedPawnOfPawn(state.fromSquare)
+    // )
+    console.log()
     console.log('clicked square', square)
     const piece = tamerlaneChess.getPiece(square)
     console.log(`clicked piece`)
     console.log(piece)
     const turn = tamerlaneChess.getTurn()
-
+    console.log('turn', turn)
     // highlight possible moves
     if (
       !(
@@ -86,6 +97,7 @@ export default function TamerlaneChessBoard() {
     else {
       removeHighlightSquare()
       console.log('trying to make move')
+      console.log('state.fromSquare', state.fromSquare)
       console.log(turn)
       const move = tamerlaneChess.makeMove(state.fromSquare, square, turn)
       if (move === null) return
@@ -94,11 +106,9 @@ export default function TamerlaneChessBoard() {
 
       dispatch({ type: MOVE, payload })
       console.log('move before send', move)
-      console.log(localStorage)
-      console.log('opponent player', localStorage.getItem('opponentPlayer'))
-      const opponentId = JSON.parse(localStorage.getItem('opponentPlayer')).id
+
       socket.emit('send-move', {
-        opponentId,
+        opponentId: opponentPlayer.id,
         move: move.moveInOpponentBoard,
       })
     }

@@ -15,11 +15,7 @@ import Home from './pages/Home'
 import PageNotFound from './components/PageNotFound'
 import PrivateRoute from './components/PrivateRoute'
 import TamerlaneChessBoard from './tamerlane-chessboard'
-import {
-  AuthProvider,
-  TamerlaneChessProvider,
-  SocketProvider,
-} from './contexts'
+import { AuthProvider, SetGameProvider, SocketProvider } from './contexts'
 import useLocalStorage from './hooks/useLocalStorage'
 
 function App() {
@@ -44,14 +40,14 @@ function App() {
             <ResetPasswordConfirm />
           </Route>
           <SocketProvider id={id}>
-            <TamerlaneChessProvider>
+            <SetGameProvider>
               <Route exact path='/'>
                 <PrivateRoute Component={Home}></PrivateRoute>
               </Route>
               <Route path='/play/online'>
                 <TamerlaneChessBoard />
               </Route>
-            </TamerlaneChessProvider>
+            </SetGameProvider>
           </SocketProvider>
           <Route path='*'>
             <PageNotFound />

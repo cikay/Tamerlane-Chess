@@ -2,23 +2,14 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import axios from 'axios'
 import { useSocket } from '../SocketContext'
-import { getRandomPlayerColor } from '../../helper/Fen'
-import {
-  getCurrentPlayer,
-  getOpponentPlayer,
-  setCurrentPlayerToLocalStorage,
-  setOpponenPlayerToLocalStorage,
-} from '../../helper'
+import { getPlayersColor } from '../../helper/Fen'
+
 import { COLOR } from '../../tamerlane-chess/types'
 const PLAY_STATE = {
   Accepted: 'accepted',
   Cancelled: 'canceled',
 }
-const PLAY_TYPES = {
-  REQUEST: 'request',
-  RESPONSE: 'response',
-  MOVE: 'move',
-}
+
 const SetGameContext = React.createContext()
 
 export const useSetGameContext = () => useContext(SetGameContext)
@@ -61,7 +52,7 @@ export const SetGameProvider = (props) => {
 
     console.log('currentUser', currentUser)
     console.log(localStorage)
-    const currentPlayerColor = getRandomPlayerColor()
+    const { currentPlayerColor, opponentPlayerColor } = getPlayersColor()
     const requestedPlayer = {
       username: currentUser.username,
       id: currentUser.userId,
@@ -72,7 +63,10 @@ export const SetGameProvider = (props) => {
       recipientId: playerId,
       senderPlayer: requestedPlayer,
     })
-    setState((prevState) => ({ ...prevState, currentPlayer: requestedPlayer }))
+    setState({
+      currentPlayer: requestedPlayer,
+      opponentPlayer: { id: playerId, side: opponentPlayerColor },
+    })
   }
 
   const playRequestResponse = () => {}
@@ -92,19 +86,24 @@ export const SetGameProvider = (props) => {
     }
     //set game
     console.log('requested player in sendPlayResponse', requestedPlayer)
-    const currentPlayer = {
-      username: currentUser.username,
-      id: currentUser.userId,
-      side: COLOR.black,
-    }
-
+    let currentPlayer
     let white_player
     let black_player
     if (requestedPlayer.side === COLOR.white) {
       white_player = requestedPlayer
-      black_player = currentPlayer
+      black_player = {
+        username: currentUser.username,
+        id: currentUser.userId,
+        side: COLOR.black,
+      }
+      currentPlayer = black_player
     } else {
-      white_player = currentPlayer
+      white_player = {
+        username: currentUser.username,
+        id: currentUser.userId,
+        side: COLOR.white,
+      }
+      currentPlayer = white_player
       black_player = requestedPlayer
     }
 
@@ -120,7 +119,7 @@ export const SetGameProvider = (props) => {
       recipientId: requestedPlayer.id,
       response: true,
     })
-    console.log('currentPLayer', currentPlayer)
+    console.log('currentPlayer', currentPlayer)
     console.log('opponent player', requestedPlayer)
     setState({
       currentPlayer: currentPlayer,

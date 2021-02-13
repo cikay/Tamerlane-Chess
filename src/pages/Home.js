@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
-import { useAuthContext, useTamerlaneChessContext } from '../contexts'
+import { useAuthContext, useSetGameContext } from '../contexts'
 
 const Home = () => {
   const history = useHistory()
@@ -22,7 +22,7 @@ const Home = () => {
     request,
     response,
     PLAY_STATE,
-  } = useTamerlaneChessContext()
+  } = useSetGameContext()
 
   const logoutClick = async () => {
     try {

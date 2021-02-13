@@ -1,15 +1,12 @@
 import { useAuthContext, AuthProvider } from './AuthContext'
-import {
-  useTamerlaneChessContext,
-  TamerlaneChessProvider,
-} from './TamerlaneChessContext'
+import { useSetGameContext, SetGameProvider } from './SetGameContext'
 import { useSocket, SocketProvider } from './SocketContext'
 
 export {
   useAuthContext,
   AuthProvider,
-  useTamerlaneChessContext,
-  TamerlaneChessProvider,
+  useSetGameContext,
+  SetGameProvider,
   useSocket,
   SocketProvider,
 }

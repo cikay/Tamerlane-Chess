@@ -2,8 +2,18 @@ import { COLOR } from '../tamerlane-chess/types'
 
 export const COLUMNS = 'abcdefghijk'.split('')
 
-export function getRandomPlayerColor() {
-  return parseInt(Math.random() * 10) % 2 === 0 ? COLOR.white : COLOR.black
+export function getPlayersColor() {
+  const randomNumber = parseInt(Math.random() * 10)
+  let currentPlayerColor
+  let opponentPlayerColor
+  if (randomNumber % 2 === 0) {
+    currentPlayerColor = COLOR.white
+    opponentPlayerColor = COLOR.black
+  } else {
+    currentPlayerColor = COLOR.black
+    opponentPlayerColor = COLOR.white
+  }
+  return { currentPlayerColor, opponentPlayerColor }
 }
 
 export function fenToPieceCode(piece) {
@@ -16,7 +26,7 @@ export function fenToPieceCode(piece) {
 }
 
 export const getPositionObject = (position, color = null) => {
-  console.log("gettin pos")
+  console.log('gettin pos')
   if (position === 'start') {
     let fen
     if (color === COLOR.white) {
