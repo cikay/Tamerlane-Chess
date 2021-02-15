@@ -44,7 +44,7 @@ function App() {
               <Route exact path='/'>
                 <PrivateRoute Component={Home}></PrivateRoute>
               </Route>
-              <Route path='/play/online'>
+              <Route path='/play'>
                 <TamerlaneChessBoard />
               </Route>
             </SetGameProvider>

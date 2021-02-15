@@ -126,7 +126,7 @@ export const SetGameProvider = (props) => {
       opponentPlayer: requestedPlayer,
     })
 
-    history.push('/play/online')
+    history.push('/play')
     // const res = axios.post(`${REACT_APP_API_URL}/play/online/`, payload)
   }
 
@@ -144,7 +144,7 @@ export const SetGameProvider = (props) => {
       console.log('response received')
       console.log('response', response)
       if (response) {
-        history.push('/play/online')
+        history.push('/play')
       }
     })
     return () => socket.off('receive-playResponse')
