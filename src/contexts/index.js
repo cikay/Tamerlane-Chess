@@ -1,12 +1,12 @@
 import { useAuthContext, AuthProvider } from './AuthContext'
-import { useSetGameContext, SetGameProvider } from './SetGameContext'
+import { usePlayersContext, PlayersProvider } from './SetPlayersContext'
 import { useSocket, SocketProvider } from './SocketContext'
 
 export {
   useAuthContext,
   AuthProvider,
-  useSetGameContext,
-  SetGameProvider,
+  usePlayersContext,
+  PlayersProvider,
   useSocket,
   SocketProvider,
 }

@@ -10,11 +10,11 @@ const PLAY_STATE = {
   Cancelled: 'canceled',
 }
 
-const SetGameContext = React.createContext()
+const PlayersContext = React.createContext()
 
-export const useSetGameContext = () => useContext(SetGameContext)
+export const usePlayersContext = () => useContext(PlayersContext)
 const REACT_APP_API_URL = process.env.REACT_APP_API_URL
-export const SetGameProvider = (props) => {
+export const PlayersProvider = (props) => {
   const [request, setRequest] = useState()
   const [state, setState] = useState({
     currentPlayer: '',
@@ -176,8 +176,8 @@ export const SetGameProvider = (props) => {
   }
 
   return (
-    <SetGameContext.Provider value={value}>
+    <PlayersContext.Provider value={value}>
       {props.children}
-    </SetGameContext.Provider>
+    </PlayersContext.Provider>
   )
 }

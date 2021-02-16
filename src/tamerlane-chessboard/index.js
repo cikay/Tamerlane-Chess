@@ -10,14 +10,14 @@ import {
   SELECT_PIECE,
   MOVE,
 } from '../reducers/tamerlaneChessActionTypes'
-import { useSocket, useSetGameContext } from '../contexts'
+import { useSocket, usePlayersContext } from '../contexts'
 
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
 const TamerlaneChessContext = createContext()
 export default function TamerlaneChessBoard() {
   const [state, dispatch] = useReducer(tamerlaneChessReducer, initialState)
   const socket = useSocket()
-  const { currentPlayer, opponentPlayer } = useSetGameContext()
+  const { currentPlayer, opponentPlayer } = usePlayersContext()
   console.log('currentPlayer', currentPlayer)
   console.log('opponentPlayer', opponentPlayer)
   console.log('Provider called')

@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Modal, Button } from 'react-bootstrap'
-import { useSetGameContext } from '../contexts'
+import { usePlayersContext } from '../contexts'
 export default function Dialog({ requestedPlayer }) {
   console.log('requestedPlayer', requestedPlayer)
-  const { resetRequest, sendPlayResponse } = useSetGameContext()
+  const { resetRequest, sendPlayResponse } = usePlayersContext()
   const [show, setShow] = useState(false)
   const handleAccept = () => {
     console.log('istek kabul edildi')
