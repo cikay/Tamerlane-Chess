@@ -11,13 +11,15 @@ import {
   MOVE,
 } from '../reducers/tamerlaneChessActionTypes'
 import { useSocket, usePlayersContext } from '../contexts'
+import axios from 'axios'
+import { COLOR } from '../tamerlane-chess/types'
 
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
 const TamerlaneChessContext = createContext()
 export default function TamerlaneChessBoard() {
   const [state, dispatch] = useReducer(tamerlaneChessReducer, initialState)
   const socket = useSocket()
-  const { currentPlayer, opponentPlayer } = usePlayersContext()
+  const { currentPlayer, opponentPlayer, gameId } = usePlayersContext()
   console.log('currentPlayer', currentPlayer)
   console.log('opponentPlayer', opponentPlayer)
   console.log('Provider called')
@@ -56,7 +58,7 @@ export default function TamerlaneChessBoard() {
     dispatch({ type: SET_HIGHLIGHTING, payload })
   }
 
-  const handleClick = (square) => {
+  const handleClick = async (square) => {
     const { tamerlaneChess } = state
     console.log('from square', state.fromSquare)
     // console.log(
@@ -106,6 +108,23 @@ export default function TamerlaneChessBoard() {
 
       dispatch({ type: MOVE, payload })
       console.log('move before send', move)
+
+      let white_player
+      let black_player
+      if (currentPlayer.side === COLOR.white) {
+        white_player = currentPlayer.id
+        black_player = opponentPlayer.id
+      } else {
+        white_player = opponentPlayer.id
+        black_player = currentPlayer.id
+      }
+
+      axios.put(`${process.env.REACT_APP_API_URL}/play/online/${gameId}`, {
+        move: move.savedMove,
+        white_player,
+        black_player,
+        player_color: currentPlayer.side,
+      })
 
       socket.emit('send-move', {
         opponentId: opponentPlayer.id,
@@ -162,3 +181,13 @@ function squareStyling({ pieceSquare, history }) {
     }),
   }
 }
+
+
+/*
+
+
+[
+  {"w": {"from": "b2", "to": "a4"}, "b": {"from": "j9", "to": "k7"}},
+  {"w": {"from": "c1", "to": "d4"}, "b": {"from": "h8", "to": "h7"}}, 
+  {"w": {"from": "g3", "to": "g4"}}]
+*/

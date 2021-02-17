@@ -32,12 +32,13 @@ io.on('connection', (socket) => {
     })
   })
 
-  socket.on('send-playResponse', ({ recipientId, response }) => {
+  socket.on('send-playResponse', ({ recipientId, response, gameId }) => {
     console.log('send-playResponse')
     console.log('recipient id', recipientId)
     recipientId = getStringId(recipientId)
     socket.broadcast.to(recipientId).emit('receive-playResponse', {
       response,
+      gameId,
     })
   })
 })

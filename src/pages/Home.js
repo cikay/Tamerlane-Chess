@@ -24,6 +24,8 @@ const Home = () => {
     PLAY_STATE,
   } = usePlayersContext()
 
+  const isCancelled = response === PLAY_STATE.Cancelled
+
   const logoutClick = async () => {
     try {
       await logout()
@@ -50,6 +52,7 @@ const Home = () => {
     }
   }
 
+
   const selectUser = async (e) => {
     document.getElementById('search-input').value = ''
     setUsers([])
@@ -62,7 +65,7 @@ const Home = () => {
   return (
     <>
       {request && <Dialog requestedPlayer={request} />}
-      {response === PLAY_STATE.Cancelled && <Alert />}
+      {isCancelled && <Alert />}
       <InputGroup className='mb-1'>
         <FormControl
           placeholder='Username'

@@ -17,6 +17,7 @@ const REACT_APP_API_URL = process.env.REACT_APP_API_URL
 export const PlayersProvider = (props) => {
   const [request, setRequest] = useState()
   const [state, setState] = useState({
+    gameId: '',
     currentPlayer: '',
     opponentPlayer: '',
   })
@@ -63,15 +64,16 @@ export const PlayersProvider = (props) => {
       recipientId: playerId,
       senderPlayer: requestedPlayer,
     })
-    setState({
+    setState((prevState) => ({
+      ...prevState,
       currentPlayer: requestedPlayer,
       opponentPlayer: { id: playerId, side: opponentPlayerColor },
-    })
+    }))
   }
 
   const playRequestResponse = () => {}
 
-  const sendPlayResponse = (requestedPlayer, response) => {
+  const sendPlayResponse = async (requestedPlayer, response) => {
     const currentUser = JSON.parse(localStorage.getItem('currentUser')).data
     console.log('response', response)
     if (!response) {
@@ -108,26 +110,31 @@ export const PlayersProvider = (props) => {
     }
 
     const payload = {
-      black_player,
-      white_player,
+      black_player: black_player.id,
+      white_player: white_player.id,
       moves: [],
     }
     console.log('istek kabul edildi')
     console.log(requestedPlayer)
     console.log('requested player', requestedPlayer.id)
+
+    console.log('currentPlayer', currentPlayer)
+    console.log('opponent player', requestedPlayer)
+
+    const res = await axios.post(`${REACT_APP_API_URL}/play/online/`, payload)
+    console.log('res', res.data.id)
     socket.emit('send-playResponse', {
       recipientId: requestedPlayer.id,
       response: true,
+      gameId: res.data.id,
     })
-    console.log('currentPlayer', currentPlayer)
-    console.log('opponent player', requestedPlayer)
-    setState({
+    setState((prevState) => ({
+      ...prevState,
+      gameId: res.data.id,
       currentPlayer: currentPlayer,
       opponentPlayer: requestedPlayer,
-    })
-
+    }))
     history.push('/play')
-    // const res = axios.post(`${REACT_APP_API_URL}/play/online/`, payload)
   }
 
   const getPlayResponse = (response) => {
@@ -140,10 +147,12 @@ export const PlayersProvider = (props) => {
 
   useEffect(() => {
     if (socket == null) return
-    socket.on('receive-playResponse', ({ response }) => {
+    socket.on('receive-playResponse', ({ response, gameId }) => {
       console.log('response received')
       console.log('response', response)
       if (response) {
+        setState((prevState) => ({ ...prevState, gameId }))
+        console.log("GAME ID", gameId)
         history.push('/play')
       }
     })

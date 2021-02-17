@@ -2,11 +2,12 @@ from rest_framework import serializers
 from .models import Game
 
 
-class GameSerializers(serializers.ModelSerializer):
+class GameSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Game
         fields = (
+            'id',
             'black_player',
             'white_player',
             'moves',

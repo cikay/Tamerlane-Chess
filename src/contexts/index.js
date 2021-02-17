@@ -1,5 +1,5 @@
 import { useAuthContext, AuthProvider } from './AuthContext'
-import { usePlayersContext, PlayersProvider } from './SetPlayersContext'
+import { usePlayersContext, PlayersProvider } from './PlayersContext'
 import { useSocket, SocketProvider } from './SocketContext'
 
 export {
