@@ -13,6 +13,7 @@ import {
 import { useSocket, usePlayersContext } from '../contexts'
 import axios from 'axios'
 import { COLOR } from '../tamerlane-chess/types'
+import Timer from '../components/Timer'
 
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
 const TamerlaneChessContext = createContext()
@@ -160,6 +161,7 @@ export default function TamerlaneChessBoard() {
   }
   return (
     <TamerlaneChessContext.Provider value={value}>
+      <Timer />
       <Board></Board>
     </TamerlaneChessContext.Provider>
   )
@@ -181,7 +183,6 @@ function squareStyling({ pieceSquare, history }) {
     }),
   }
 }
-
 
 /*
 
