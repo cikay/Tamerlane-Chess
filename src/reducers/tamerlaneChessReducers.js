@@ -77,6 +77,7 @@ export default function tamerlaneChessReducer(state = initialState, action) {
       }
     case GAME_FINISH:
       console.log('GAME FINISHED', payload)
+      state.tamerlaneChess.finish()
       return {
         ...state,
         winner: payload.winner,

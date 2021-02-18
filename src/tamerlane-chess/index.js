@@ -61,6 +61,7 @@ export default class TamerlaneChess {
   #opponentFen
   #whitePieces
   #blackPieces
+  #isFinished = false
 
   constructor(playerColor, fen = null) {
     this.#playerColor = playerColor
@@ -205,6 +206,7 @@ export default class TamerlaneChess {
   }
 
   getMoves(square, movingPlayerColor) {
+    if (this.isFinished()) return null
     const { row, col } = this.squareToPosition(square)
     if (!this.isMovingPlayerInTurn(row, col)) return null
     console.log(`row:${row}, col:${col}`)
@@ -384,6 +386,7 @@ export default class TamerlaneChess {
   undoTemporaryMove(from, to) {}
 
   makeMove(fromSquare, toSquare, movingPlayerColor) {
+    if (this.isFinished()) return null
     console.log(`from:${fromSquare}, to:${toSquare}`)
     const fromPos = this.squareToPosition(fromSquare)
     const toPos = this.squareToPosition(toSquare)
@@ -639,6 +642,14 @@ export default class TamerlaneChess {
     for (let i = this.#board.length - 1; i >= 0; i--) {
       console.log(this.#board[i])
     }
+  }
+
+  finish() {
+    this.#isFinished = true
+  }
+
+  isFinished() {
+    return this.#isFinished
   }
 
   checkMate(color) {}

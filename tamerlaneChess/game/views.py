@@ -28,6 +28,7 @@ class GameView(generics.GenericAPIView):
     
     def put(self, request, pk, format=None):
         game = self.get_object(pk)
+        # if game.result
         print("request data", request.data)
         if(request.data['player_color'] == 'b'):
             last_move = game.moves[-1]
