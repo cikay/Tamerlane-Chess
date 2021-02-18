@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react'
+import { usePlayersContext } from '../contexts'
+import { COLOR } from '../tamerlane-chess/types'
+import { useTamerlaneChessContext } from '../tamerlane-chessboard'
 
 const TIMER = {
   PAUSED: 'PAUSED',
@@ -6,45 +9,100 @@ const TIMER = {
 }
 
 export default function Timer() {
+  const { currentPlayer, opponentPlayer } = usePlayersContext()
+  const { turn } = useTamerlaneChessContext()
   const startedTime = new Date().getTime()
-  const [state, setState] = useState({ minutes: 0, seconds: 5 })
+  const [currentPlayerLeftTime, setCurrentPlayerLeftTime] = useState({
+    minutes: 1,
+    seconds: 5,
+  })
+  const [opponentPlayerLeftTime, setOpponentPlayerLeftTime] = useState({
+    minutes: 1,
+    seconds: 5,
+  })
 
   function tick() {
-    setState((prevState) => ({ ...prevState, ...getTimeLeft() }))
+    console.log('moveTurn', turn)
+    console.log('currentPlayer', currentPlayer)
+    if (turn === currentPlayer.side) {
+      setCurrentPlayerLeftTime((prevState) => ({
+        ...prevState,
+        ...getTimeLeft(currentPlayerLeftTime),
+      }))
+
+      console.log('CurrentPlayerLeftTime', currentPlayerLeftTime)
+    } else {
+      console.log('opponent')
+      setOpponentPlayerLeftTime((prevState) => ({
+        ...prevState,
+        ...getTimeLeft(opponentPlayerLeftTime),
+      }))
+    }
+  }
+
+  function pauseTimer(timeoutId) {
+    clearTimeout(timeoutId)
   }
 
   useEffect(() => {
-    let intervalId
-
-    if (state.minutes === 0 && state.seconds === 0) {
+    let timeoutId
+    console.log('currentPlayerLeftTime useEffect called')
+    if (
+      currentPlayerLeftTime.minutes === 0 &&
+      currentPlayerLeftTime.seconds === 0
+    ) {
       return
     }
-    function pauseTimer(intervalId) {
-      clearTimeout(intervalId)
+
+    timeoutId = setTimeout(tick, 1000)
+
+    return () => pauseTimer(timeoutId)
+  }, [currentPlayerLeftTime.seconds])
+
+  useEffect(() => {
+    let timeoutId
+    console.log('opponentPlayerLeftTime useEffect called')
+    if (
+      opponentPlayerLeftTime.minutes === 0 &&
+      opponentPlayerLeftTime.seconds === 0
+    ) {
+      return
     }
 
-    intervalId = setTimeout(tick, 1000)
+    timeoutId = setTimeout(tick, 1000)
 
-    return pauseTimer
-  }, [state.seconds])
+    return () => pauseTimer(timeoutId)
+  }, [opponentPlayerLeftTime.seconds])
 
-  const getTimeLeft = () => {
-    console.log('setNewTime is called')
-
+  const getTimeLeft = (playerLeftTime) => {
     const currentTime = new Date().getTime()
     const spentTime = currentTime - startedTime
     let spentMinutes = Math.floor((spentTime % (1000 * 60 * 60)) / (1000 * 60))
     let spentSeconds = Math.floor((spentTime % (1000 * 60)) / 1000)
 
+    let minutes = playerLeftTime.minutes - spentMinutes
+    let seconds = playerLeftTime.seconds - spentSeconds
+    if (seconds === -1) {
+      seconds = 59
+      minutes -= 1
+    }
+
     return {
-      minutes: state.minutes - spentMinutes,
-      seconds: state.seconds - spentSeconds,
+      minutes,
+      seconds,
     }
   }
 
   return (
-    <div>
-      {state.minutes}:{state.seconds}
-    </div>
+    <>
+      <div>
+        Kalan zamanın: {currentPlayerLeftTime.minutes}:
+        {currentPlayerLeftTime.seconds}
+      </div>
+      <div>
+        Rakibinin kalan zamanı: {opponentPlayerLeftTime.minutes}:
+        {opponentPlayerLeftTime.seconds}
+      </div>
+    </>
   )
 }

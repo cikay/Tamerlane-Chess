@@ -71,7 +71,7 @@ export default function TamerlaneChessBoard() {
     const piece = tamerlaneChess.getPiece(square)
     console.log(`clicked piece`)
     console.log(piece)
-    const turn = tamerlaneChess.getTurn()
+    let turn = tamerlaneChess.getTurn()
     console.log('turn', turn)
     // highlight possible moves
     if (
@@ -105,7 +105,8 @@ export default function TamerlaneChessBoard() {
       const move = tamerlaneChess.makeMove(state.fromSquare, square, turn)
       if (move === null) return
       const fen = tamerlaneChess.getCurrentFen()
-      const payload = { fen }
+      turn = tamerlaneChess.getTurn()
+      const payload = { fen, turn }
 
       dispatch({ type: MOVE, payload })
       console.log('move before send', move)
@@ -148,7 +149,8 @@ export default function TamerlaneChessBoard() {
     const { tamerlaneChess } = state
     const madeMove = tamerlaneChess.makeMove(move.from, move.to)
     const fen = tamerlaneChess.getCurrentFen()
-    const payload = { fen }
+    const turn = tamerlaneChess.getTurn()
+    const payload = { fen, turn }
 
     dispatch({ type: MOVE, payload })
   }
