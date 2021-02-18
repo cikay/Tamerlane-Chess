@@ -4,6 +4,7 @@ import {
   SET_HIGHLIGHTING,
   MOVE,
   SELECT_PIECE,
+  GAME_FINISH,
 } from './tamerlaneChessActionTypes'
 import TamerlaneChess from '../tamerlane-chess'
 import {
@@ -24,11 +25,9 @@ export const initialState = {
   fromSquare: '',
   toSquare: '',
   turn: COLOR.white,
+  winner: '',
   selectedPiece: '',
   history: [],
-  playerColor:
-    parseInt(Math.random() * 10) % 2 === 0 ? COLOR.white : COLOR.black,
-
   sourceSquare: '',
   targetSquare: '',
   sourcePiece: '',
@@ -56,7 +55,7 @@ export default function tamerlaneChessReducer(state = initialState, action) {
       }
     case MOVE:
       const { fen, turn } = payload
-      console.log("turn", turn)
+      console.log('turn', turn)
       return {
         ...state,
         currentPosition: getPositionObject(fen),
@@ -75,6 +74,12 @@ export default function tamerlaneChessReducer(state = initialState, action) {
       return {
         ...state,
         fromSquare: payload.fromSquare,
+      }
+    case GAME_FINISH:
+      console.log('GAME FINISHED', payload)
+      return {
+        ...state,
+        winner: payload.winner,
       }
     default:
       return state

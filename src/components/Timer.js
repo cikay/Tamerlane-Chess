@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { usePlayersContext } from '../contexts'
+import { GAME_FINISH } from '../reducers/tamerlaneChessActionTypes'
 import { COLOR } from '../tamerlane-chess/types'
 import { useTamerlaneChessContext } from '../tamerlane-chessboard'
+import GameFinishDialog from './GameFinishDialog'
 
 const TIMER = {
   PAUSED: 'PAUSED',
@@ -10,14 +12,14 @@ const TIMER = {
 
 export default function Timer() {
   const { currentPlayer, opponentPlayer } = usePlayersContext()
-  const { turn } = useTamerlaneChessContext()
+  const { turn, winner, dispatch } = useTamerlaneChessContext()
   const startedTime = new Date().getTime()
   const [currentPlayerLeftTime, setCurrentPlayerLeftTime] = useState({
-    minutes: 1,
+    minutes: 0,
     seconds: 5,
   })
   const [opponentPlayerLeftTime, setOpponentPlayerLeftTime] = useState({
-    minutes: 1,
+    minutes: 0,
     seconds: 5,
   })
 
@@ -51,6 +53,7 @@ export default function Timer() {
       currentPlayerLeftTime.minutes === 0 &&
       currentPlayerLeftTime.seconds === 0
     ) {
+      dispatch({ type: GAME_FINISH, payload: { winner: opponentPlayer.side } })
       return
     }
 
@@ -66,6 +69,10 @@ export default function Timer() {
       opponentPlayerLeftTime.minutes === 0 &&
       opponentPlayerLeftTime.seconds === 0
     ) {
+      dispatch({
+        type: GAME_FINISH,
+        payload: { winner: currentPlayer.side },
+      })
       return
     }
 

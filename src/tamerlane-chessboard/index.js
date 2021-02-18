@@ -14,6 +14,7 @@ import { useSocket, usePlayersContext } from '../contexts'
 import axios from 'axios'
 import { COLOR } from '../tamerlane-chess/types'
 import Timer from '../components/Timer'
+import GameFinishDialog from '../components/GameFinishDialog'
 
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
 const TamerlaneChessContext = createContext()
@@ -160,10 +161,12 @@ export default function TamerlaneChessBoard() {
   const value = {
     ...state,
     handleClick,
+    dispatch,
   }
+
   return (
     <TamerlaneChessContext.Provider value={value}>
-      <Timer />
+      {state.winner ? <GameFinishDialog /> : <Timer />}
       <Board></Board>
     </TamerlaneChessContext.Provider>
   )
