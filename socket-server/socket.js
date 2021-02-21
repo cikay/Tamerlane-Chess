@@ -12,14 +12,20 @@ io.on('connection', (socket) => {
   const id = socket.handshake.query.id
   socket.join(id)
 
-  socket.on('send-move', ({ opponentId, move }) => {
-    console.log('opponetId', opponentId)
-    console.log('move', move)
-    opponentId = getStringId(opponentId)
-    socket.broadcast.to(opponentId).emit('receive-move', {
-      move,
-    })
-  })
+  socket.on(
+    'send-move',
+    ({ opponentId, move, opponentLastMoveAt, opponentLastMove }) => {
+      console.log('opponetId', opponentId)
+      console.log('move', move)
+      console.log('opponentLastMoveAt', opponentLastMoveAt)
+      opponentId = getStringId(opponentId)
+      socket.broadcast.to(opponentId).emit('receive-move', {
+        move,
+        opponentLastMoveAt,
+        opponentLastMove,
+      })
+    }
+  )
 
   socket.on('send-playRequest', ({ recipientId, senderPlayer }) => {
     console.log('senderPlayer', senderPlayer)

@@ -3,8 +3,8 @@ import { Modal, Button } from 'react-bootstrap'
 import { usePlayersContext } from '../contexts'
 export default function Dialog({ requestedPlayer }) {
   console.log('requestedPlayer', requestedPlayer)
-  const { resetRequest, sendPlayResponse } = usePlayersContext()
-  const [show, setShow] = useState(false)
+  const { sendPlayResponse } = usePlayersContext()
+  const [show, setShow] = useState(true)
   const handleAccept = () => {
     console.log('istek kabul edildi')
     sendPlayResponse(requestedPlayer, true)
@@ -20,7 +20,7 @@ export default function Dialog({ requestedPlayer }) {
   }
 
   return (
-    <Modal.Dialog show={show} onHide={handleCancel}>
+    <Modal show={show} onHide={handleCancel}>
       <Modal.Header closeButton>
         <Modal.Title>Online oynama isteği</Modal.Title>
       </Modal.Header>
@@ -35,6 +35,6 @@ export default function Dialog({ requestedPlayer }) {
           Kabul et
         </Button>
       </Modal.Footer>
-    </Modal.Dialog>
+    </Modal>
   )
 }

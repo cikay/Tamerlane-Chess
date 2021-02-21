@@ -7,7 +7,7 @@ export default function GameFinishDialog() {
   const { currentPlayer, opponentPlayer } = usePlayersContext()
   const { winner } = useTamerlaneChessContext()
   const [show, setShow] = useState(true)
-  
+
   function getMessage() {
     if (winner === currentPlayer.side) {
       return 'Kazandınız'
@@ -20,16 +20,17 @@ export default function GameFinishDialog() {
 
   const handleClose = () => {
     setShow(false)
+    console.log('closed?')
   }
 
   return (
     <>
-      <Modal.Dialog show={show}>
+      <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>{getMessage()}</Modal.Title>
         </Modal.Header>
         <Button onClick={handleClose}>Kapat</Button>
-      </Modal.Dialog>
+      </Modal>
     </>
   )
 }

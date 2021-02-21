@@ -25,9 +25,11 @@ export const initialState = {
   fromSquare: '',
   toSquare: '',
   turn: COLOR.white,
+  opponentLastMoveAt: '',
+  opponentLastMove: '',
   winner: '',
   selectedPiece: '',
-  history: [],
+  history: '',
   sourceSquare: '',
   targetSquare: '',
   sourcePiece: '',
@@ -54,12 +56,22 @@ export default function tamerlaneChessReducer(state = initialState, action) {
         tamerlaneChess,
       }
     case MOVE:
-      const { fen, turn } = payload
+      const {
+        fen,
+        turn,
+        opponentLastMoveAt,
+        opponentLastMove,
+        history,
+      } = payload
       console.log('turn', turn)
+      console.log('history', history)
       return {
         ...state,
         currentPosition: getPositionObject(fen),
         turn,
+        opponentLastMoveAt,
+        opponentLastMove,
+        history,
       }
     case CLEAR_HIGHLIGHTING:
       return {

@@ -1,4 +1,10 @@
-import { useEffect, useContext, createContext, useReducer } from 'react'
+import {
+  useState,
+  useEffect,
+  useContext,
+  createContext,
+  useReducer,
+} from 'react'
 
 import Board from './Board'
 import tamerlaneChessReducer, {
@@ -105,11 +111,7 @@ export default function TamerlaneChessBoard() {
       console.log(turn)
       const move = tamerlaneChess.makeMove(state.fromSquare, square, turn)
       if (move === null) return
-      const fen = tamerlaneChess.getCurrentFen()
-      turn = tamerlaneChess.getTurn()
-      const payload = { fen, turn }
 
-      dispatch({ type: MOVE, payload })
       console.log('move before send', move)
 
       let white_player
@@ -122,16 +124,28 @@ export default function TamerlaneChessBoard() {
         black_player = currentPlayer.id
       }
 
+      // console.log('socketReturnedValue', socketReturnedValue)
+
+      const fen = tamerlaneChess.getCurrentFen()
+      turn = tamerlaneChess.getTurn()
+      const history = tamerlaneChess.getHistory()
+      const payload = { fen, turn, history }
+
+      dispatch({ type: MOVE, payload })
+      socket.emit('send-move', {
+        opponentId: opponentPlayer.id,
+        move: move.moveInOpponentBoard,
+        opponentLastMoveAt: new Date().getTime(),
+      })
+
+     
+      const currentTime = new Date().getTime()
+      
       axios.put(`${process.env.REACT_APP_API_URL}/play/online/${gameId}`, {
         move: move.savedMove,
         white_player,
         black_player,
         player_color: currentPlayer.side,
-      })
-
-      socket.emit('send-move', {
-        opponentId: opponentPlayer.id,
-        move: move.moveInOpponentBoard,
       })
     }
   }
@@ -144,16 +158,19 @@ export default function TamerlaneChessBoard() {
     return () => socket.off('receive-move')
   }, [socket, makeOpponentMove])
 
-  function makeOpponentMove({ move }) {
+  function makeOpponentMove({ move, opponentLastMoveAt }) {
     console.log('state in useEffect', state)
     console.log('move', move)
     const { tamerlaneChess } = state
     const madeMove = tamerlaneChess.makeMove(move.from, move.to)
     const fen = tamerlaneChess.getCurrentFen()
     const turn = tamerlaneChess.getTurn()
-    const payload = { fen, turn }
+    const history = tamerlaneChess.getHistory()
+    console.log('history', history)
+    const payload = { fen, turn, opponentLastMoveAt, move, history }
 
     dispatch({ type: MOVE, payload })
+  
   }
 
   const setPosition = ({ sourceSquare, targetSquare, piece }) => {}

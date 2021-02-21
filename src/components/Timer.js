@@ -9,32 +9,59 @@ const TIMER = {
   PAUSED: 'PAUSED',
   TICKING: 'TICKING',
 }
-
+let lastOpponentMove
 export default function Timer() {
   const { currentPlayer, opponentPlayer } = usePlayersContext()
-  const { turn, winner, dispatch } = useTamerlaneChessContext()
+  const {
+    turn,
+    dispatch,
+    opponentLastMoveAt,
+    history,
+  } = useTamerlaneChessContext()
+
+  const [zamanFarkı, setZamanFarkı] = useState({
+    currentPlayerZaman: [],
+    opponentPlayerZaman: [],
+  })
+
   const startedTime = new Date().getTime()
+
+  let delay = 0
+
+  if (history.length !== 0 && turn === currentPlayer.side) {
+    lastOpponentMove = history[history.length - 1][opponentPlayer.side]
+  }
+
+  useEffect(() => {
+    console.log('startedTime', startedTime)
+    console.log('opponentLastMoveAt', opponentLastMoveAt)
+    console.log('lastOpponentMove', lastOpponentMove)
+    if (history.length !== 0) {
+      delay = startedTime - opponentLastMoveAt
+    }
+
+    console.log('delay', delay)
+  }, [JSON.stringify(lastOpponentMove)])
+
+  const time = {
+    minutes: 10,
+    seconds: 0,
+  }
+
   const [currentPlayerLeftTime, setCurrentPlayerLeftTime] = useState({
-    minutes: 0,
-    seconds: 5,
+    ...time,
   })
   const [opponentPlayerLeftTime, setOpponentPlayerLeftTime] = useState({
-    minutes: 0,
-    seconds: 5,
+    ...time,
   })
 
   function tick() {
-    console.log('moveTurn', turn)
-    console.log('currentPlayer', currentPlayer)
     if (turn === currentPlayer.side) {
       setCurrentPlayerLeftTime((prevState) => ({
         ...prevState,
         ...getTimeLeft(currentPlayerLeftTime),
       }))
-
-      console.log('CurrentPlayerLeftTime', currentPlayerLeftTime)
     } else {
-      console.log('opponent')
       setOpponentPlayerLeftTime((prevState) => ({
         ...prevState,
         ...getTimeLeft(opponentPlayerLeftTime),
@@ -48,7 +75,7 @@ export default function Timer() {
 
   useEffect(() => {
     let timeoutId
-    console.log('currentPlayerLeftTime useEffect called')
+
     if (
       currentPlayerLeftTime.minutes === 0 &&
       currentPlayerLeftTime.seconds === 0
@@ -57,14 +84,14 @@ export default function Timer() {
       return
     }
 
-    timeoutId = setTimeout(tick, 1000)
+    timeoutId = setTimeout(tick, 1000 - delay)
 
     return () => pauseTimer(timeoutId)
   }, [currentPlayerLeftTime.seconds])
 
   useEffect(() => {
     let timeoutId
-    console.log('opponentPlayerLeftTime useEffect called')
+
     if (
       opponentPlayerLeftTime.minutes === 0 &&
       opponentPlayerLeftTime.seconds === 0
@@ -76,7 +103,7 @@ export default function Timer() {
       return
     }
 
-    timeoutId = setTimeout(tick, 1000)
+    timeoutId = setTimeout(tick, 1000 + delay)
 
     return () => pauseTimer(timeoutId)
   }, [opponentPlayerLeftTime.seconds])
@@ -112,4 +139,14 @@ export default function Timer() {
       </div>
     </>
   )
+}
+
+function getOpponentLastMove(history, opponentPlayerColor) {
+  if (opponentPlayerColor === COLOR.white) {
+    const lastMove = history[history.length - 1]
+    return lastMove[opponentPlayerColor]
+  } else {
+    const previousLastMove = history[history.length - 2]
+    return previousLastMove[opponentPlayerColor]
+  }
 }
