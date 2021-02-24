@@ -5,6 +5,7 @@ import {
   MOVE,
   SELECT_PIECE,
   GAME_FINISH,
+  REFRESH_PAGE,
 } from './tamerlaneChessActionTypes'
 import TamerlaneChess from '../tamerlane-chess'
 import {
@@ -43,35 +44,45 @@ export const initialState = {
 
 export default function tamerlaneChessReducer(state = initialState, action) {
   const { type, payload } = action
+  let tamerlaneChess, fen, currentPlayerColor
   switch (type) {
     case START_GAME:
-      const { currentPlayerColor } = payload
+      currentPlayerColor = payload.currentPlayerColor
       console.log('payload', payload)
       console.log('currentPlayerColor', currentPlayerColor)
       const currentPosition = getPositionObject('start', currentPlayerColor)
-      const tamerlaneChess = new TamerlaneChess(currentPlayerColor)
+      tamerlaneChess = new TamerlaneChess(currentPlayerColor)
       return {
         ...state,
         currentPosition,
         tamerlaneChess,
       }
     case MOVE:
-      const {
-        fen,
-        turn,
-        opponentLastMoveAt,
-        opponentLastMove,
-        history,
-      } = payload
+      const { turn, opponentLastMoveAt, opponentLastMove, history } = payload
       console.log('turn', turn)
       console.log('history', history)
+
       return {
         ...state,
-        currentPosition: getPositionObject(fen),
+        currentPosition: getPositionObject(payload.fen),
         turn,
         opponentLastMoveAt,
         opponentLastMove,
         history,
+      }
+    case REFRESH_PAGE:
+      console.log('payload', payload)
+      console.log('payload.fen', payload.fen)
+      console.log('state in refresh', state)
+      tamerlaneChess = new TamerlaneChess(payload.currentPlayerColor, fen)
+      fen = tamerlaneChess.getCurrentFen()
+      console.log('fen', fen)
+      return {
+        ...state,
+        tamerlaneChess,
+        currentPosition: getPositionObject(fen),
+        currentPlayerColor: payload.currentPlayerColor,
+        turn: fen[fen.length - 1],
       }
     case CLEAR_HIGHLIGHTING:
       return {

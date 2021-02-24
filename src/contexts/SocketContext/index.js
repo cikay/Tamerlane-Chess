@@ -6,20 +6,19 @@ const SocketContext = React.createContext()
 
 export const useSocket = () => useContext(SocketContext)
 
-export function SocketProvider({ id, children }) {
+export function SocketProvider({ currentUser, children }) {
   const [socket, setSocket] = useState()
   console.log('localStorage', localStorage)
-
-  console.log('id', id)
+  console.log('currentUser', currentUser)
   useEffect(() => {
     const newSocket = io('http://localhost:5000', {
-      query: { id },
+      query: { id: currentUser?.id },
     })
 
     setSocket(newSocket)
 
     return () => newSocket.close()
-  }, [id])
+  }, [currentUser?.id])
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>

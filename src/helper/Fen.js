@@ -41,7 +41,10 @@ export const getPositionObject = (position, color = null) => {
     console.log('fen to obj ')
     return fenToObj(fen)
   }
-  if (validFen(position)) return fenToObj(position)
+  if (validFen(position)) {
+    console.log('fen to obj')
+    return fenToObj(position)
+  }
   if (validPositionObject(position)) return position
   return {}
 }
@@ -139,7 +142,7 @@ export function fenToObj(fen) {
   //cut off any move castling, etc info from end
   //we are only interested in position information
   fen = fen.replace(/\*.+$/, '')
-
+  console.log('fen', fen)
   const rows = fen.split('/')
   const position = {}
   let currentRow = 10
@@ -163,7 +166,7 @@ export function fenToObj(fen) {
 
     currentRow -= 1
   }
-
+  console.log('position', position)
   return position
 }
 

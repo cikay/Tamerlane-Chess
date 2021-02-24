@@ -11,4 +11,5 @@ class GameSerializer(serializers.ModelSerializer):
             'black_player',
             'white_player',
             'moves',
+            'current_fen',
         )

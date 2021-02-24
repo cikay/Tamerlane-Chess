@@ -15,28 +15,58 @@ import {
   SET_HIGHLIGHTING,
   SELECT_PIECE,
   MOVE,
+  REFRESH_PAGE,
 } from '../reducers/tamerlaneChessActionTypes'
 import { useSocket, usePlayersContext } from '../contexts'
 import axios from 'axios'
 import { COLOR } from '../tamerlane-chess/types'
 import Timer from '../components/Timer'
 import GameFinishDialog from '../components/GameFinishDialog'
+import useLocalStorage from '../hooks/useLocalStorage'
 
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
 const TamerlaneChessContext = createContext()
-export default function TamerlaneChessBoard() {
+export default function TamerlaneChessBoard({
+  isGameStarted,
+  setIsGameStarted,
+}) {
   const [state, dispatch] = useReducer(tamerlaneChessReducer, initialState)
   const socket = useSocket()
-  const { currentPlayer, opponentPlayer, gameId } = usePlayersContext()
+  const { currentPlayer, opponentPlayer } = usePlayersContext()
+  const gameId = localStorage.getItem('gameId')
   console.log('currentPlayer', currentPlayer)
   console.log('opponentPlayer', opponentPlayer)
   console.log('Provider called')
-  useEffect(() => {
-    console.log('game starting')
-    const payload = {
-      currentPlayerColor: currentPlayer.side,
+
+  useEffect(async () => {
+    let type
+    let payload
+    console.log('isGameStarted', isGameStarted)
+    console.log('isGameStarted type', typeof isGameStarted)
+    if (isGameStarted === true) {
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/play/online/${gameId}`
+      )
+      console.log('refresh page')
+      type = REFRESH_PAGE
+      console.log('res', res)
+      const currentUserId = currentPlayer.id
+      console.log(currentPlayer)
+      const currentPlayerColor =
+        currentUserId === res.data.black_player ? COLOR.black : COLOR.white
+      payload = { currentPlayerColor, fen: res.data.current_fen }
+      console.log('currentPlayerColor', currentPlayerColor)
+      console.log('current user id', currentUserId)
+    } else {
+      type = START_GAME
+      payload = {
+        currentPlayerColor: currentPlayer.side,
+      }
+      console.log('game starting')
+      // setIsGameStarted(true)
     }
-    dispatch({ type: START_GAME, payload })
+
+    dispatch({ type, payload })
   }, [])
 
   const removeHighlightSquare = () => {
@@ -137,15 +167,15 @@ export default function TamerlaneChessBoard() {
         move: move.moveInOpponentBoard,
         opponentLastMoveAt: new Date().getTime(),
       })
-
-     
+      console.log('currentPlayer', currentPlayer)
       const currentTime = new Date().getTime()
-      
+      const current_fen = tamerlaneChess.getWhiteAtBottomFen()
       axios.put(`${process.env.REACT_APP_API_URL}/play/online/${gameId}`, {
         move: move.savedMove,
         white_player,
         black_player,
         player_color: currentPlayer.side,
+        current_fen,
       })
     }
   }
@@ -170,10 +200,7 @@ export default function TamerlaneChessBoard() {
     const payload = { fen, turn, opponentLastMoveAt, move, history }
 
     dispatch({ type: MOVE, payload })
-  
   }
-
-  const setPosition = ({ sourceSquare, targetSquare, piece }) => {}
 
   const value = {
     ...state,

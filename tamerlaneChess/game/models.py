@@ -19,6 +19,7 @@ class Game(models.Model):
     black_player = models.ForeignKey(User, on_delete=models.CASCADE, related_name="black_player")
     white_player = models.ForeignKey(User, on_delete=models.CASCADE, related_name="white_player")
     moves = models.JSONField(default=dict, blank=True, null=True)
+    current_fen = models.CharField(max_length=300, blank=True, null=True)
     # result = models.CharField(max_length=2, choices=STATUS, default=GOING_ON, blank=True)
 
 

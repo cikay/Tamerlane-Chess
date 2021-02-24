@@ -36,7 +36,7 @@ export const AuthProvider = (props) => {
         stateType: LOGIN_SUCCESS,
         payload: res.data,
       })
-      localStorage.setItem('currentUser', JSON.stringify(res))
+      
       return res.data
     } catch (error) {
       dispatch({

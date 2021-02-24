@@ -19,7 +19,9 @@ import { AuthProvider, PlayersProvider, SocketProvider } from './contexts'
 import useLocalStorage from './hooks/useLocalStorage'
 
 function App() {
-  const [id, setId] = useLocalStorage('id')
+  const [currentUser, setCurrentUser] = useLocalStorage('currentUser')
+  const [isGameStarted, setIsGameStarted] = useLocalStorage('isGameStarted')
+  console.log('isGameStarted', isGameStarted)
   return (
     <AuthProvider>
       <Router>
@@ -28,7 +30,7 @@ function App() {
             <Signup />
           </Route>
           <Route path='/login'>
-            <Login onSubmitId={setId} />
+            <Login onSubmitUser={setCurrentUser} />
           </Route>
           <Route path='/email-verify'>
             <VerifyEmail />
@@ -39,13 +41,16 @@ function App() {
           <Route path='/password-reset-complete/:uidb64/:token'>
             <ResetPasswordConfirm />
           </Route>
-          <SocketProvider id={id}>
-            <PlayersProvider>
+          <SocketProvider currentUser={currentUser}>
+            <PlayersProvider currentUser={currentUser}>
               <Route exact path='/'>
                 <PrivateRoute Component={Home}></PrivateRoute>
               </Route>
               <Route path='/play'>
-                <TamerlaneChessBoard />
+                <TamerlaneChessBoard
+                  isGameStarted={isGameStarted}
+                  setIsGameStarted={setIsGameStarted}
+                />
               </Route>
             </PlayersProvider>
           </SocketProvider>

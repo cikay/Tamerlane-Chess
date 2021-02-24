@@ -117,9 +117,7 @@ class LoginAPIView(generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         response_data = {
-            'success': True,
-            'message': 'Kullanıcı girişi başarılı',
-            'userId': user.id,
+            'id': user.id,
             'username': user.username,
             'tokens': serializer.data['tokens']
         }

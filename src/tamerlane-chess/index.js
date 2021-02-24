@@ -79,25 +79,14 @@ export default class TamerlaneChess {
       }
     }
 
-    //Beyaz taşlar ekranda aşağıda ise
-    //  'f1d1i1i1d1f/kamzvsgzmak/pxcbyqehtnr/92/92/92/92/PXCBYQEHTNR/KAMZGSVZMAK/F1D1I1I1D1F*2 w'
-    let defaultWhitePiecesAtBottomFen =
-      'f1d1i1i1d1f/kamzvsgzmak/pxcbyqehtnr/92/92/92/92/PXCBEQYHTNR/KAMZGSVZMAK/F1D1I1I1D1F* w'
-    //Siyah taşlar ekranda aşağıda ise
-    let defaultBlackPiecesAtBottomFen =
-      'F1D1I1I1D1F/KAMZVSGZMAK/PXCBYQEHTNR/92/92/92/92/pxcbyqehtnr/kamzgsvzmak/f1d1i1i1d1f* w'
+    this.setFen(fen)
 
-    if (fen === null) {
-      this.#fen =
-        this.#playerColor === TamerlaneChess.#whiteColor
-          ? defaultWhitePiecesAtBottomFen
-          : defaultBlackPiecesAtBottomFen
-    } else {
-      this.#fen = fen
-    }
     this.#fen = expandFenEmptySquares(this.#fen)
-    this.parseFen(FEN_TYPE.player)
+    this.#opponentFen = expandFenEmptySquares(this.#opponentFen)
+    console.log('')
+    this.parseFen()
     // this.parseFen(FEN_TYPE.opponent)
+    console.log('this player color', this.#playerColor)
     this.#whitePieces = this.getActivePiece(TamerlaneChess.#whiteColor)
     this.#blackPieces = this.getActivePiece(TamerlaneChess.#blackColor)
     // this.printBoard()
@@ -440,7 +429,7 @@ export default class TamerlaneChess {
     }
     // this.printBoard()
     //move is possible
-    this.updateFen(fromPos, toPos, piece.fenChar)
+
     this.makePromotion(piece)
     this.updateMoves(movingPlayerColor)
     this.setHistory(fromSquare, toSquare)
@@ -450,8 +439,22 @@ export default class TamerlaneChess {
       this.#turn === TamerlaneChess.#whiteColor
         ? TamerlaneChess.#blackColor
         : TamerlaneChess.#whiteColor
+    this.updateFen(fromPos, toPos, piece.fenChar)
     const move = { from: fromSquare, to: toSquare }
-    const moveInOpponentBoard = this.computeMoveInOpponentBoard(fromPos, toPos)
+    const rowColMoveInOpponentBoard = this.computeMoveInOpponentBoard(
+      fromPos,
+      toPos
+    )
+    const moveInOpponentBoard = {
+      from: this.positionToSquare(
+        rowColMoveInOpponentBoard.from.row,
+        rowColMoveInOpponentBoard.from.col
+      ),
+      to: this.positionToSquare(
+        rowColMoveInOpponentBoard.to.row,
+        rowColMoveInOpponentBoard.to.col
+      ),
+    }
     console.log('opponent move', moveInOpponentBoard)
     //saved Move always according to white player
     let savedMove
@@ -467,6 +470,8 @@ export default class TamerlaneChess {
         console.log(this.#blackKings)
       }
     }
+    console.log('current fen', this.#fen)
+    console.log('current opponentFen', this.#opponentFen)
 
     return {
       status: '',
@@ -493,6 +498,58 @@ export default class TamerlaneChess {
     return this.#fen
   }
 
+  static reverseFen(fen) {
+    const startIndex = fen.indexOf('*')
+    const veriablesFen = fen.substring(startIndex + 1)
+    const boardFen = fen.replace(/\*.+$/, '')
+    const reverseBoardFen = boardFen.split('').reverse().join('') + '*'
+    const reversedFen = reverseBoardFen + veriablesFen
+    console.log('reversedFen', reversedFen)
+    return reversedFen
+  }
+
+  setFen(fen) {
+    //Beyaz taşlar ekranda aşağıda ise
+    //  'f1d1i1i1d1f/kamzvsgzmak/pxcbyqehtnr/92/92/92/92/PXCBYQEHTNR/KAMZGSVZMAK/F1D1I1I1D1F*2 w'
+    let defaultWhitePiecesAtBottomFen =
+      'f1d1i1i1d1f/kamzvsgzmak/pxcbyqehtnr/92/92/92/92/PXCBEQYHTNR/KAMZGSVZMAK/F1D1I1I1D1F* w'
+    //Siyah taşlar ekranda aşağıda ise
+    let defaultBlackPiecesAtBottomFen =
+      'F1D1I1I1D1F/KAMZVSGZMAK/PXCBYQEHTNR/92/92/92/92/pxcbyqehtnr/kamzgsvzmak/f1d1i1i1d1f* w'
+
+    if (fen === null) {
+      if (this.#playerColor === TamerlaneChess.#whiteColor) {
+        this.#fen = defaultWhitePiecesAtBottomFen
+        this.#opponentFen = defaultBlackPiecesAtBottomFen
+        console.log('white side')
+      } else {
+        console.log('white side')
+        this.#fen = defaultBlackPiecesAtBottomFen
+        this.#opponentFen = defaultWhitePiecesAtBottomFen
+      }
+
+      console.log('fen', fen)
+    } else {
+      if (this.#playerColor === TamerlaneChess.#whiteColor) {
+        this.#fen = fen
+        this.#opponentFen = TamerlaneChess.reverseFen(fen)
+      } else {
+        this.#opponentFen = fen
+        this.#fen = TamerlaneChess.reverseFen(fen)
+      }
+    }
+    console.log('fen', this.#fen)
+    console.log('opponent fen', this.#opponentFen)
+    this.printBoard()
+  }
+
+  getWhiteAtBottomFen() {
+    console.log('this.#playerColor', this.#playerColor)
+    return this.#playerColor === TamerlaneChess.#whiteColor
+      ? this.#fen
+      : this.#opponentFen
+  }
+
   isSwitched() {
     return false
   }
@@ -504,14 +561,37 @@ export default class TamerlaneChess {
 
   updateFen(from, to, movedPieceFenChar) {
     //position already chaged so from is to, to is from
+
     const newTo = from
     const newFrom = to
+    const moveInOpponentBoard = this.computeMoveInOpponentBoard(newFrom, newTo)
     const movedPiece = this.getPiece(newFrom)
     console.log('moved piece', movedPiece)
-    const movedPieceCharIndexInFen = this.getIndexInFen(movedPiece)
-    const toSquareCharIndexInFen = this.getIndexInFen(newTo)
-    this.replacePieceFenCharAt(movedPieceCharIndexInFen, movedPieceFenChar)
-    this.replacePieceFenCharAt(toSquareCharIndexInFen, '1')
+    const pieceCharIndex = this.getIndexInFen(movedPiece)
+    const opponentPieceCharIndex = this.getIndexInOpponentFen(movedPiece)
+    const toSquareCharIndex = this.getIndexInFen(newTo)
+    const opponentToSquareCharIndex = this.getIndexInOpponentFen(newTo)
+    // this.replacePieceFenCharAt(charIndexInFen, movedPieceFenChar)
+    this.#fen = replaceAt(this.#fen, pieceCharIndex, movedPieceFenChar)
+    this.#opponentFen = replaceAt(
+      this.#opponentFen,
+      opponentPieceCharIndex,
+      movedPieceFenChar
+    )
+    // this.replacePieceFenCharAt(toSquareCharIndexInFen, '1')
+    this.#fen = replaceAt(this.#fen, toSquareCharIndex, '1')
+    this.#opponentFen = replaceAt(
+      this.#opponentFen,
+      opponentToSquareCharIndex,
+      '1'
+    )
+    console.log('opponent fen length', this.#opponentFen.length)
+    console.log('fen length', this.#fen.length)
+    const lastIndex = this.#fen.length - 1
+    this.#fen = this.#fen.substring(0, lastIndex) + this.#turn
+    this.#opponentFen = this.#opponentFen.substring(0, lastIndex) + this.#turn
+    console.log('updated fen', this.#fen)
+    console.log('updated opponent fen', this.#opponentFen)
   }
 
   replacePieceFenCharAt(charIndex, pieceFenChar) {
@@ -519,7 +599,19 @@ export default class TamerlaneChess {
   }
 
   getIndexInFen({ row, col }) {
+    /*
+     let defaultWhitePiecesAtBottomFen =
+      'f1d1i1i1d1f/kamzvsgzmak/pxcbyqehtnr/92/92/92/92/PXCBEQYHTNR/KAMZGSVZMAK/F1D1I1I1D1F* w'
+    //Siyah taşlar ekranda aşağıda ise
+    let defaultBlackPiecesAtBottomFen =
+      'F1D1I1I1D1F/KAMZVSGZMAK/PXCBYQEHTNR/92/92/92/92/pxcbyqehtnr/kamzgsvzmak/f1d1i1i1d1f* w'
+    */
+
     return (9 - row) * 12 + col
+  }
+
+  getIndexInOpponentFen({ row, col }) {
+    return row * 12 + col
   }
 
   //Helper functions
@@ -555,13 +647,15 @@ export default class TamerlaneChess {
     console.log(from)
     console.log('to')
     console.log(to)
-    from.row = TamerlaneChess.#rowCount - from.row - 1
-    from.col = TamerlaneChess.#colCount - from.col - 1
-    to.row = TamerlaneChess.#rowCount - to.row - 1
-    to.col = TamerlaneChess.#colCount - to.col - 1
-    const toSquare = this.positionToSquare(to.row, to.col)
-    const fromSquare = this.positionToSquare(from.row, from.col)
-    return { from: fromSquare, to: toSquare }
+    const fromInOpponent = {}
+    const toInOpponent = {}
+    fromInOpponent.row = TamerlaneChess.#rowCount - from.row - 1
+    fromInOpponent.col = TamerlaneChess.#colCount - from.col - 1
+    toInOpponent.row = TamerlaneChess.#rowCount - to.row - 1
+    toInOpponent.col = TamerlaneChess.#colCount - to.col - 1
+    // const toSquare = this.positionToSquare(to.row, to.col)
+    // const fromSquare = this.positionToSquare(from.row, from.col)
+    return { from: fromInOpponent, to: toInOpponent }
   }
 
   computeOpponentFen(fen) {
@@ -688,8 +782,8 @@ export default class TamerlaneChess {
 
   checkMate(color) {}
 
-  parseFen(fenType) {
-    console.log(fenType)
+  parseFen() {
+    console.log('fen in parseFen', this.#fen)
     let fen
 
     let fenCounter = 0
@@ -849,11 +943,14 @@ export default class TamerlaneChess {
         default:
           console.log(this.#fen[fenCounter])
           console.log('Fen finished')
+          console.log('after parsed')
+          this.printBoard()
           return
       }
-
+      console.log('emptySquareCount', emptySquareCount)
       if (emptySquareCount === 0) {
         this.setPieceToBoard({ row, col }, piece)
+        console.log('piece', piece)
         col += 1
       } else {
         for (let i = 0; i < emptySquareCount; i++) {

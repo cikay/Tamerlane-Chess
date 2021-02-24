@@ -35,11 +35,16 @@ class GameView(generics.GenericAPIView):
             last_move['b'] = request.data['move']
         else:
             game.moves.append({'w':request.data['move']})
-
+        game.current_fen = request.data['current_fen']
         game.save()
         print("game updated moves",game.moves)
         return Response('Hamle kaydedildi', status=status.HTTP_200_OK)
-        
+    
+    def get(self, request, pk, format=None):
+        game = self.get_object(pk)
+        serializer = GameSerializer(game)
+        return Response(serializer.data)
+
 
     def get_object(self, pk):
         try: 

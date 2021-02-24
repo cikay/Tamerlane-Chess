@@ -5,6 +5,7 @@ import { useSocket } from '../SocketContext'
 import { getPlayersColor } from '../../helper/Fen'
 
 import { COLOR } from '../../tamerlane-chess/types'
+import useLocalStorage from '../../hooks/useLocalStorage'
 const PLAY_STATE = {
   Accepted: 'accepted',
   Cancelled: 'canceled',
@@ -14,7 +15,7 @@ const PlayersContext = React.createContext()
 
 export const usePlayersContext = () => useContext(PlayersContext)
 const REACT_APP_API_URL = process.env.REACT_APP_API_URL
-export const PlayersProvider = (props) => {
+export const PlayersProvider = ({ currentUser, children }) => {
   const [request, setRequest] = useState()
   const [state, setState] = useState({
     gameId: '',
@@ -46,19 +47,17 @@ export const PlayersProvider = (props) => {
   const startGame = () => {}
 
   const playRequest = async (playerId) => {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser')).data
-    console.log(localStorage)
     console.log('playRequest called')
-    console.log(currentUser)
 
-    console.log('currentUser', currentUser)
-    console.log(localStorage)
     const { currentPlayerColor, opponentPlayerColor } = getPlayersColor()
     const requestedPlayer = {
       username: currentUser.username,
-      id: currentUser.userId,
+      id: currentUser.id,
       side: currentPlayerColor,
     }
+
+    console.log('currentPlayerColor', currentPlayerColor)
+    console.log('opponentPlayerColor', opponentPlayerColor)
 
     socket.emit('send-playRequest', {
       recipientId: playerId,
@@ -74,7 +73,6 @@ export const PlayersProvider = (props) => {
   const playRequestResponse = () => {}
 
   const sendPlayResponse = async (requestedPlayer, response) => {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser')).data
     console.log('response', response)
     if (!response) {
       //show message in ui
@@ -95,14 +93,14 @@ export const PlayersProvider = (props) => {
       white_player = requestedPlayer
       black_player = {
         username: currentUser.username,
-        id: currentUser.userId,
+        id: currentUser.id,
         side: COLOR.black,
       }
       currentPlayer = black_player
     } else {
       white_player = {
         username: currentUser.username,
-        id: currentUser.userId,
+        id: currentUser.id,
         side: COLOR.white,
       }
       currentPlayer = white_player
@@ -134,6 +132,7 @@ export const PlayersProvider = (props) => {
       currentPlayer: currentPlayer,
       opponentPlayer: requestedPlayer,
     }))
+    localStorage.setItem('gameId', res.data.id)
     history.push('/play')
   }
 
@@ -152,7 +151,8 @@ export const PlayersProvider = (props) => {
       console.log('response', response)
       if (response) {
         setState((prevState) => ({ ...prevState, gameId }))
-        console.log("GAME ID", gameId)
+        console.log('GAME ID', gameId)
+        localStorage.setItem('gameId', gameId)
         history.push('/play')
       }
     })
@@ -185,8 +185,6 @@ export const PlayersProvider = (props) => {
   }
 
   return (
-    <PlayersContext.Provider value={value}>
-      {props.children}
-    </PlayersContext.Provider>
+    <PlayersContext.Provider value={value}>{children}</PlayersContext.Provider>
   )
 }
