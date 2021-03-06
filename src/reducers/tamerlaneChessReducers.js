@@ -29,6 +29,8 @@ export const initialState = {
   opponentLastMoveAt: '',
   opponentLastMove: '',
   winner: '',
+  opponentTakedPieceList: '',
+  currentPlayerTakedPieceList: '',
   selectedPiece: '',
   history: '',
   sourceSquare: '',
@@ -65,10 +67,7 @@ export default function tamerlaneChessReducer(state = initialState, action) {
       return {
         ...state,
         currentPosition: getPositionObject(payload.fen),
-        turn,
-        opponentLastMoveAt,
-        opponentLastMove,
-        history,
+        ...payload,
       }
     case REFRESH_PAGE:
       console.log('payload', payload)

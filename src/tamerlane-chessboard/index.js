@@ -23,6 +23,9 @@ import { COLOR } from '../tamerlane-chess/types'
 import Timer from '../components/Timer'
 import GameFinishDialog from '../components/GameFinishDialog'
 import useLocalStorage from '../hooks/useLocalStorage'
+import MovesHistory from '../components/MovesHistory'
+import TakedPieceList from '../components/TakedPieceList'
+import { Grid } from '@material-ui/core'
 
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
 const TamerlaneChessContext = createContext()
@@ -159,7 +162,8 @@ export default function TamerlaneChessBoard({
       const fen = tamerlaneChess.getCurrentFen()
       turn = tamerlaneChess.getTurn()
       const history = tamerlaneChess.getHistory()
-      const payload = { fen, turn, history }
+      const currentPlayerTakedPieceList = tamerlaneChess.getCurrentPlayerTakedPieceList()
+      const payload = { fen, turn, history, currentPlayerTakedPieceList }
 
       dispatch({ type: MOVE, payload })
       socket.emit('send-move', {
@@ -193,12 +197,20 @@ export default function TamerlaneChessBoard({
     console.log('move', move)
     const { tamerlaneChess } = state
     const madeMove = tamerlaneChess.makeMove(move.from, move.to)
+    const opponentTakedPieceList = tamerlaneChess.getOpponentTakedPieceList()
     const fen = tamerlaneChess.getCurrentFen()
     const turn = tamerlaneChess.getTurn()
     const history = tamerlaneChess.getHistory()
     console.log('history', history)
-    const payload = { fen, turn, opponentLastMoveAt, move, history }
-
+    const payload = {
+      fen,
+      turn,
+      opponentLastMoveAt,
+      move,
+      history,
+      opponentTakedPieceList,
+    }
+    console.log('taked piece', state.opponentTakedPieceList)
     dispatch({ type: MOVE, payload })
   }
 
@@ -207,18 +219,38 @@ export default function TamerlaneChessBoard({
     handleClick,
     dispatch,
   }
-
+  console.log('opponentTakedPieceList', state.opponentTakedPieceList)
   return (
     <TamerlaneChessContext.Provider value={value}>
-      {state.winner ? <GameFinishDialog /> : <Timer />}
-      <Board></Board>
+      <Grid container>
+        <Grid item sm={12} md={8}>
+          {state.winner ? <GameFinishDialog /> : <Timer />}
+          <TakedPieceList pieceList={state.opponentTakedPieceList} />
+          <Board></Board>
+          <TakedPieceList pieceList={state.currentPlayerTakedPieceList} />
+        </Grid>
+        <Grid item sm={12} md={2} spacing={2}>
+          <MovesHistory moves={state.history} />
+        </Grid>
+        <Grid item container sm={12} md={2}></Grid>
+      </Grid>
     </TamerlaneChessContext.Provider>
   )
 }
 
 function squareStyling({ pieceSquare, history }) {
-  const sourceSquare = history.length && history[history.length - 1].from
-  const targetSquare = history.length && history[history.length - 1].to
+  const { b, w } = history.length && history[history.length - 1]
+  if (!w) return
+  let sourceSquare
+  let targetSquare
+
+  if (w && b) {
+    sourceSquare = b.from
+    targetSquare = b.to
+  } else {
+    sourceSquare = w.from
+    targetSquare = w.to
+  }
 
   return {
     [pieceSquare]: { backgroundColor: 'rgba(255, 255, 0, 0.4)' },

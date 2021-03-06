@@ -14,6 +14,7 @@ import {
 import Home from './pages/Home'
 import PageNotFound from './components/PageNotFound'
 import PrivateRoute from './components/PrivateRoute'
+import MovesHistory from './components/MovesHistory'
 import TamerlaneChessBoard from './tamerlane-chessboard'
 import { AuthProvider, PlayersProvider, SocketProvider } from './contexts'
 import useLocalStorage from './hooks/useLocalStorage'
@@ -51,6 +52,10 @@ function App() {
                   isGameStarted={isGameStarted}
                   setIsGameStarted={setIsGameStarted}
                 />
+                {/* {state.winner ? <GameFinishDialog /> : <Timer />}
+                  <Board></Board>
+                  <MovesHistory moves={} />
+                </TamerlaneChessBoard> */}
               </Route>
             </PlayersProvider>
           </SocketProvider>

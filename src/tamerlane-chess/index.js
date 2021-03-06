@@ -63,6 +63,8 @@ export default class TamerlaneChess {
   #blackPieces
   #isFinished = false
   #history = []
+  #currentPlayerTakedPieceList = []
+  #opponentPlayerTakedPieceList = []
 
   constructor(playerColor, fen = null) {
     this.#playerColor = playerColor
@@ -472,13 +474,28 @@ export default class TamerlaneChess {
     }
     console.log('current fen', this.#fen)
     console.log('current opponentFen', this.#opponentFen)
-
+    this.setTakedPieceList(takedPiece)
     return {
       status: '',
       move,
       moveInOpponentBoard,
       savedMove,
     }
+  }
+
+  setTakedPieceList(takedPiece) {
+    if (takedPiece === 0) return
+    if (takedPiece.color === this.#playerColor) {
+      this.#currentPlayerTakedPieceList.push(takedPiece)
+    } else {
+      this.#opponentPlayerTakedPieceList.push(takedPiece)
+    }
+  }
+  getOpponentTakedPieceList() {
+    return this.#opponentPlayerTakedPieceList
+  }
+  getCurrentPlayerTakedPieceList() {
+    return this.#currentPlayerTakedPieceList
   }
 
   setHistory(fromSquare, toSquare) {

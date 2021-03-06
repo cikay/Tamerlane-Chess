@@ -1,7 +1,6 @@
 #GameBoard {
   width: 65vw;
   height: 80vh;
-  margin: 8vh auto 0 auto;
   display: grid;
   grid-template-columns: repeat(13, 1fr);
   grid-template-rows: repeat(10, 1fr);

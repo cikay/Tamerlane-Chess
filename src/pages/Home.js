@@ -66,7 +66,7 @@ const Home = () => {
     <>
       {request && <Dialog requestedPlayer={request} />}
       {isCancelled && <Alert />}
-      <InputGroup className='mb-1'>
+      <InputGroup className='mb-2'>
         <FormControl
           placeholder='Username'
           aria-label='Username'

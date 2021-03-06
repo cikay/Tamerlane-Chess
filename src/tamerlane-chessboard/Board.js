@@ -3,9 +3,9 @@ import './board.css'
 import Square from './Square'
 import Piece from './Piece'
 import { COLUMNS } from '../helper/Fen'
+
 // import TamerlaneChess from '../tamerlane-chess'
 const Board = () => {
-
   let squareColor = 'black'
   return (
     <div id='GameBoard'>
