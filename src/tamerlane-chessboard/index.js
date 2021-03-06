@@ -87,7 +87,7 @@ export default function TamerlaneChessBoard({
             borderRadius: '50%',
           },
         },
-        // ...squareStyling({
+        // ...opponentMoveSquareStyles({
         //   history: state.history,
         //   pieceSquare: state.pieceSquare,
         // }),
@@ -168,7 +168,6 @@ export default function TamerlaneChessBoard({
         turn,
         history,
         currentPlayerTakedPieceList,
-        squareStyles: '',
       }
 
       dispatch({ type: MOVE, payload })
@@ -210,9 +209,10 @@ export default function TamerlaneChessBoard({
     console.log('history', history)
 
     const squareStyles = opponentMoveSquareStyles({
-      history: state.history,
+      history,
       pieceSquare: state.pieceSquare,
     })
+    console.log('squareStyles xxxx', squareStyles)
     const payload = {
       fen,
       turn,
@@ -222,6 +222,7 @@ export default function TamerlaneChessBoard({
       opponentTakedPieceList,
       squareStyles,
     }
+
     console.log('taked piece', state.opponentTakedPieceList)
     dispatch({ type: MOVE, payload })
   }

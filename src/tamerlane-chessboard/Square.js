@@ -24,7 +24,7 @@ const Square = ({ square, squareColor, row, col }) => {
       ...(squareColor === 'black' ? darkSquareStyle : lightSquareStyle),
     }
   }
-
+  console.log('squareStyles', squareStyles)
   return (
     <div
       style={squareStyle()}
