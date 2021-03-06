@@ -87,10 +87,10 @@ export default function TamerlaneChessBoard({
             borderRadius: '50%',
           },
         },
-        ...squareStyling({
-          history: state.history,
-          pieceSquare: state.pieceSquare,
-        }),
+        // ...squareStyling({
+        //   history: state.history,
+        //   pieceSquare: state.pieceSquare,
+        // }),
       }
     }, {})
     const payload = {
@@ -163,7 +163,13 @@ export default function TamerlaneChessBoard({
       turn = tamerlaneChess.getTurn()
       const history = tamerlaneChess.getHistory()
       const currentPlayerTakedPieceList = tamerlaneChess.getCurrentPlayerTakedPieceList()
-      const payload = { fen, turn, history, currentPlayerTakedPieceList }
+      const payload = {
+        fen,
+        turn,
+        history,
+        currentPlayerTakedPieceList,
+        squareStyles: '',
+      }
 
       dispatch({ type: MOVE, payload })
       socket.emit('send-move', {
@@ -202,6 +208,11 @@ export default function TamerlaneChessBoard({
     const turn = tamerlaneChess.getTurn()
     const history = tamerlaneChess.getHistory()
     console.log('history', history)
+
+    const squareStyles = opponentMoveSquareStyles({
+      history: state.history,
+      pieceSquare: state.pieceSquare,
+    })
     const payload = {
       fen,
       turn,
@@ -209,6 +220,7 @@ export default function TamerlaneChessBoard({
       move,
       history,
       opponentTakedPieceList,
+      squareStyles,
     }
     console.log('taked piece', state.opponentTakedPieceList)
     dispatch({ type: MOVE, payload })
@@ -225,9 +237,9 @@ export default function TamerlaneChessBoard({
       <Grid container>
         <Grid item sm={12} md={8}>
           {state.winner ? <GameFinishDialog /> : <Timer />}
-          <TakedPieceList pieceList={state.opponentTakedPieceList} />
-          <Board></Board>
           <TakedPieceList pieceList={state.currentPlayerTakedPieceList} />
+          <Board></Board>
+          <TakedPieceList pieceList={state.opponentTakedPieceList} />
         </Grid>
         <Grid item sm={12} md={2} spacing={2}>
           <MovesHistory moves={state.history} />
@@ -238,7 +250,7 @@ export default function TamerlaneChessBoard({
   )
 }
 
-function squareStyling({ pieceSquare, history }) {
+function opponentMoveSquareStyles({ pieceSquare, history }) {
   const { b, w } = history.length && history[history.length - 1]
   if (!w) return
   let sourceSquare
