@@ -1,4 +1,3 @@
-import React, { useEffect, useState, useMemo } from 'react'
 import './board.css'
 import Square from './Square'
 import Piece from './Piece'

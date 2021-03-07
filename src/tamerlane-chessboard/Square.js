@@ -22,6 +22,8 @@ const Square = ({ square, squareColor, row, col }) => {
   const squareStyle = () => {
     return {
       ...(squareColor === 'black' ? darkSquareStyle : lightSquareStyle),
+      width: '50px',
+      height: '50px',
     }
   }
   console.log('squareStyles', squareStyles)
@@ -32,7 +34,13 @@ const Square = ({ square, squareColor, row, col }) => {
       onClick={() => handleClick(square)}
       className={`file${col} rank${row}`}
     >
-      <div style={{ ...squareStyles[square], ...size() }}>
+      <div
+        style={{
+          ...squareStyles[square],
+          ...size(),
+          display: 'flex',
+        }}
+      >
         {hasPiece(currentPosition, square) && (
           <Piece pieceName={getPieceName(square)}></Piece>
         )}
@@ -42,8 +50,8 @@ const Square = ({ square, squareColor, row, col }) => {
 }
 
 const size = () => ({
-  height: 50,
-  width: 50,
+  height: '100%',
+  width: '100%',
 })
 
 // Square.PropTypes = {
