@@ -77,7 +77,7 @@ export default function TamerlaneChessBoard({
   }
 
   const highlightSquare = (squaresToHighlight) => {
-    const highlightStyles = squaresToHighlight.reduce((a, c) => {
+    const legalMovesSquares = squaresToHighlight.reduce((a, c) => {
       return {
         ...a,
         ...{
@@ -87,12 +87,16 @@ export default function TamerlaneChessBoard({
             borderRadius: '50%',
           },
         },
-        // ...opponentMoveSquareStyles({
-        //   history: state.history,
-        //   pieceSquare: state.pieceSquare,
-        // }),
       }
     }, {})
+    const highlightStyles = {
+      ...legalMovesSquares,
+      ...opponentMoveSquareStyles({
+        history: state.history,
+        pieceSquare: state.pieceSquare,
+      }),
+    }
+
     const payload = {
       highlightStyles,
     }
@@ -168,6 +172,12 @@ export default function TamerlaneChessBoard({
         turn,
         history,
         currentPlayerTakedPieceList,
+        squareStyles: {
+          ...opponentMoveSquareStyles({
+            history,
+            pieceSquare: state.pieceSquare,
+          }),
+        },
       }
 
       dispatch({ type: MOVE, payload })

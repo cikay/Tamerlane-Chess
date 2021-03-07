@@ -22,8 +22,8 @@ const Square = ({ square, squareColor, row, col }) => {
   const squareStyle = () => {
     return {
       ...(squareColor === 'black' ? darkSquareStyle : lightSquareStyle),
-      width: '50px',
-      height: '50px',
+      width: '55px',
+      height: '55px',
     }
   }
   console.log('squareStyles', squareStyles)
@@ -37,7 +37,8 @@ const Square = ({ square, squareColor, row, col }) => {
       <div
         style={{
           ...squareStyles[square],
-          ...size(),
+          height: '100%',
+          width: '100%',
           display: 'flex',
         }}
       >
@@ -48,11 +49,6 @@ const Square = ({ square, squareColor, row, col }) => {
     </div>
   )
 }
-
-const size = () => ({
-  height: '100%',
-  width: '100%',
-})
 
 // Square.PropTypes = {
 //   width: PropTypes.func,
