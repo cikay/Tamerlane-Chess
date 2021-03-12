@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Piece from './Piece'
 import { useTamerlaneChessContext } from './index'
+import { Grid } from '@material-ui/core'
 
 const Square = ({ square, squareColor, row, col }) => {
   const {
@@ -22,8 +23,8 @@ const Square = ({ square, squareColor, row, col }) => {
   const squareStyle = () => {
     return {
       ...(squareColor === 'black' ? darkSquareStyle : lightSquareStyle),
-      width: '55px',
-      height: '55px',
+      width: '100%',
+      height: '100%',
     }
   }
   console.log('squareStyles', squareStyles)
@@ -32,7 +33,7 @@ const Square = ({ square, squareColor, row, col }) => {
       style={squareStyle()}
       id={square}
       onClick={() => handleClick(square)}
-      className={`file${col} rank${row}`}
+      className={`rank${row} file${col}`}
     >
       <div
         style={{

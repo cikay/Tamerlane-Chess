@@ -25,7 +25,14 @@ import GameFinishDialog from '../components/GameFinishDialog'
 import useLocalStorage from '../hooks/useLocalStorage'
 import MovesHistory from '../components/MovesHistory'
 import TakedPieceList from '../components/TakedPieceList'
-import { Grid } from '@material-ui/core'
+import { Grid, GridList, Container } from '@material-ui/core'
+import { makeStyles } from '@material-ui/styles'
+
+const useStyles = makeStyles({
+  opponentTakedPieceList: {
+    marginTop: '400px',
+  },
+})
 
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
 const TamerlaneChessContext = createContext()
@@ -83,8 +90,7 @@ export default function TamerlaneChessBoard({
         ...{
           [c]: {
             background:
-              'radial-gradient(circle, rgb(125, 226, 1) 36%, transparent 40%)',
-            borderRadius: '50%',
+              'radial-gradient(circle, rgb(125, 226, 1) 20%, transparent 20%)',
           },
         },
       }
@@ -243,19 +249,22 @@ export default function TamerlaneChessBoard({
     dispatch,
   }
   console.log('opponentTakedPieceList', state.opponentTakedPieceList)
+  const classes = useStyles()
   return (
     <TamerlaneChessContext.Provider value={value}>
       <Grid container>
-        <Grid item sm={12} md={8}>
+        <Grid container item sm={12} md={8}>
           {state.winner ? <GameFinishDialog /> : <Timer />}
-          <TakedPieceList pieceList={state.currentPlayerTakedPieceList} />
-          <Board></Board>
-          <TakedPieceList pieceList={state.opponentTakedPieceList} />
+          <Board />
         </Grid>
-        <Grid item sm={12} md={2} spacing={2}>
-          <MovesHistory moves={state.history} />
+        <Grid item sm={12} md={2} style={{ marginTop: '20px' }} spacing={2}>
+          <Container>
+            <TakedPieceList pieceList={state.currentPlayerTakedPieceList} />
+          </Container>
+          <Container className={classes.opponentTakedPieceList}>
+            <TakedPieceList pieceList={state.opponentTakedPieceList} />
+          </Container>
         </Grid>
-        <Grid item container sm={12} md={2}></Grid>
       </Grid>
     </TamerlaneChessContext.Provider>
   )
