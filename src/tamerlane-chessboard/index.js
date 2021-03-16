@@ -30,7 +30,7 @@ import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
   opponentTakedPieceList: {
-    marginTop: '400px',
+    marginTop: 300,
   },
 })
 
@@ -249,15 +249,16 @@ export default function TamerlaneChessBoard({
     dispatch,
   }
   console.log('opponentTakedPieceList', state.opponentTakedPieceList)
+
   const classes = useStyles()
   return (
     <TamerlaneChessContext.Provider value={value}>
       <Grid container>
-        <Grid container item sm={12} md={8}>
+        <Grid container item sm={12} md={8} direction='row'>
           {state.winner ? <GameFinishDialog /> : <Timer />}
           <Board />
         </Grid>
-        <Grid item sm={12} md={2} style={{ marginTop: '20px' }} spacing={2}>
+        <Grid item sm={12} md={2} style={{ marginTop: '20px' }}>
           <Container>
             <TakedPieceList pieceList={state.currentPlayerTakedPieceList} />
           </Container>
@@ -297,11 +298,3 @@ function opponentMoveSquareStyles({ pieceSquare, history }) {
   }
 }
 
-/*
-
-
-[
-  {"w": {"from": "b2", "to": "a4"}, "b": {"from": "j9", "to": "k7"}},
-  {"w": {"from": "c1", "to": "d4"}, "b": {"from": "h8", "to": "h7"}}, 
-  {"w": {"from": "g3", "to": "g4"}}]
-*/

@@ -388,6 +388,7 @@ export default class TamerlaneChess {
   undoTemporaryMove(from, to) {}
 
   makeMove(fromSquare, toSquare, movingPlayerColor) {
+    const t0 = performance.now()
     if (this.isFinished()) return null
     console.log(`from:${fromSquare}, to:${toSquare}`)
     const fromPos = this.squareToPosition(fromSquare)
@@ -475,6 +476,8 @@ export default class TamerlaneChess {
     console.log('current fen', this.#fen)
     console.log('current opponentFen', this.#opponentFen)
     this.setTakedPieceList(takedPiece)
+    const t1 = performance.now()
+    console.log('moved in', t1 - t0)
     return {
       status: '',
       move,

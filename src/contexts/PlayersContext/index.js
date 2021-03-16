@@ -21,7 +21,12 @@ export const PlayersProvider = ({ currentUser, children }) => {
     gameId: '',
     currentPlayer: '',
     opponentPlayer: '',
+    users: [],
   })
+
+  const resetUsers = () => {
+    setState((prevState) => ({ ...prevState, users: [] }))
+  }
 
   const history = useHistory()
 
@@ -32,6 +37,7 @@ export const PlayersProvider = ({ currentUser, children }) => {
       console.log('process.env', process.env)
       console.log('REACT_APP_API_URL', process.env.REACT_APP_API_URL)
       const res = await axios.get(`${REACT_APP_API_URL}/account/${username}`)
+      setState((prevState) => ({ ...prevState, users: res.data }))
       return res
     } catch (error) {
       throw error
@@ -69,8 +75,6 @@ export const PlayersProvider = ({ currentUser, children }) => {
       opponentPlayer: { id: playerId, side: opponentPlayerColor },
     }))
   }
-
-  const playRequestResponse = () => {}
 
   const sendPlayResponse = async (requestedPlayer, response) => {
     console.log('response', response)
@@ -182,6 +186,7 @@ export const PlayersProvider = ({ currentUser, children }) => {
     getPlayResponse,
     response,
     PLAY_STATE,
+    resetUsers,
   }
 
   return (
