@@ -15,7 +15,7 @@ export default function TakedPieceList({ pieceList }) {
             <img
               alt='taked piece'
               src={`pieces-image/${pieceCode}.png`}
-              style={{ width: '25px', height: '25px' }}
+              style={{ width: '20px', height: '20px' }}
             />
           )
         })}

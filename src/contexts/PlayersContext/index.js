@@ -21,7 +21,7 @@ export const PlayersProvider = ({ currentUser, children }) => {
     gameId: '',
     currentPlayer: '',
     opponentPlayer: '',
-    users: [],
+    users: "",
   })
 
   const resetUsers = () => {
@@ -49,8 +49,6 @@ export const PlayersProvider = ({ currentUser, children }) => {
   }
 
   const acceptPlayRequest = () => {}
-
-  const startGame = () => {}
 
   const playRequest = async (playerId) => {
     console.log('playRequest called')

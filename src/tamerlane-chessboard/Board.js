@@ -8,8 +8,11 @@ import { Grid } from '@material-ui/core'
 const Board = () => {
   let squareColor = 'black'
   return (
-    <div id='GameBoard' direction='row'>
-      
+    <div
+      id='GameBoard'
+      direction='row'
+      style={{ height: document.clientHeight }}
+    >
       {[...Array(10)].map((_, r) => {
         return [...Array(11)].map((_, c) => {
           const row = 10 - r

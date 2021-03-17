@@ -153,7 +153,7 @@ export default function TamerlaneChessBoard({
       console.log('state.fromSquare', state.fromSquare)
       console.log(turn)
       const move = tamerlaneChess.makeMove(state.fromSquare, square, turn)
-      if (move === null) return
+      if (move == null) return
 
       console.log('move before send', move)
 
@@ -253,18 +253,38 @@ export default function TamerlaneChessBoard({
   const classes = useStyles()
   return (
     <TamerlaneChessContext.Provider value={value}>
-      <Grid container>
-        <Grid container item sm={12} md={8} direction='row'>
+      <Grid container alignItems='flex-start'>
+        <Grid item sm={12} md={1}></Grid>
+        <Grid
+          container
+          item
+          sm={12}
+          md={7}
+          direction='row'
+          // style={{ marginTop: '30px' }}
+        >
+          <Container style={{ marginTop: '10px', height: '20px' }}>
+            <TakedPieceList pieceList={state.currentPlayerTakedPieceList} />
+          </Container>
+
           {state.winner ? <GameFinishDialog /> : <Timer />}
           <Board />
+          <Container style={{ marginTop: '10px', height: '20px' }}>
+            <TakedPieceList pieceList={state.opponentTakedPieceList} />
+          </Container>
         </Grid>
-        <Grid item sm={12} md={2} style={{ marginTop: '20px' }}>
-          <Container>
+        {/* style={{ marginTop: '20px' }} */}
+        <Grid item sm={12} md={2}>
+          {/* <Container style={{ marginTop: '30px' }}>
             <TakedPieceList pieceList={state.currentPlayerTakedPieceList} />
           </Container>
           <Container className={classes.opponentTakedPieceList}>
             <TakedPieceList pieceList={state.opponentTakedPieceList} />
-          </Container>
+          </Container> */}
+          {/* <TakedPieceList pieceList={state.currentPlayerTakedPieceList} /> */}
+        </Grid>
+        <Grid item sm={12} md={2}>
+          {/* <TakedPieceList pieceList={state.opponentTakedPieceList} /> */}
         </Grid>
       </Grid>
     </TamerlaneChessContext.Provider>
@@ -297,4 +317,3 @@ function opponentMoveSquareStyles({ pieceSquare, history }) {
     }),
   }
 }
-

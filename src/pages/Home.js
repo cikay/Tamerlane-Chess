@@ -5,7 +5,8 @@ import AppBar from '../components/AppBar'
 import { ListGroup, Alert } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
 import { useAuthContext, usePlayersContext } from '../contexts'
-
+import SearchIcon from '@material-ui/icons/Search'
+import { InputBase } from '@material-ui/core'
 const Home = () => {
   const history = useHistory()
   const [selectedUser, setSelectedUser] = useState()
@@ -32,6 +33,24 @@ const Home = () => {
     }
   }
 
+  const searchClick = async (e) => {
+    const value = e.target.value
+    console.log('value', value)
+    if (value) {
+      if (users.length === 0 || users.length > 0) {
+        const res = await getUser(value)
+        console.log('search', res.data)
+        if (res.data.length === 1) {
+          console.log('length 1')
+          setSelectedUser(users[0])
+        }
+      }
+    } else {
+      console.log('reset users')
+      resetUsers(() => [])
+    }
+  }
+
   const selectUser = async (e) => {
     // document.getElementById('search-input').value = ''
     resetUsers([])
@@ -46,7 +65,20 @@ const Home = () => {
     <>
       {request && <Dialog requestedPlayer={request} />}
       {isCancelled && <Alert />}
-      <AppBar />
+      <div>
+        <div>
+          <SearchIcon />
+        </div>
+        <InputBase
+          placeholder='Search…'
+          // classes={{
+          //   root: classes.inputRoot,
+          //   input: classes.inputInput,
+          // }}
+          // inputProps={{ 'aria-label': 'search' }}
+          onChange={searchClick}
+        />
+      </div>
       {users && (
         <ListGroup as='ul' onClick={selectUser}>
           {users.map((user) => {
@@ -60,10 +92,6 @@ const Home = () => {
                 style={{ marginTop: '3px' }}
               >
                 {user.username}
-                {'       '}
-                {user.firstname}
-                {'       '}
-                {user.lastname}
               </ListGroup.Item>
             )
           })}

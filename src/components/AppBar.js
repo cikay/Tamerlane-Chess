@@ -89,35 +89,9 @@ export default function PrimarySearchAppBar() {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
   const [selectedUser, setSelectedUser] = useState()
-  const {
-    getUser,
-    playRequest,
-    request,
-    response,
-    PLAY_STATE,
-    resetUsers,
-    users,
-  } = usePlayersContext()
+  const { getUser, resetUsers, users } = usePlayersContext()
 
   const { logout } = useAuthContext()
-
-  const searchClick = async (e) => {
-    const value = e.target.value
-    console.log('value', value)
-    if (value) {
-      if (users.length === 0 || users.length > 0) {
-        const res = await getUser(value)
-        console.log('search', res.data)
-        if (res.data.length === 1) {
-          console.log('length 1')
-          setSelectedUser(users[0])
-        }
-      }
-    } else {
-      console.log('reset users')
-      resetUsers(() => [])
-    }
-  }
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget)
@@ -206,7 +180,7 @@ export default function PrimarySearchAppBar() {
             <MenuIcon />
           </IconButton>
 
-          <div className={classes.search}>
+          {/* <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
@@ -219,7 +193,7 @@ export default function PrimarySearchAppBar() {
               inputProps={{ 'aria-label': 'search' }}
               onChange={searchClick}
             />
-          </div>
+          </div> */}
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             {/* <IconButton aria-label='show 4 new mails' color='inherit'>

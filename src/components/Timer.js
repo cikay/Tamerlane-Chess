@@ -80,7 +80,6 @@ export default function Timer() {
       currentPlayerLeftTime.minutes === 0 &&
       currentPlayerLeftTime.seconds === 0
     ) {
-      
       dispatch({ type: GAME_FINISH, payload: { winner: opponentPlayer.side } })
       return
     }
