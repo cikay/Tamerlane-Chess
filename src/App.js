@@ -31,7 +31,9 @@ function App() {
       <SocketProvider>
         <PlayersProvider>
           <Router>
-            <PrivateRoute Component={BaseTemplate} />
+            <PrivateRoute>
+              <BaseTemplate currentUser={currentUser} />
+            </PrivateRoute>
             <Switch>
               <Route path='/signup'>
                 <Signup />
@@ -54,7 +56,9 @@ function App() {
               <SocketProvider currentUser={currentUser}>
                 <PlayersProvider currentUser={currentUser}>
                   <Route exact path='/'>
-                    <PrivateRoute Component={Home}></PrivateRoute>
+                    <PrivateRoute>
+                      <Home />
+                    </PrivateRoute>
                   </Route>
                   <Route path='/play'>
                     <TamerlaneChessBoard

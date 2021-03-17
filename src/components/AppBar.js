@@ -15,6 +15,7 @@ import MailIcon from '@material-ui/icons/Mail'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import { useAuthContext, usePlayersContext } from '../contexts'
+import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -80,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function PrimarySearchAppBar() {
+export default function PrimarySearchAppBar({ currentUser }) {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
@@ -106,10 +107,16 @@ export default function PrimarySearchAppBar() {
     handleMobileMenuClose()
   }
 
+  const handleProfile = () => {
+    console.log(currentUser)
+
+    history.push(`/${currentUser.username}`)
+  }
+
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget)
   }
-
+  const history = useHistory()
   const menuId = 'primary-search-account-menu'
   const renderMenu = (
     <Menu
@@ -121,7 +128,7 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem>Profil</MenuItem>
+      <MenuItem onClick={handleProfile}>Profil</MenuItem>
       <MenuItem onClick={logout}>Çıkış Yap</MenuItem>
     </Menu>
   )
