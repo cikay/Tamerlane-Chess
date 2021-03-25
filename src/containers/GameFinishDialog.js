@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import { usePlayersContext } from '../contexts'
-import { useTamerlaneChessContext } from '../tamerlane-chessboard'
+import { useTamerlaneChessContext } from '../contexts/TamerlaneChessContext'
 
 export default function GameFinishDialog() {
   const { currentPlayer, opponentPlayer } = usePlayersContext()

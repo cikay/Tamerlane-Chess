@@ -1,5 +1,4 @@
 import React from 'react'
-import { useTamerlaneChessContext } from '../contexts'
 import { fenToPieceCode } from '../helper/Fen'
 import { GridList } from '@material-ui/core'
 

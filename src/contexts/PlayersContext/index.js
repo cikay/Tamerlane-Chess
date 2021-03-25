@@ -3,25 +3,24 @@ import { useHistory } from 'react-router-dom'
 import axios from 'axios'
 import { useSocket } from '../SocketContext'
 import { getPlayersColor } from '../../helper/Fen'
-
 import { COLOR } from '../../tamerlane-chess/types'
-import useLocalStorage from '../../hooks/useLocalStorage'
+
 const PLAY_STATE = {
   Accepted: 'accepted',
   Cancelled: 'canceled',
 }
+const REACT_APP_API_URL = process.env.REACT_APP_API_URL
 
 const PlayersContext = React.createContext()
 
 export const usePlayersContext = () => useContext(PlayersContext)
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL
 export const PlayersProvider = ({ currentUser, children }) => {
   const [request, setRequest] = useState()
   const [state, setState] = useState({
     gameId: '',
     currentPlayer: '',
     opponentPlayer: '',
-    users: "",
+    users: '',
   })
 
   const resetUsers = () => {
@@ -29,6 +28,7 @@ export const PlayersProvider = ({ currentUser, children }) => {
   }
 
   const history = useHistory()
+  console.log('history', history)
 
   const [response, setResponse] = useState(null)
   const socket = useSocket()
@@ -62,7 +62,7 @@ export const PlayersProvider = ({ currentUser, children }) => {
 
     console.log('currentPlayerColor', currentPlayerColor)
     console.log('opponentPlayerColor', opponentPlayerColor)
-
+    console.log('socket', socket)
     socket.emit('send-playRequest', {
       recipientId: playerId,
       senderPlayer: requestedPlayer,
@@ -80,6 +80,7 @@ export const PlayersProvider = ({ currentUser, children }) => {
       //show message in ui
 
       console.log('istek reddedildi')
+      console.log('socket', socket)
       socket.emit('send-playRequestResponse', {
         recepientId: requestedPlayer.id,
         response: false,
@@ -134,8 +135,8 @@ export const PlayersProvider = ({ currentUser, children }) => {
       currentPlayer: currentPlayer,
       opponentPlayer: requestedPlayer,
     }))
-    localStorage.setItem('gameId', res.data.id)
-    history.push('/play')
+    // localStorage.setItem('gameId', res.data.id)
+    history.push('/play/online')
   }
 
   const getPlayResponse = (response) => {
@@ -148,6 +149,7 @@ export const PlayersProvider = ({ currentUser, children }) => {
 
   useEffect(() => {
     if (socket == null) return
+    console.log('socket in playercontext', socket)
     socket.on('receive-playResponse', ({ response, gameId }) => {
       console.log('response received')
       console.log('response', response)
@@ -155,7 +157,7 @@ export const PlayersProvider = ({ currentUser, children }) => {
         setState((prevState) => ({ ...prevState, gameId }))
         console.log('GAME ID', gameId)
         localStorage.setItem('gameId', gameId)
-        history.push('/play')
+        history.push('/play/online')
       }
     })
     return () => socket.off('receive-playResponse')

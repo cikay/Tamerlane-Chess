@@ -1,11 +1,9 @@
 import React from 'react'
 
-const GameSettings = () => {
+export default function GameAnalayz() {
   return (
     <div>
       
     </div>
   )
 }
-
-export default GameSettings

@@ -13,7 +13,7 @@ io.on('connection', (socket) => {
   socket.join(id)
   let gameStartedAt
   let sure
-
+  console.log(socket)
   socket.on(
     'send-move',
     ({ opponentId, move, opponentLastMoveAt, opponentLastMove }) => {

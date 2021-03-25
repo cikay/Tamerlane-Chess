@@ -12,7 +12,7 @@ export default function useLocalStorage(key, initialValue) {
     console.log('json value', jsonValue)
     console.log(typeof jsonValue)
 
-    if (jsonValue === 'undefined' || jsonValue === 'null') {
+    if (jsonValue == undefined) {
       console.log('prefixKey', prefixKey)
       return initialValue
     }

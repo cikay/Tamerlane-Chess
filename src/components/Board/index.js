@@ -1,17 +1,25 @@
 import './board.css'
-import Square from './Square'
-import Piece from './Piece'
-import { COLUMNS } from '../helper/Fen'
-import { Grid } from '@material-ui/core'
+import Square from '../Square'
+import Piece from '../Piece'
+import { COLUMNS } from '../../helper/Fen'
+import { useTamerlaneChessContext } from '../../contexts'
 
-// import TamerlaneChess from '../tamerlane-chess'
 const Board = () => {
   let squareColor = 'black'
+  console.log('BOARD invoked')
+
+  const { currentPosition } = useTamerlaneChessContext()
+  const getPieceName = (square) => {
+    return currentPosition[square]
+  }
+  const hasPiece = (currentPosition, square) =>
+    currentPosition && Object.keys(currentPosition)?.includes(square)
+
   return (
     <div
       id='GameBoard'
       direction='row'
-      style={{ height: document.clientHeight }}
+      // style={{ height: document.clientHeight }}
     >
       {[...Array(10)].map((_, r) => {
         return [...Array(11)].map((_, c) => {
@@ -25,7 +33,11 @@ const Board = () => {
               squareColor={squareColor}
               row={row}
               col={c + 1}
-            />
+            >
+              {hasPiece(currentPosition, square) && (
+                <Piece pieceName={getPieceName(square)} />
+              )}
+            </Square>
           )
         })
       })}

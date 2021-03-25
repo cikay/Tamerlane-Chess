@@ -9,14 +9,12 @@ export default function Dialog({ requestedPlayer }) {
     console.log('istek kabul edildi')
     sendPlayResponse(requestedPlayer, true)
     setShow(false)
-    // resetRequest()
   }
 
   const handleCancel = () => {
     console.log('istek reddedildi')
     sendPlayResponse(false)
     setShow(false)
-    // resetRequest()
   }
 
   return (

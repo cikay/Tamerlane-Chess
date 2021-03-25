@@ -6,15 +6,15 @@ import {
   SELECT_PIECE,
   GAME_FINISH,
   REFRESH_PAGE,
-} from './tamerlaneChessActionTypes'
-import TamerlaneChess from '../tamerlane-chess'
+} from './types'
+import TamerlaneChess from '../../tamerlane-chess'
 import {
   validFen,
   fenToObj,
   validPositionObject,
   getPositionObject,
-} from '../helper/Fen'
-import { COLOR } from '../tamerlane-chess/types'
+} from '../../helper/Fen'
+import { COLOR } from '../../tamerlane-chess/types'
 
 export const initialState = {
   fen: 'start',

@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
-import Dialog from '../components/Dialog'
-import GameSettings from '../components/GameSettings'
-import AppBar from '../components/AppBar'
+import Dialog from '../containers/Dialog'
+import AppBar from '../containers/AppBar'
 import { ListGroup, Alert } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
 import { useAuthContext, usePlayersContext } from '../contexts'
 import SearchIcon from '@material-ui/icons/Search'
 import { InputBase } from '@material-ui/core'
+import { useSocket } from '../contexts/SocketContext'
 const Home = () => {
   const history = useHistory()
   const [selectedUser, setSelectedUser] = useState()
-
+  const socket = useSocket()
   const { logout } = useAuthContext()
   const {
     getUser,
@@ -53,6 +53,7 @@ const Home = () => {
 
   const selectUser = async (e) => {
     // document.getElementById('search-input').value = ''
+    console.log('socket', socket)
     resetUsers([])
     const user = JSON.parse(e.target.getAttribute('user'))
     console.log('user', user)

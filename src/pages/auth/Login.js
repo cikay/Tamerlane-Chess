@@ -4,7 +4,9 @@ import { Card, Button, Form, Container, Alert } from 'react-bootstrap'
 import { useAuthContext } from '../../contexts/AuthContext'
 import { Link, useHistory } from 'react-router-dom'
 import CenteredContainer from '../../components/CenteredContainer'
-const Login = ({ onSubmitUser }) => {
+// import { useUserContext } from '../../contexts'
+const Login = ({onSubmitUser}) => {
+  // const {setCurrentUser} = useUserContext()
   const [formData, setFormData] = useState({
     email: '',
     password: '',

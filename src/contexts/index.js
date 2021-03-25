@@ -1,12 +1,10 @@
-import { useAuthContext, AuthProvider } from './AuthContext'
-import { usePlayersContext, PlayersProvider } from './PlayersContext'
-import { useSocket, SocketProvider } from './SocketContext'
-
+export { useAuthContext, AuthProvider } from './AuthContext'
+export { usePlayersContext, PlayersProvider } from './PlayersContext'
+export { useSocket, SocketProvider } from './SocketContext'
+export { useUserContext, UserProvider } from './UserContext'
 export {
-  useAuthContext,
-  AuthProvider,
-  usePlayersContext,
-  PlayersProvider,
-  useSocket,
-  SocketProvider,
-}
+  useTamerlaneChessContext,
+  TamerlaneChessProvider,
+} from './TamerlaneChessContext'
+export { useProfileContext, ProfileProvider } from './ProfileContext'
+

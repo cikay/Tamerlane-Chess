@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { usePlayersContext } from '../contexts'
-import { GAME_FINISH } from '../reducers/tamerlaneChessActionTypes'
+import { GAME_FINISH } from '../contexts/TamerlaneChessContext/types'
 import { COLOR } from '../tamerlane-chess/types'
-import { useTamerlaneChessContext } from '../tamerlane-chessboard'
-import GameFinishDialog from './GameFinishDialog'
+import { useTamerlaneChessContext } from '../contexts/TamerlaneChessContext'
 
 const TIMER = {
   PAUSED: 'PAUSED',

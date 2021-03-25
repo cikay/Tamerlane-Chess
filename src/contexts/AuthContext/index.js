@@ -18,9 +18,7 @@ import {
   USER_LOADED_SUCCESS,
   USER_LOADED_FAIL,
 } from './authActions'
-import { getRandomPlayerColor } from '../../helper/Fen'
 import authReducer, { initialState } from './authReducer'
-
 const REACT_APP_API_URL = process.env.REACT_APP_API_URL
 
 const AuthContext = createContext()
@@ -164,21 +162,23 @@ export const AuthProvider = (props) => {
     })
   }
 
+  const value = {
+    user: state.user,
+    access: state.access,
+    refresh: state.refresh,
+    isAuthenticated: state.isAuthenticated,
+    signup,
+    verify,
+    login,
+    logout,
+    checkAuthenticated,
+    resetPassword,
+    resetPasswordConfirm,
+  }
+
   return (
     <AuthContext.Provider
-      value={{
-        user: state.user,
-        access: state.access,
-        refresh: state.refresh,
-        isAuthenticated: state.isAuthenticated,
-        signup,
-        verify,
-        login,
-        logout,
-        checkAuthenticated,
-        resetPassword,
-        resetPasswordConfirm,
-      }}
+      value={value}
     >
       {props.children}
     </AuthContext.Provider>

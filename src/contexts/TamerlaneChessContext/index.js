@@ -1,31 +1,17 @@
-import {
-  useState,
-  useEffect,
-  useContext,
-  createContext,
-  useReducer,
-} from 'react'
+import { useEffect, useContext, createContext, useReducer } from 'react'
 
-import Board from './Board'
-import tamerlaneChessReducer, {
-  initialState,
-} from '../reducers/tamerlaneChessReducers'
+import tamerlaneChessReducer, { initialState } from './reducer'
 import {
   START_GAME,
   SET_HIGHLIGHTING,
   SELECT_PIECE,
   MOVE,
   REFRESH_PAGE,
-} from '../reducers/tamerlaneChessActionTypes'
-import { useSocket, usePlayersContext } from '../contexts'
+} from './types'
+import { useSocket, usePlayersContext } from '..'
 import axios from 'axios'
-import { COLOR } from '../tamerlane-chess/types'
-import Timer from '../components/Timer'
-import GameFinishDialog from '../components/GameFinishDialog'
-import useLocalStorage from '../hooks/useLocalStorage'
-import MovesHistory from '../components/MovesHistory'
-import TakedPieceList from '../components/TakedPieceList'
-import { Grid, GridList, Container } from '@material-ui/core'
+import { COLOR } from '../../tamerlane-chess/types'
+
 import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
@@ -36,9 +22,10 @@ const useStyles = makeStyles({
 
 export const useTamerlaneChessContext = () => useContext(TamerlaneChessContext)
 const TamerlaneChessContext = createContext()
-export default function TamerlaneChessBoard({
+export function TamerlaneChessProvider({
   isGameStarted,
   setIsGameStarted,
+  children,
 }) {
   const [state, dispatch] = useReducer(tamerlaneChessReducer, initialState)
   const socket = useSocket()
@@ -112,10 +99,6 @@ export default function TamerlaneChessBoard({
   const handleClick = async (square) => {
     const { tamerlaneChess } = state
     console.log('from square', state.fromSquare)
-    // console.log(
-    //   'isPiecePromotedPawnOfPawn',
-    //   tamerlaneChess.isPiecePromotedPawnOfPawn(state.fromSquare)
-    // )
     console.log()
     console.log('clicked square', square)
     const piece = tamerlaneChess.getPiece(square)
@@ -123,7 +106,6 @@ export default function TamerlaneChessBoard({
     console.log(piece)
     let turn = tamerlaneChess.getTurn()
     console.log('turn', turn)
-    // highlight possible moves
     if (
       !(
         state.fromSquare &&
@@ -166,8 +148,6 @@ export default function TamerlaneChessBoard({
         white_player = opponentPlayer.id
         black_player = currentPlayer.id
       }
-
-      // console.log('socketReturnedValue', socketReturnedValue)
 
       const fen = tamerlaneChess.getCurrentFen()
       turn = tamerlaneChess.getTurn()
@@ -250,43 +230,9 @@ export default function TamerlaneChessBoard({
   }
   console.log('opponentTakedPieceList', state.opponentTakedPieceList)
 
-  const classes = useStyles()
   return (
     <TamerlaneChessContext.Provider value={value}>
-      <Grid container alignItems='flex-start'>
-        <Grid item sm={12} md={1}></Grid>
-        <Grid
-          container
-          item
-          sm={12}
-          md={7}
-          direction='row'
-          // style={{ marginTop: '30px' }}
-        >
-          <Container style={{ marginTop: '10px', height: '20px' }}>
-            <TakedPieceList pieceList={state.currentPlayerTakedPieceList} />
-          </Container>
-
-          {state.winner ? <GameFinishDialog /> : <Timer />}
-          <Board />
-          <Container style={{ marginTop: '10px', height: '20px' }}>
-            <TakedPieceList pieceList={state.opponentTakedPieceList} />
-          </Container>
-        </Grid>
-        {/* style={{ marginTop: '20px' }} */}
-        <Grid item sm={12} md={2}>
-          {/* <Container style={{ marginTop: '30px' }}>
-            <TakedPieceList pieceList={state.currentPlayerTakedPieceList} />
-          </Container>
-          <Container className={classes.opponentTakedPieceList}>
-            <TakedPieceList pieceList={state.opponentTakedPieceList} />
-          </Container> */}
-          {/* <TakedPieceList pieceList={state.currentPlayerTakedPieceList} /> */}
-        </Grid>
-        <Grid item sm={12} md={2}>
-          {/* <TakedPieceList pieceList={state.opponentTakedPieceList} /> */}
-        </Grid>
-      </Grid>
+      {children}
     </TamerlaneChessContext.Provider>
   )
 }
