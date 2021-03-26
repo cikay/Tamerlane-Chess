@@ -1,84 +1,86 @@
+import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import {
-  Login,
-  Signup,
-  VerifyEmail,
-  PasswordReset,
-  ResetPasswordConfirm,
-} from './pages/auth'
-import Home from './pages/Home'
-import Profile from './pages/Profile'
-import PageNotFound from './components/PageNotFound'
-import PrivateRoute from './components/PrivateRoute'
-import GameAnalayz from './pages/GameAnalayz'
+import PlayGame from './game/PlayGame'
+import Login from './auth/Login'
+import Signup from './auth/Signup'
+import VerifyEmail from './auth/VerifyEmail'
+import PasswordReset from './auth/PasswordReset'
+import PasswordResetConfirm from './auth/PasswordResetConfirm'
 
-import BaseTemplate from './containers/AppBar'
+import Home from './home/Home'
+import Profile from './profile/Profile'
+import PageNotFound from './shared/components/PageNotFound'
+import PrivateRoute from './shared/components/PrivateRoute'
+import GameAnalyze from './game/GameAnalyze'
+
+import BaseTemplate from './shared/components/AppBar'
 import {
-  AuthProvider,
-  PlayersProvider,
   SocketProvider,
-  TamerlaneChessProvider,
-  ProfileProvider,
-} from './contexts'
-import useLocalStorage from './hooks/useLocalStorage'
-import PlayGame from './pages/PlayGame'
+  PlayersProvider,
+  AuthProvider,
+} from './shared/contexts'
+import useLocalStorage from './shared/hooks/useLocalStorage'
 
 function App() {
   const [currentUser, setCurrentUser] = useLocalStorage('currentUser')
   const [isGameStarted, setIsGameStarted] = useLocalStorage('isGameStarted')
   console.log('isGameStarted', isGameStarted)
   return (
-    <Router>
-      <AuthProvider>
-        <ProfileProvider>
-          <SocketProvider currentUser={currentUser}>
-            <PlayersProvider currentUser={currentUser}>
-              <TamerlaneChessProvider>
-                <PrivateRoute>
-                  <BaseTemplate currentUser={currentUser} />
-                </PrivateRoute>
-                <Switch>
-                  <Route path='/signup'>
-                    <Signup />
-                  </Route>
-                  <Route path='/login'>
-                    <Login onSubmitUser={setCurrentUser} />
-                  </Route>
-                  <Route path='/email-verify'>
-                    <VerifyEmail />
-                  </Route>
-                  <Route path='/password-reset'>
-                    <PasswordReset />
-                  </Route>
-                  <Route path='/password-reset-complete/:uidb64/:token'>
-                    <ResetPasswordConfirm />
-                  </Route>
-                  <Route path='/play/online'>
-                    <PlayGame />
-                  </Route>
-                  <Route path='/:username'>
-                    <Profile />
-                  </Route>
-                  <Route path='/:username/games/:id'>
-                    <GameAnalayz />
-                  </Route>
-                  <Route exact path='/'>
-                    <PrivateRoute>
-                      <Home />
-                    </PrivateRoute>
-                  </Route>
-                  <Route path='*'>
-                    <PageNotFound />
-                  </Route>
-                </Switch>
-              </TamerlaneChessProvider>
-            </PlayersProvider>
-          </SocketProvider>
-        </ProfileProvider>
-      </AuthProvider>
-    </Router>
+    <AuthProvider>
+      <SocketProvider currentUser={currentUser}>
+        <Pages currentUser={currentUser} setCurrentUser={setCurrentUser} />
+      </SocketProvider>
+    </AuthProvider>
+  )
+}
+
+function Pages({ currentUser, setCurrentUser }) {
+  return (
+    <>
+      <Router>
+        <PlayersProvider>
+          <PrivateRoute>
+            <BaseTemplate currentUser={currentUser} />
+          </PrivateRoute>
+          <Switch>
+            <Route exact path='/'>
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            </Route>
+            <Route path='/signup'>
+              <Signup />
+            </Route>
+            <Route path='/login'>
+              <Login onSubmitUser={setCurrentUser} />
+            </Route>
+            <Route path='/email-verify'>
+              <VerifyEmail />
+            </Route>
+            <Route path='/password-reset'>
+              <PasswordReset />
+            </Route>
+            <Route path='/password-reset-complete/:uidb64/:token'>
+              <PasswordResetConfirm />
+            </Route>
+            <Route path='/play/online'>
+              <PlayGame />
+            </Route>
+            <Route path='/games/:id'>
+              <GameAnalyze />
+            </Route>
+            <Route path='/:username'>
+              <Profile />
+            </Route>
+            <Route path='*'>
+              <PageNotFound />
+            </Route>
+          </Switch>
+        </PlayersProvider>
+      </Router>
+    </>
   )
 }
 

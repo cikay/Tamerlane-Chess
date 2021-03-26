@@ -1,5 +1,5 @@
 import { includeInTwoDimensArray, replaceAt } from './helper'
-import { expandFenEmptySquares } from '../helper/Fen'
+import { expandFenEmptySquares } from '../shared/helper/Fen'
 import {
   King,
   Camel,
