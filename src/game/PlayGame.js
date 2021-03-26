@@ -34,10 +34,4 @@ function PlayGame() {
   )
 }
 
-export default function () {
-  return (
-    <TamerlaneChessProvider>
-      <PlayGame />
-    </TamerlaneChessProvider>
-  )
-}
+export default withProvider(PlayGame, TamerlaneChessProvider)

@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function withProvider(Component, Provider ) {
   
-  return (
+  return () => (
     <Provider>
       <Component />
     </Provider>

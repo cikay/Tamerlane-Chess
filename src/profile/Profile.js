@@ -1,5 +1,6 @@
 import React from 'react'
 import { Row, Col, Container } from 'react-bootstrap'
+import withProvider from '../shared/hoc/withProvider'
 import GameCardContainer from './shared/components/GameCardContainer'
 import { ProfileProvider } from './shared/contexts/ProfileContext'
 
@@ -17,10 +18,4 @@ function Profile() {
   )
 }
 
-export default function () {
-  return (
-    <ProfileProvider>
-      <Profile />
-    </ProfileProvider>
-  )
-}
+export default withProvider(Profile, ProfileProvider)
