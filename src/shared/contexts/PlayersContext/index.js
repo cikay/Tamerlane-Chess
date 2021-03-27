@@ -123,7 +123,7 @@ export const PlayersProvider = ({ children }) => {
 
     console.log('currentPlayer', currentPlayer)
     console.log('opponent player', requestedPlayer)
-
+    console.log('payload', payload)
     const res = await axios.post(`${REACT_APP_API_URL}/play/online/`, payload)
     console.log('res', res.data.id)
     socket.emit('send-playResponse', {

@@ -12,15 +12,17 @@ export default function useLocalStorage(key, initialValue) {
     console.log('json value', jsonValue)
     console.log(typeof jsonValue)
 
-    if (jsonValue == undefined) {
+    if (jsonValue == 'undefined') {
       console.log('prefixKey', prefixKey)
       return initialValue
     }
-    if (typeof initialValue === 'function') {
-      return initialValue()
-    } else {
-      return JSON.parse(jsonValue)
+    const parsedValue = JSON.parse(jsonValue)
+
+    if (typeof parsedValue === 'function') {
+      return parsedValue()
     }
+
+    return parsedValue
   })
 
   useEffect(() => {
