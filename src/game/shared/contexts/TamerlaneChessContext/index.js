@@ -14,6 +14,7 @@ import axios from 'axios'
 import { COLOR } from '../../../../tamerlane-chess/types'
 
 import { makeStyles } from '@material-ui/styles'
+import { useParams } from 'react-router-dom'
 
 const useStyles = makeStyles({
   opponentTakedPieceList: {
@@ -28,10 +29,12 @@ export function TamerlaneChessProvider({
   setIsGameStarted,
   children,
 }) {
+  const {gameId} = useParams()
+  console.log('param gameId', gameId)
   const [state, dispatch] = useReducer(tamerlaneChessReducer, initialState)
   const socket = useSocket()
   const { currentPlayer, opponentPlayer } = usePlayersContext()
-  const gameId = localStorage.getItem('gameId')
+
   console.log('currentPlayer', currentPlayer)
   console.log('opponentPlayer', opponentPlayer)
   console.log('Provider called')

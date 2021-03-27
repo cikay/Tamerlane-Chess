@@ -2,7 +2,7 @@ const Piece = ({ pieceName }) => {
   return (
     <img
       alt='piece icon'
-      src={`../pieces-image/${pieceName}.png`}
+      src={`../../pieces-image/${pieceName}.png`}
       style={{
         display: 'block',
         height: '80%',

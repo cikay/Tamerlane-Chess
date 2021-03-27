@@ -65,7 +65,7 @@ function Pages({ currentUser, setCurrentUser }) {
             <Route path='/password-reset-complete/:uidb64/:token'>
               <PasswordResetConfirm />
             </Route>
-            <Route path='/play/online'>
+            <Route path='/play/online/:gameId'>
               <PlayGame />
             </Route>
             <Route path='/games/:id'>

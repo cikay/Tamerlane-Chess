@@ -137,8 +137,7 @@ export const PlayersProvider = ({ children }) => {
       currentPlayer: currentPlayer,
       opponentPlayer: requestedPlayer,
     }))
-    // localStorage.setItem('gameId', res.data.id)
-    history.push('/play/online')
+    history.push(`/play/online/${res.data.id}`)
   }
 
   const getPlayResponse = (response) => {
@@ -157,9 +156,7 @@ export const PlayersProvider = ({ children }) => {
       console.log('response', response)
       if (response) {
         setState((prevState) => ({ ...prevState, gameId }))
-        console.log('GAME ID', gameId)
-        localStorage.setItem('gameId', gameId)
-        history.push('/play/online')
+        history.push(`/play/online/${gameId}`)
       }
     })
     return () => socket.off('receive-playResponse')
